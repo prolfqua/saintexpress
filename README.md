@@ -5,8 +5,16 @@ engines for spectral counts and intensities.
 
 This package is intentionally focused on the R implementation. It does not ship
 or run native SAINTexpress binaries. Native execution is handled by the separate
-`saintexpressbin` package, and prolfqua integration is handled by
-`prolfquasaint`.
+[`saintexpressbin`](https://github.com/prolfqua/saintexpressbin) package, and
+prolfqua integration is handled by
+[`prolfquasaint`](https://github.com/prolfqua/prolfquasaint).
+
+## Installation
+
+```r
+# install.packages("remotes")
+remotes::install_github("prolfqua/saintexpress")
+```
 
 ## Usage
 
@@ -56,8 +64,23 @@ installed:
 saintexpress::run_saint(si, mode = "spc", optimizer = "nloptr")
 ```
 
+## Vignette
+
+A worked example with simulated AP-MS data is included as a package vignette:
+
+```r
+vignette("saintexpress", package = "saintexpress")
+```
+
+It walks through `validate_saint_input()` and `run_saint()` for both `spc` and
+`int` modes on a 6-prey/4-bait synthetic experiment with known true
+interactors, and mirrors the structure of the companion
+[`saintexpressbin`](https://github.com/prolfqua/saintexpressbin) vignette so the
+two engines can be compared side by side.
+
 ## Testing Scope
 
 This package uses small synthetic inputs for unit tests. TIP49 reference
-fixtures and native-vs-R comparison tests live in `prolfquasaint`, where both
+fixtures and native-vs-R comparison tests live in
+[`prolfquasaint`](https://github.com/prolfqua/prolfquasaint), where both
 `saintexpress` and `saintexpressbin` are integrated.
