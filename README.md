@@ -3,6 +3,8 @@
 `saintexpress` provides a pure-R implementation of the SAINTexpress scoring
 engines for spectral counts and intensities.
 
+Documentation: <https://prolfqua.github.io/saintexpress/>
+
 This package is intentionally focused on the R implementation. It does not ship
 or run native SAINTexpress binaries. Native execution is handled by the separate
 [`saintexpressbin`](https://github.com/prolfqua/saintexpressbin) package, and
