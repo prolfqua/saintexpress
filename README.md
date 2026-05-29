@@ -84,3 +84,20 @@ This package uses small synthetic inputs for unit tests. TIP49 reference
 fixtures and native-vs-R comparison tests live in
 [`prolfquasaint`](https://github.com/prolfqua/prolfquasaint), where both
 `saintexpress` and `saintexpressbin` are integrated.
+
+## References
+
+SAINTexpress and the SAINT model are described in the original publications:
+
+- Teo G, Liu G, Zhang J, Nesvizhskii AI, Gingras AC, Choi H (2014).
+  SAINTexpress: improvements and additional features in Significance Analysis
+  of INTeractome software. *Journal of Proteomics* 100:37-43.
+  <https://doi.org/10.1016/j.jprot.2013.10.023>
+- Choi H, Glatter T, Gstaiger M, Nesvizhskii AI (2012). SAINT-MS1:
+  protein-protein interaction scoring using label-free intensity data in
+  affinity purification-mass spectrometry experiments. *Journal of Proteome
+  Research* 11:2619-2624. <https://doi.org/10.1021/pr201185r>
+- Choi H, Larsen B, Lin ZY, Breitkreutz A, Mellacheruvu D, Fermin D, Qin ZS,
+  Tyers M, Gingras AC, Nesvizhskii AI (2011). SAINT: probabilistic scoring of
+  affinity purification-mass spectrometry data. *Nature Methods* 8:70-73.
+  <https://doi.org/10.1038/nmeth.1541>
