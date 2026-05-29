@@ -1,0 +1,46 @@
+citHeader("To cite saintexpress in publications, please use:")
+
+meta <- utils::packageDescription("saintexpress")
+
+c(
+  bibentry(
+    bibtype = "Manual",
+    title = paste(meta$Package, meta$Title, sep = ": "),
+    author = personList(
+      person("Witold", "Wolski", role = c("aut", "cre"))
+    ),
+    year = "2026",
+    note = paste("R package version", meta$Version)
+  ),
+  bibentry(
+    bibtype = "Article",
+    title = paste(
+      "SAINTq: Scoring protein-protein interactions in affinity",
+      "purification-mass spectrometry experiments with fragment or",
+      "peptide intensity data"
+    ),
+    author = personList(
+      person("Guoci", "Teo"),
+      person("Hiromi", "Koh"),
+      person("Damian", "Fermin"),
+      person("Jean-Philippe", "Lambert"),
+      person("James D.R.", "Knight"),
+      person("Anne-Claude", "Gingras"),
+      person("Hyungwon", "Choi")
+    ),
+    journal = "Proteomics",
+    year = "2016",
+    volume = "16",
+    number = "15-16",
+    pages = "2238--2245",
+    doi = "10.1002/pmic.201500499",
+    textVersion = paste(
+      "Teo G, Koh H, Fermin D, Lambert J-P, Knight JDR, Gingras A-C,",
+      "Choi H. (2016).",
+      "\"SAINTq: Scoring protein-protein interactions in affinity",
+      "purification-mass spectrometry experiments with fragment or",
+      "peptide intensity data.\" Proteomics, 16(15-16), 2238-2245.",
+      "doi:10.1002/pmic.201500499"
+    )
+  )
+)
