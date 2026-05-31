@@ -1,0 +1,41 @@
+citHeader("To cite saintexpress in publications, please use:")
+
+meta <- utils::packageDescription("saintexpress")
+
+c(
+  bibentry(
+    bibtype = "Manual",
+    title = paste(meta$Package, meta$Title, sep = ": "),
+    author = personList(
+      person("Witold", "Wolski", role = c("aut", "cre"))
+    ),
+    year = "2026",
+    note = paste("R package version", meta$Version)
+  ),
+  bibentry(
+    bibtype = "Article",
+    title = paste(
+      "SAINTexpress: Improvements and additional features in",
+      "Significance Analysis of INTeractome software"
+    ),
+    author = personList(
+      person("Guoci", "Teo"),
+      person("Guomin", "Liu"),
+      person("Jianping", "Zhang"),
+      person("Alexey I.", "Nesvizhskii"),
+      person("Anne-Claude", "Gingras"),
+      person("Hyungwon", "Choi")
+    ),
+    journal = "Journal of Proteomics",
+    year = "2014",
+    volume = "100",
+    pages = "37--43",
+    doi = "10.1016/j.jprot.2013.10.023",
+    textVersion = paste(
+      "Teo G, Liu G, Zhang J, Nesvizhskii AI, Gingras AC, Choi H",
+      "(2014). \"SAINTexpress: Improvements and additional features",
+      "in Significance Analysis of INTeractome software.\" Journal",
+      "of Proteomics, 100, 37-43. doi:10.1016/j.jprot.2013.10.023"
+    )
+  )
+)
