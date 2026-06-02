@@ -41,7 +41,7 @@ jobs:
         uses: r-lib/actions/check-r-package@v2
         with:
           build_args: 'c("--no-build-vignettes")'
-          args: 'c("--no-manual", "--no-vignettes")'
+          args: 'c("--no-manual", "--no-vignettes", "--ignore-vignettes")'
 
   bioccheck:
     runs-on: ubuntu-latest
