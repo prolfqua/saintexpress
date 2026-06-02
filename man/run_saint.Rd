@@ -24,3 +24,24 @@ A data frame in the SAINTexpress \code{list.txt} shape.
 \description{
 Dispatches to the spectral-count or intensity scorer.
 }
+\examples{
+si <- list(
+  inter = data.frame(
+    ipId = c("IP1", "IP1", "IP2", "IP2", "IP3", "IP4"),
+    baitId = c("BaitA", "BaitA", "BaitA", "BaitA", "Ctrl", "Ctrl"),
+    preyId = c("Prey1", "Prey2", "Prey1", "Prey2", "Prey1", "Prey2"),
+    quant = c(20, 1, 18, 1, 1, 1)
+  ),
+  prey = data.frame(
+    preyId = c("Prey1", "Prey2"),
+    preyLength = c(500, 500),
+    preyGeneId = c("Gene1", "Gene2")
+  ),
+  bait = data.frame(
+    ipId = c("IP1", "IP2", "IP3", "IP4"),
+    baitId = c("BaitA", "BaitA", "Ctrl", "Ctrl"),
+    CorT = c("T", "T", "C", "C")
+  )
+)
+run_saint(si, mode = "spc")
+}

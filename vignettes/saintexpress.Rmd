@@ -109,3 +109,9 @@ top_per_bait(scores_int)[, c("Bait", "Prey", "AvgP", "BFDR")]
 For running the original native SAINTexpress C++ binary on the same input,
 see the companion package
 [`saintexpressbin`](https://github.com/prolfqua/saintexpressbin).
+
+## Session information
+
+```{r session-info}
+sessionInfo()
+```

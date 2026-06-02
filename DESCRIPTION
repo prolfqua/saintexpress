@@ -2,7 +2,9 @@ Package: saintexpress
 Title: Pure R Implementation of SAINTexpress
 Version: 0.0.1
 Authors@R: 
-    person("Witold", "Wolski", , "wew@fgcz.ethz.ch", role = c("aut", "cre"))
+    person("Witold", "Wolski", , "wew@fgcz.ethz.ch",
+        role = c("aut", "cre"),
+        comment = c(ORCID = "0000-0002-6468-120X"))
 Description: Pure R implementation of SAINTexpress scoring (spectral
     counts and intensities) plus SAINT input table validation.
 License: MIT + file LICENSE
@@ -21,3 +23,4 @@ Config/testthat/edition: 3
 Imports:
     stats
 VignetteBuilder: knitr
+biocViews: MassSpectrometry, Proteomics, Software

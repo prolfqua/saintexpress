@@ -42,27 +42,7 @@
     "baitId",
     "CorT"
   )[seq_len(min(3, ncol(bait)))]
-  if (!all(c("preyId", "preyGeneId") %in% names(prey))) {
-    prey_raw <- prey
-    prey <- data.frame(
-      preyId = as.character(prey_raw[[1]]),
-      preyLength = 0,
-      preyGeneId = as.character(prey_raw[[1]]),
-      stringsAsFactors = FALSE
-    )
-    if (ncol(prey_raw) == 2) {
-      maybe_length <- suppressWarnings(as.numeric(prey_raw[[2]]))
-      is_length <- !anyNA(maybe_length)
-      if (is_length) {
-        prey$preyLength <- maybe_length
-      } else {
-        prey$preyGeneId <- as.character(prey_raw[[2]])
-      }
-    } else if (ncol(prey_raw) > 2) {
-      prey$preyLength <- as.numeric(prey_raw[[2]])
-      prey$preyGeneId <- as.character(prey_raw[[3]])
-    }
-  }
+  prey <- .saint_int_normalize_prey_table(prey)
 
   if (!all(c("ipId", "baitId", "preyId", "quant") %in% names(inter))) {
     stop("inter must have columns ipId, baitId, preyId, quant")
@@ -82,6 +62,48 @@
 
   prey$row <- seq_len(nrow(prey))
   list(inter = inter, prey = prey, bait = bait)
+}
+
+.saint_int_normalize_prey_table <- function(prey) {
+  if (all(c("preyId", "preyGeneId") %in% names(prey))) {
+    return(prey)
+  }
+
+  prey_raw <- prey
+  prey <- data.frame(
+    preyId = as.character(prey_raw[[1]]),
+    preyLength = 0,
+    preyGeneId = as.character(prey_raw[[1]]),
+    stringsAsFactors = FALSE
+  )
+  if (ncol(prey_raw) == 2) {
+    prey_length <- .saint_int_parse_length_column(prey_raw[[2]])
+    if (prey_length$is_length) {
+      prey$preyLength <- prey_length$values
+    } else {
+      prey$preyGeneId <- as.character(prey_raw[[2]])
+    }
+  } else if (ncol(prey_raw) > 2) {
+    prey$preyLength <- as.numeric(prey_raw[[2]])
+    prey$preyGeneId <- as.character(prey_raw[[3]])
+  }
+  prey
+}
+
+.saint_int_parse_length_column <- function(x) {
+  if (is.numeric(x)) {
+    values <- x
+    return(list(is_length = !anyNA(values), values = values))
+  }
+
+  numeric_pattern <- paste0(
+    "^[-+]?(?:\\d+\\.?\\d*|\\.\\d+)",
+    "(?:[eE][-+]?\\d+)?$"
+  )
+  x <- trimws(as.character(x))
+  is_length <- all(nzchar(x)) && all(grepl(numeric_pattern, x))
+  values <- if (is_length) as.numeric(x) else numeric()
+  list(is_length = is_length, values = values)
 }
 
 .saint_int_index_bait_replicates <- function(bait) {

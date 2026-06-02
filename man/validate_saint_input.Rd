@@ -16,3 +16,11 @@ validate_saint_input(si)
 Checks that \code{si} is a list with exactly the elements \code{inter}, \code{prey}, \code{bait},
 and that each is a data frame.
 }
+\examples{
+si <- list(
+  inter = data.frame(ipId = "IP1", baitId = "BaitA", preyId = "Prey1"),
+  prey = data.frame(preyId = "Prey1"),
+  bait = data.frame(ipId = "IP1", baitId = "BaitA", CorT = "T")
+)
+validate_saint_input(si)
+}

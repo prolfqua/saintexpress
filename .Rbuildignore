@@ -1,7 +1,9 @@
 ^LICENSE\.md$
 ^Makefile$
 ^\.git$
+^\.github$
 ^\.DS_Store$
 ^\.Rhistory$
+^_pkgdown\.yml$
 ^doc$
 ^Meta$
