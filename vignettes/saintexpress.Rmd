@@ -23,8 +23,6 @@ controls. Six preys exist; `BaitA` enriches for `Prey1`/`Prey2` and `BaitB` for
 `Prey3`/`Prey4`. The remaining preys are background.
 
 ```{r simulate}
-library(saintexpress)
-
 simulate_si <- function(seed = 42, mode = c("spc", "int")) {
   mode <- match.arg(mode)
   set.seed(seed)
@@ -73,13 +71,13 @@ str(si_spc, max.level = 2)
 ## Validate the input tables
 
 ```{r validate}
-validate_saint_input(si_spc)
+saintexpress::validate_saint_input(si_spc)
 ```
 
 ## Spectral-count scoring
 
 ```{r score-spc}
-scores_spc <- run_saint(si_spc, mode = "spc", optimizer = "base")
+scores_spc <- saintexpress::run_saint(si_spc, mode = "spc", optimizer = "base")
 scores_spc[, c("Bait", "Prey", "AvgP", "BFDR", "SaintScore")]
 ```
 
@@ -94,14 +92,54 @@ top_per_bait <- function(df) {
 top_per_bait(scores_spc)[, c("Bait", "Prey", "AvgP", "BFDR")]
 ```
 
+## Volcano plot
+
+The `FoldChange` column summarizes enrichment over the estimated background.
+We plot it as an effect-size coordinate (`EFC`, here `log2(FoldChange)`) against
+the `BFDR` evidence coordinate.
+
+```{r volcano-spc, fig.width = 6, fig.height = 4}
+plot_volcano <- function(scores, title) {
+  volcano_data <- scores
+  volcano_data$EFC <- log2(volcano_data$FoldChange)
+  volcano_data$neg_log10_bfdr <- -log10(pmax(volcano_data$BFDR, 1e-16))
+  volcano_data$is_hit <- volcano_data$BFDR <= 0.05 & volcano_data$EFC >= 1
+
+  plot(
+    volcano_data$EFC,
+    volcano_data$neg_log10_bfdr,
+    pch = 19,
+    col = ifelse(volcano_data$is_hit, "#B23A48", "#3D6F99"),
+    xlab = "EFC (log2 fold change)",
+    ylab = "-log10(BFDR)",
+    main = title
+  )
+  abline(h = -log10(0.05), lty = 2, col = "grey40")
+  abline(v = 1, lty = 2, col = "grey40")
+  text(
+    volcano_data$EFC,
+    volcano_data$neg_log10_bfdr,
+    labels = paste(volcano_data$Bait, volcano_data$Prey, sep = ":"),
+    pos = 3,
+    cex = 0.7
+  )
+}
+
+plot_volcano(scores_spc, "SAINTexpress spectral-count volcano plot")
+```
+
 ## Intensity scoring
 
 The same simulator, with `mode = "int"`, produces continuous abundances.
 
 ```{r score-int}
 si_int <- simulate_si(mode = "int")
-scores_int <- run_saint(si_int, mode = "int", optimizer = "base")
+scores_int <- saintexpress::run_saint(si_int, mode = "int", optimizer = "base")
 top_per_bait(scores_int)[, c("Bait", "Prey", "AvgP", "BFDR")]
+```
+
+```{r volcano-int, fig.width = 6, fig.height = 4}
+plot_volcano(scores_int, "SAINTexpress intensity volcano plot")
 ```
 
 ## See also
