@@ -31,7 +31,7 @@ and that each is a data frame."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Validate a SAINT input list</h1>
-      <small class="dont-index">Source: <a href="https://github.com/prolfqua/saintexpress/blob/0.0.1/R/validate.R" class="external-link"><code>R/validate.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/prolfqua/saintexpress/blob/main/R/validate.R" class="external-link"><code>R/validate.R</code></a></small>
       <div class="d-none name"><code>validate_saint_input.Rd</code></div>
     </div>
 
@@ -58,6 +58,16 @@ and that each is a data frame.</p>
     <p><code>TRUE</code> invisibly on success; otherwise stops with a message.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">si</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  inter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ipId <span class="op">=</span> <span class="st">"IP1"</span>, baitId <span class="op">=</span> <span class="st">"BaitA"</span>, preyId <span class="op">=</span> <span class="st">"Prey1"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  prey <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>preyId <span class="op">=</span> <span class="st">"Prey1"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  bait <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ipId <span class="op">=</span> <span class="st">"IP1"</span>, baitId <span class="op">=</span> <span class="st">"BaitA"</span>, CorT <span class="op">=</span> <span class="st">"T"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">validate_saint_input</span><span class="op">(</span><span class="va">si</span><span class="op">)</span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

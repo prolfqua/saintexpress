@@ -12,8 +12,6 @@ plus two controls. Six preys exist; `BaitA` enriches for `Prey1`/`Prey2`
 and `BaitB` for `Prey3`/`Prey4`. The remaining preys are background.
 
 ``` r
-library(saintexpress)
-
 simulate_si <- function(seed = 42, mode = c("spc", "int")) {
   mode <- match.arg(mode)
   set.seed(seed)
@@ -76,13 +74,13 @@ str(si_spc, max.level = 2)
 ## Validate the input tables
 
 ``` r
-validate_saint_input(si_spc)
+saintexpress::validate_saint_input(si_spc)
 ```
 
 ## Spectral-count scoring
 
 ``` r
-scores_spc <- run_saint(si_spc, mode = "spc", optimizer = "base")
+scores_spc <- saintexpress::run_saint(si_spc, mode = "spc", optimizer = "base")
 scores_spc[, c("Bait", "Prey", "AvgP", "BFDR", "SaintScore")]
 #>    Bait  Prey AvgP BFDR SaintScore
 #> 1 BaitA Prey1 1.00 0.00       1.00
@@ -112,13 +110,51 @@ top_per_bait(scores_spc)[, c("Bait", "Prey", "AvgP", "BFDR")]
 #> BaitB.7 BaitB Prey4    1    0
 ```
 
+## Volcano plot
+
+The `FoldChange` column summarizes enrichment over the estimated
+background. We plot it as an effect-size coordinate (`EFC`, here
+`log2(FoldChange)`) against the `BFDR` evidence coordinate.
+
+``` r
+plot_volcano <- function(scores, title) {
+  volcano_data <- scores
+  volcano_data$EFC <- log2(volcano_data$FoldChange)
+  volcano_data$neg_log10_bfdr <- -log10(pmax(volcano_data$BFDR, 1e-16))
+  volcano_data$is_hit <- volcano_data$BFDR <= 0.05 & volcano_data$EFC >= 1
+
+  plot(
+    volcano_data$EFC,
+    volcano_data$neg_log10_bfdr,
+    pch = 19,
+    col = ifelse(volcano_data$is_hit, "#B23A48", "#3D6F99"),
+    xlab = "EFC (log2 fold change)",
+    ylab = "-log10(BFDR)",
+    main = title
+  )
+  abline(h = -log10(0.05), lty = 2, col = "grey40")
+  abline(v = 1, lty = 2, col = "grey40")
+  text(
+    volcano_data$EFC,
+    volcano_data$neg_log10_bfdr,
+    labels = paste(volcano_data$Bait, volcano_data$Prey, sep = ":"),
+    pos = 3,
+    cex = 0.7
+  )
+}
+
+plot_volcano(scores_spc, "SAINTexpress spectral-count volcano plot")
+```
+
+![](saintexpress_files/figure-html/volcano-spc-1.png)
+
 ## Intensity scoring
 
 The same simulator, with `mode = "int"`, produces continuous abundances.
 
 ``` r
 si_int <- simulate_si(mode = "int")
-scores_int <- run_saint(si_int, mode = "int", optimizer = "base")
+scores_int <- saintexpress::run_saint(si_int, mode = "int", optimizer = "base")
 top_per_bait(scores_int)[, c("Bait", "Prey", "AvgP", "BFDR")]
 #>           Bait  Prey AvgP BFDR
 #> BaitA.1  BaitA Prey1    1    0
@@ -127,8 +163,48 @@ top_per_bait(scores_int)[, c("Bait", "Prey", "AvgP", "BFDR")]
 #> BaitB.10 BaitB Prey4    1    0
 ```
 
+``` r
+plot_volcano(scores_int, "SAINTexpress intensity volcano plot")
+```
+
+![](saintexpress_files/figure-html/volcano-int-1.png)
+
 ## See also
 
 For running the original native SAINTexpress C++ binary on the same
 input, see the companion package
 [`saintexpressbin`](https://github.com/prolfqua/saintexpressbin).
+
+## Session information
+
+``` r
+sessionInfo()
+#> R version 4.6.0 (2026-04-24)
+#> Platform: x86_64-pc-linux-gnu
+#> Running under: Ubuntu 24.04.4 LTS
+#> 
+#> Matrix products: default
+#> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
+#> LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0
+#> 
+#> locale:
+#>  [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
+#>  [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   
+#>  [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          
+#> [10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   
+#> 
+#> time zone: UTC
+#> tzcode source: system (glibc)
+#> 
+#> attached base packages:
+#> [1] stats     graphics  grDevices utils     datasets  methods   base     
+#> 
+#> loaded via a namespace (and not attached):
+#>  [1] digest_0.6.39      desc_1.4.3         R6_2.6.1           fastmap_1.2.0     
+#>  [5] xfun_0.58          saintexpress_0.0.1 cachem_1.1.0       knitr_1.51        
+#>  [9] htmltools_0.5.9    rmarkdown_2.31     lifecycle_1.0.5    cli_3.6.6         
+#> [13] sass_0.4.10        pkgdown_2.2.0      textshaping_1.0.5  jquerylib_0.1.4   
+#> [17] systemfonts_1.3.2  compiler_4.6.0     tools_4.6.0        ragg_1.5.2        
+#> [21] evaluate_1.0.5     bslib_0.11.0       yaml_2.3.12        jsonlite_2.0.0    
+#> [25] rlang_1.2.0        fs_2.1.0
+```

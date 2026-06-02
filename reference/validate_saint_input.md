@@ -18,3 +18,14 @@ validate_saint_input(si)
 ## Value
 
 `TRUE` invisibly on success; otherwise stops with a message.
+
+## Examples
+
+``` r
+si <- list(
+  inter = data.frame(ipId = "IP1", baitId = "BaitA", preyId = "Prey1"),
+  prey = data.frame(preyId = "Prey1"),
+  bait = data.frame(ipId = "IP1", baitId = "BaitA", CorT = "T")
+)
+validate_saint_input(si)
+```
