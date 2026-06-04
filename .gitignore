@@ -1,2 +1,5 @@
 /doc/
 /Meta/
+*.Rcheck/
+*.BiocCheck/
+*.tar.gz

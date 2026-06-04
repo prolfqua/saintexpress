@@ -1,12 +1,20 @@
 Package: saintexpress
 Title: Pure R Implementation of SAINTexpress
 Version: 0.0.1
-Authors@R: 
+Authors@R: c(
     person("Witold", "Wolski", , "wew@fgcz.ethz.ch",
-        role = c("aut", "cre"),
-        comment = c(ORCID = "0000-0002-6468-120X"))
-Description: Pure R implementation of SAINTexpress scoring (spectral
-    counts and intensities) plus SAINT input table validation.
+        role = "aut",
+        comment = c(ORCID = "0000-0002-6468-120X")),
+    person("Christian", "Panse", , "cp@fgcz.ethz.ch",
+        role = "cre",
+        comment = c(ORCID = "0000-0003-1975-3064")))
+Description: A pure R implementation of the SAINTexpress scoring engines
+    for affinity purification-mass spectrometry data, covering both the
+    spectral-count and intensity models, together with validation of SAINT
+    input tables. The output mirrors the native SAINTexpress 'list.txt'
+    format, so protein-protein interactions can be scored without external
+    binaries. The underlying method is described in Teo et al. (2014)
+    <doi:10.1016/j.jprot.2013.10.023>.
 License: MIT + file LICENSE
 URL: https://prolfqua.github.io/saintexpress/, https://github.com/prolfqua/saintexpress
 BugReports: https://github.com/prolfqua/saintexpress/issues

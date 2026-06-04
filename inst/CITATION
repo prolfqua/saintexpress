@@ -1,13 +1,18 @@
 citHeader("To cite saintexpress in publications, please use:")
 
-meta <- utils::packageDescription("saintexpress")
+# `meta` is supplied by utils::readCitationFile() from the package DESCRIPTION.
+# Fall back to packageDescription() only when the file is sourced standalone.
+if (!exists("meta") || is.null(meta$Version)) {
+  meta <- utils::packageDescription("saintexpress")
+}
 
 c(
   bibentry(
     bibtype = "Manual",
     title = paste(meta$Package, meta$Title, sep = ": "),
-    author = personList(
-      person("Witold", "Wolski", role = c("aut", "cre"))
+    author = c(
+      person("Witold", "Wolski", role = "aut"),
+      person("Christian", "Panse", role = "cre")
     ),
     year = "2026",
     note = paste("R package version", meta$Version)
@@ -18,7 +23,7 @@ c(
       "SAINTexpress: Improvements and additional features in",
       "Significance Analysis of INTeractome software"
     ),
-    author = personList(
+    author = c(
       person("Guoci", "Teo"),
       person("Guomin", "Liu"),
       person("Jianping", "Zhang"),
