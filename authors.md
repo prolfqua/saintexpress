@@ -2,20 +2,22 @@
 
 ## Authors
 
-- **Witold Wolski**. Author, maintainer.
-  [](https://orcid.org/0000-0002-6468-120X)
+- **Witold Wolski**. Author. [](https://orcid.org/0000-0002-6468-120X)
+
+- **Christian Panse**. Maintainer.
+  [](https://orcid.org/0000-0003-1975-3064)
 
 ## Citation
 
 Source:
 [`inst/CITATION`](https://github.com/prolfqua/saintexpress/blob/main/inst/CITATION)
 
-Wolski W (2026). *saintexpress: Pure R Implementation of SAINTexpress*.
-R package version 0.0.1.
+Wolski W, Panse C (2026). *saintexpress: Pure R Implementation of
+SAINTexpress*. R package version 0.0.1.
 
     @Manual{,
       title = {saintexpress: Pure R Implementation of SAINTexpress},
-      author = {Witold Wolski},
+      author = {Witold Wolski and Christian Panse},
       year = {2026},
       note = {R package version 0.0.1},
     }
