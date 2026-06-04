@@ -31,32 +31,27 @@ simulate_si <- function(seed = 42, mode = c("spc", "int")) {
   ips    <- paste0("IP", seq_along(baits))
   cort   <- c("T", "T", "T", "T", "C", "C")
 
-  draw <- function(bait, prey) {
-    if (bait %in% c("Ctrl1", "Ctrl2")) {
-      if (mode == "spc") stats::rpois(1, 0.5) else stats::rexp(1, 1 / 1e4)
-    } else if (bait == "BaitA" && prey %in% c("Prey1", "Prey2")) {
-      if (mode == "spc") stats::rpois(1, 20) else stats::rexp(1, 1 / 1e7)
-    } else if (bait == "BaitB" && prey %in% c("Prey3", "Prey4")) {
-      if (mode == "spc") stats::rpois(1, 15) else stats::rexp(1, 1 / 5e6)
-    } else {
-      if (mode == "spc") stats::rpois(1, 0.5) else stats::rexp(1, 1 / 1e4)
-    }
+  # One row per IP x prey; recover the bait for each IP.
+  grid <- expand.grid(ipId = ips, preyId = preys, stringsAsFactors = FALSE)
+  grid$baitId <- baits[match(grid$ipId, ips)]
+
+  # A prey is enriched ("signal") only for its true bait; everything else is background.
+  signal <- (grid$baitId == "BaitA" & grid$preyId %in% c("Prey1", "Prey2")) |
+            (grid$baitId == "BaitB" & grid$preyId %in% c("Prey3", "Prey4"))
+
+  # Draw every quantity in one vectorized call.
+  if (mode == "spc") {
+    lambda <- ifelse(signal, ifelse(grid$baitId == "BaitA", 20, 15), 0.5)
+    grid$quant <- stats::rpois(nrow(grid), lambda)
+  } else {
+    mu <- ifelse(signal, ifelse(grid$baitId == "BaitA", 1e7, 5e6), 1e4)
+    grid$quant <- stats::rexp(nrow(grid), 1 / mu)
   }
 
-  rows <- list()
-  for (i in seq_along(baits)) {
-    for (p in preys) {
-      q <- draw(baits[i], p)
-      if (q > 0) {
-        rows[[length(rows) + 1]] <- data.frame(
-          ipId = ips[i], baitId = baits[i], preyId = p, quant = q,
-          stringsAsFactors = FALSE
-        )
-      }
-    }
-  }
+  inter <- grid[grid$quant > 0, c("ipId", "baitId", "preyId", "quant")]
+  rownames(inter) <- NULL
   list(
-    inter = do.call(rbind, rows),
+    inter = inter,
     prey  = data.frame(preyId = preys, preyLength = 500L, preyGeneId = preys,
                        stringsAsFactors = FALSE),
     bait  = data.frame(ipId = ips, baitId = baits, CorT = cort,
