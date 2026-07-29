@@ -14,8 +14,7 @@
 #' validate_saint_input(si)
 #' @export
 validate_saint_input <- function(si) {
-  if (!is.list(si) || is.null(names(si)) ||
-      !identical(sort(names(si)), c("bait", "inter", "prey"))) {
+  if (!is.list(si) || is.null(names(si)) || !identical(sort(names(si)), c("bait", "inter", "prey"))) {
     stop("si must be a named list with elements 'inter', 'prey', 'bait'.")
   }
   for (nm in c("inter", "prey", "bait")) {

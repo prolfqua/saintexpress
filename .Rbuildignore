@@ -7,3 +7,10 @@
 ^_pkgdown\.yml$
 ^doc$
 ^Meta$
+^\.githooks$
+^\.lintr$
+^air\.toml$
+^make$
+^.*\.BiocCheck$
+^AGENTS\.md$
+^CLAUDE\.md$

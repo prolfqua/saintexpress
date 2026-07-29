@@ -335,9 +335,7 @@
 .saint_spc_optimize_gamma0 <- function(model, optimizer) {
   old_beta1 <- model$beta1
   oldf <- .saint_spc_llik_mrf_gamma0(model, old_beta1)
-  if (
-    identical(optimizer, "nloptr") && requireNamespace("nloptr", quietly = TRUE)
-  ) {
+  if (identical(optimizer, "nloptr") && requireNamespace("nloptr", quietly = TRUE)) {
     res <- nloptr::nloptr(
       x0 = old_beta1,
       eval_f = function(x) -.saint_spc_llik_mrf_gamma0(model, x[[1]]),
@@ -371,9 +369,7 @@
   old_beta1 <- model$beta1
   old_gamma <- model$gamma
   oldf <- .saint_spc_llik_mrf(model, old_beta1, old_gamma, gsum_mat)
-  if (
-    identical(optimizer, "nloptr") && requireNamespace("nloptr", quietly = TRUE)
-  ) {
+  if (identical(optimizer, "nloptr") && requireNamespace("nloptr", quietly = TRUE)) {
     res <- nloptr::nloptr(
       x0 = c(old_beta1, old_gamma),
       eval_f = function(x) {
@@ -538,9 +534,7 @@
         tmp_mean,
         model$lambda2_true[[prey_row]]
       )
-    score[[rep]] <- if (
-      y[[rep]] <= 1 || y[[rep]] <= model$ctrl_mean[[prey_row]]
-    ) {
+    score[[rep]] <- if (y[[rep]] <= 1 || y[[rep]] <= model$ctrl_mean[[prey_row]]) {
       0
     } else {
       .saint_int_logit_probability(true_log, false_log)

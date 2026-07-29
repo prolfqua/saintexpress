@@ -19,16 +19,13 @@
       }
       if (count > 0) {
         inter_rows[[length(inter_rows) + 1]] <-
-          data.frame(ipId = ips[i], baitId = baits[i], preyId = p,
-                     quant = count, stringsAsFactors = FALSE)
+          data.frame(ipId = ips[i], baitId = baits[i], preyId = p, quant = count, stringsAsFactors = FALSE)
       }
     }
   }
   inter <- do.call(rbind, inter_rows)
-  prey <- data.frame(preyId = preys, preyLength = 500L, preyGeneId = preys,
-                     stringsAsFactors = FALSE)
-  bait <- data.frame(ipId = ips, baitId = baits, CorT = cort,
-                     stringsAsFactors = FALSE)
+  prey <- data.frame(preyId = preys, preyLength = 500L, preyGeneId = preys, stringsAsFactors = FALSE)
+  bait <- data.frame(ipId = ips, baitId = baits, CorT = cort, stringsAsFactors = FALSE)
   list(inter = inter, prey = prey, bait = bait)
 }
 
