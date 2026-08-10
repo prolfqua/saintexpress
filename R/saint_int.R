@@ -258,7 +258,10 @@
 
   dimensions <- .saint_int_model_dimensions(parsed)
   replicates <- .saint_int_replicate_layout(parsed, dimensions$nbait)
-  controls <- .saint_int_estimate_control_model(parsed$ctrl_mat)
+  controls <- .saint_int_estimate_control_model(
+    parsed$ctrl_mat,
+    parsed$prey$preyId
+  )
   tests <- .saint_int_estimate_test_model(
     parsed$test_mat,
     replicates$bait_no_to_ip_idxes,
@@ -295,9 +298,9 @@
   )
 }
 
-.saint_int_estimate_control_model <- function(ctrl_mat) {
+.saint_int_estimate_control_model <- function(ctrl_mat, prey_ids) {
   t_value <- .saint_int_missing_threshold(ctrl_mat)
-  ctrl_lse <- .saint_int_control_lse(ctrl_mat)
+  ctrl_lse <- .saint_int_control_lse(ctrl_mat, prey_ids)
   ctrl_priors <- .saint_int_control_priors(
     ctrl_mat,
     t_value,
@@ -390,8 +393,10 @@
   threshold
 }
 
-.saint_int_control_lse <- function(ctrl_mat) {
-  complete_ctrl <- ctrl_mat[stats::complete.cases(ctrl_mat), , drop = FALSE]
+.saint_int_control_lse <- function(ctrl_mat, prey_ids) {
+  complete <- stats::complete.cases(ctrl_mat)
+  complete_ctrl <- ctrl_mat[complete, , drop = FALSE]
+  complete_prey_ids <- prey_ids[complete]
   log_sd_ctrls <- apply(complete_ctrl, 1, function(ctrl) {
     log(sqrt(.saint_int_var_mle(ctrl)))
   })
@@ -401,10 +406,42 @@
     return(list(lse = c(0, 0), sd_NA = 1))
   }
 
-  sorted_log_sd_ctrls <- sort(log_sd_ctrls)
+  finite_sd <- is.finite(log_sd_ctrls)
+  zero_variance_prey_ids <- complete_prey_ids[!finite_sd]
+  if (!any(finite_sd)) {
+    stop(
+      "SAINTexpress-int cannot estimate control variability: all ",
+      length(log_sd_ctrls),
+      " complete control profiles have zero variance (",
+      paste(zero_variance_prey_ids, collapse = ", "),
+      ").",
+      call. = FALSE
+    )
+  }
+
+  sorted_log_sd_ctrls <- sort(log_sd_ctrls[finite_sd])
   median_sd <- exp(sorted_log_sd_ctrls[[
     length(sorted_log_sd_ctrls) %/% 2 + 1L
   ]])
+
+  if (length(zero_variance_prey_ids)) {
+    profile_word <- if (length(zero_variance_prey_ids) == 1L) {
+      "profile has"
+    } else {
+      "profiles have"
+    }
+    warning(
+      "SAINTexpress-int: ",
+      length(zero_variance_prey_ids),
+      " complete control ",
+      profile_word,
+      " zero variance (",
+      paste(zero_variance_prey_ids, collapse = ", "),
+      "). Using the median control SD, matching native SAINTexpress.",
+      call. = FALSE
+    )
+    return(list(lse = c(log(median_sd), 0), sd_NA = median_sd))
+  }
 
   if (length(log_sd_ctrls) < 2 || stats::var(mean_ctrls) == 0) {
     return(list(
