@@ -6,7 +6,13 @@ Authors@R: c(
         role = "cre",
         comment = c(ORCID = "0000-0002-6468-120X")),
     person("Alexey", "Nesvizhskii", , "nesvi@med.umich.edu",
-        role = "aut"))
+        role = "aut"),
+    person("Hyungwon", "Choi", , "hyung_won_choi@nuhs.edu.sg",
+        role = c("aut", "cph"),
+        comment = "Author and copyright holder of the original SAINTexpress C++ implementation"),
+    person("Damian", "Fermin", ,
+        role = c("aut", "cph"),
+        comment = "Author and copyright holder of the original SAINTexpress C++ implementation"))
 Description: A pure R implementation of the SAINTexpress scoring engines
     for affinity purification-mass spectrometry data, covering both the
     spectral-count and intensity models, together with validation of SAINT
@@ -14,13 +20,14 @@ Description: A pure R implementation of the SAINTexpress scoring engines
     format, so protein-protein interactions can be scored without external
     binaries. The underlying method is described in Teo et al. (2014)
     <doi:10.1016/j.jprot.2013.10.023>.
-License: MIT + file LICENSE
+License: GPL (>= 3)
 URL: https://prolfqua.github.io/saintexpress/, https://github.com/prolfqua/saintexpress
 BugReports: https://github.com/prolfqua/saintexpress/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Suggests: 
+    BiocStyle,
     knitr,
     nloptr,
     pkgdown,
@@ -28,7 +35,6 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Imports:
-    BiocStyle,
     stats
 VignetteBuilder: knitr
 biocViews: MassSpectrometry, Proteomics, Software
