@@ -7,6 +7,14 @@
 
 - **Alexey Nesvizhskii**. Author.
 
+- **Hyungwon Choi**. Author, copyright holder.  
+  Author and copyright holder of the original SAINTexpress C++
+  implementation
+
+- **Damian Fermin**. Author, copyright holder.  
+  Author and copyright holder of the original SAINTexpress C++
+  implementation
+
 ## Citation
 
 Source:

@@ -92,6 +92,34 @@ fixtures and native-vs-R comparison tests live in
 [`prolfquasaint`](https://github.com/prolfqua/prolfquasaint), where both
 `saintexpress` and `saintexpressbin` are integrated.
 
+## Origin, Attribution and AI Assistance
+
+`saintexpress` is not an independent invention of the SAINT model. It is
+a port of the SAINTexpress reference implementation to pure R.
+
+- The original SAINTexpress C++ sources (`SAINT-MRF-spc` and
+  `SAINT-MRF-int`) are Copyright (C) 2011 Hyungwon Choi and Damian
+  Fermin, and are distributed under the GNU General Public License,
+  version 3 or later. The upstream distribution used as the reference is
+  `SAINTexpress_v3.6.3__2018-03-09.tar.gz` from
+  <https://sourceforge.net/projects/saint-apms/files/>.
+- The scoring logic in this package was derived from those C++ sources
+  so that the numerical output matches the native `list.txt` results. It
+  is a derivative work of the upstream implementation, not a clean-room
+  reimplementation from the publications alone.
+- The translation from C++ to R was carried out with the help of an AI
+  coding assistant. Every ported routine was subsequently reviewed by
+  the maintainer and checked against the output of the native
+  SAINTexpress binaries; the comparison tests live in `tests/`.
+
+Because this package is a derivative work of GPL-3 licensed sources,
+`saintexpress` is released under the same terms: GNU General Public
+License, version 3 or later. It cannot be redistributed under a more
+permissive licence.
+
+Credit for the SAINT model and its reference implementation belongs to
+the original authors listed in the References section below.
+
 ## References
 
 SAINTexpress and the SAINT model are described in the original

@@ -104,6 +104,18 @@
 <p>This package uses small synthetic inputs for unit tests. TIP49 reference fixtures and native-vs-R comparison tests live in <a href="https://github.com/prolfqua/prolfquasaint" class="external-link"><code>prolfquasaint</code></a>, where both <code>saintexpress</code> and <code>saintexpressbin</code> are integrated.</p>
 </div>
 <div class="section level2">
+<h2 id="origin-attribution-and-ai-assistance">Origin, Attribution and AI Assistance<a class="anchor" aria-label="anchor" href="#origin-attribution-and-ai-assistance"></a>
+</h2>
+<p><code>saintexpress</code> is not an independent invention of the SAINT model. It is a port of the SAINTexpress reference implementation to pure R.</p>
+<ul>
+<li>The original SAINTexpress C++ sources (<code>SAINT-MRF-spc</code> and <code>SAINT-MRF-int</code>) are Copyright (C) 2011 Hyungwon Choi and Damian Fermin, and are distributed under the GNU General Public License, version 3 or later. The upstream distribution used as the reference is <code>SAINTexpress_v3.6.3__2018-03-09.tar.gz</code> from <a href="https://sourceforge.net/projects/saint-apms/files/" class="external-link uri">https://sourceforge.net/projects/saint-apms/files/</a>.</li>
+<li>The scoring logic in this package was derived from those C++ sources so that the numerical output matches the native <code>list.txt</code> results. It is a derivative work of the upstream implementation, not a clean-room reimplementation from the publications alone.</li>
+<li>The translation from C++ to R was carried out with the help of an AI coding assistant. Every ported routine was subsequently reviewed by the maintainer and checked against the output of the native SAINTexpress binaries; the comparison tests live in <code>tests/</code>.</li>
+</ul>
+<p>Because this package is a derivative work of GPL-3 licensed sources, <code>saintexpress</code> is released under the same terms: GNU General Public License, version 3 or later. It cannot be redistributed under a more permissive licence.</p>
+<p>Credit for the SAINT model and its reference implementation belongs to the original authors listed in the References section below.</p>
+</div>
+<div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <p>SAINTexpress and the SAINT model are described in the original publications:</p>
@@ -128,8 +140,7 @@
 <div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
+<li>GPL (&gt;= 3)</li>
 </ul>
 </div>
 
@@ -146,6 +157,9 @@
 <ul class="list-unstyled">
 <li>Witold Wolski <br><small class="roles"> Maintainer </small> <a href="https://orcid.org/0000-0002-6468-120X" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 <li>Alexey Nesvizhskii <br><small class="roles"> Author </small>   </li>
+<li>Hyungwon Choi <br><small class="roles"> Author, copyright holder </small>   </li>
+<li>Damian Fermin <br><small class="roles"> Author, copyright holder </small>   </li>
+<li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
 
@@ -156,7 +170,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Witold Wolski, Alexey Nesvizhskii.</p>
+  <p>Developed by Witold Wolski, Alexey Nesvizhskii, Hyungwon Choi, Damian Fermin.</p>
 </div>
 
 <div class="pkgdown-footer-right">
