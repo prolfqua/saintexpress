@@ -2,25 +2,15 @@
 
 ## Authors
 
-- **Witold Wolski**. Author. [](https://orcid.org/0000-0002-6468-120X)
+- **Witold Wolski**. Maintainer.
+  [](https://orcid.org/0000-0002-6468-120X)
 
-- **Christian Panse**. Maintainer.
-  [](https://orcid.org/0000-0003-1975-3064)
+- **Alexey Nesvizhskii**. Author.
 
 ## Citation
 
 Source:
 [`inst/CITATION`](https://github.com/prolfqua/saintexpress/blob/main/inst/CITATION)
-
-Wolski W, Panse C (2026). *saintexpress: Pure R Implementation of
-SAINTexpress*. R package version 0.0.1.
-
-    @Manual{,
-      title = {saintexpress: Pure R Implementation of SAINTexpress},
-      author = {Witold Wolski and Christian Panse},
-      year = {2026},
-      note = {R package version 0.0.1},
-    }
 
 Teo G, Liu G, Zhang J, Nesvizhskii AI, Gingras AC, Choi H (2014).
 "SAINTexpress: Improvements and additional features in Significance
