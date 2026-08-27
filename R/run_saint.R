@@ -32,12 +32,12 @@
 #' run_saint(si, mode = "spc")
 #' @export
 run_saint <- function(si, mode = c("spc", "int"), optimizer = c("base", "nloptr"), ...) {
-  mode <- match.arg(mode)
-  optimizer <- match.arg(optimizer)
-  validate_saint_input(si)
-  if (mode == "spc") {
-    saint_spc_r(si, optimizer = optimizer, ...)
-  } else {
-    saint_int_r(si, optimizer = optimizer, ...)
-  }
+    mode <- match.arg(mode)
+    optimizer <- match.arg(optimizer)
+    validate_saint_input(si)
+    if (mode == "spc") {
+        saint_spc_r(si, optimizer = optimizer, ...)
+    } else {
+        saint_int_r(si, optimizer = optimizer, ...)
+    }
 }

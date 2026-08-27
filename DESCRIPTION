@@ -1,6 +1,6 @@
 Package: saintexpress
 Title: Pure R Implementation of SAINTexpress
-Version: 0.0.1
+Version: 0.99.0
 Authors@R: c(
     person("Witold", "Wolski", , "wew@fgcz.ethz.ch",
         role = "cre",
@@ -28,6 +28,7 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Imports:
+    BiocStyle,
     stats
 VignetteBuilder: knitr
 biocViews: MassSpectrometry, Proteomics, Software
