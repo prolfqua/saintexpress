@@ -3,11 +3,10 @@ Title: Pure R Implementation of SAINTexpress
 Version: 0.0.1
 Authors@R: c(
     person("Witold", "Wolski", , "wew@fgcz.ethz.ch",
-        role = "aut",
-        comment = c(ORCID = "0000-0002-6468-120X")),
-    person("Christian", "Panse", , "cp@fgcz.ethz.ch",
         role = "cre",
-        comment = c(ORCID = "0000-0003-1975-3064")))
+        comment = c(ORCID = "0000-0002-6468-120X")),
+    person("Alexey", "Nesvizhskii", , "nesvi@med.umich.edu",
+        role = "aut"))
 Description: A pure R implementation of the SAINTexpress scoring engines
     for affinity purification-mass spectrometry data, covering both the
     spectral-count and intensity models, together with validation of SAINT

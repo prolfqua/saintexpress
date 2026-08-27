@@ -6,18 +6,7 @@ if (!exists("meta") || is.null(meta$Version)) {
   meta <- utils::packageDescription("saintexpress")
 }
 
-c(
-  bibentry(
-    bibtype = "Manual",
-    title = paste(meta$Package, meta$Title, sep = ": "),
-    author = c(
-      person("Witold", "Wolski", role = "aut"),
-      person("Christian", "Panse", role = "cre")
-    ),
-    year = "2026",
-    note = paste("R package version", meta$Version)
-  ),
-  bibentry(
+c(bibentry(
     bibtype = "Article",
     title = paste(
       "SAINTexpress: Improvements and additional features in",
