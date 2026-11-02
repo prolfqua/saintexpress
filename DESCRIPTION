@@ -25,7 +25,6 @@ URL: https://prolfqua.github.io/saintexpress/, https://github.com/prolfqua/saint
 BugReports: https://github.com/prolfqua/saintexpress/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Suggests: 
     BiocStyle,
     knitr,
@@ -38,3 +37,4 @@ Imports:
     stats
 VignetteBuilder: knitr
 biocViews: MassSpectrometry, Proteomics, Software
+Config/roxygen2/version: 8.1.1
