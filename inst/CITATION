@@ -1,11 +1,5 @@
 citHeader("To cite saintexpress in publications, please use:")
 
-# `meta` is supplied by utils::readCitationFile() from the package DESCRIPTION.
-# Fall back to packageDescription() only when the file is sourced standalone.
-if (!exists("meta") || is.null(meta$Version)) {
-  meta <- utils::packageDescription("saintexpress")
-}
-
 c(bibentry(
     bibtype = "Article",
     title = paste(
