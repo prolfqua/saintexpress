@@ -137,46 +137,73 @@ top_per_bait(scores_int)[, c("Bait", "Prey", "AvgP", "BFDR")]
 plot_volcano(scores_int, "SAINTexpress intensity volcano plot")
 ```
 
-## SummarizedExperiment and QFeatures
+## Data in SummarizedExperiment, QFeatures, ExpressionSet or anndataR
 
-Quantitative proteomics data in Bioconductor are often held in a
-`SummarizedExperiment`, or in a `QFeatures` object that collects several of
-them. `se_to_saint_input()` builds the SAINT input from a
-`SummarizedExperiment` with preys in rows and IPs in columns: the `colData`
-gives the bait and the test/control flag of each IP, the `rowData` the gene
-name of each prey.
+Quantitative proteomics data are often held in a container:
+`SummarizedExperiment` or `QFeatures`, `ExpressionSet`, or `anndataR` when the
+data are exchanged with Python. saintexpress depends on none of them. Each
+container holds the same three pieces, and these are all `run_saint()` needs:
 
-Here we put the simulated spectral counts into a `QFeatures` object:
+| Piece | SummarizedExperiment, QFeatures assay | ExpressionSet | anndataR |
+|---|---|---|---|
+| Quantity matrix, preys x IPs | `assay(se)` | `exprs(eset)` | `t(adata$X)` |
+| Sample table, one row per IP | `colData(se)` | `pData(eset)` | `adata$obs` |
+| Feature table, one row per prey | `rowData(se)` | `fData(eset)` | `adata$var` |
 
-```{r qfeatures, message = FALSE}
-counts <- tapply(si_spc$inter$quant, si_spc$inter[c("preyId", "ipId")], sum)
-prey <- si_spc$prey[match(rownames(counts), si_spc$prey$preyId), ]
-bait <- si_spc$bait[match(colnames(counts), si_spc$bait$ipId), ]
-se <- SummarizedExperiment::SummarizedExperiment(
-  assays = list(counts = counts),
-  rowData = data.frame(preyGeneId = prey$preyGeneId),
-  colData = data.frame(baitId = bait$baitId, CorT = bait$CorT)
+We start from these three pieces for a small dummy experiment: two baits with
+two IPs each and two control IPs. `P1` and `P2` bind `BaitA`, `P3` and `P4`
+bind `BaitB`, `P5` and `P6` are background.
+
+```{r container-pieces}
+row_data <- data.frame(
+  protein = c("P1", "P2", "P3", "P4", "P5", "P6"),
+  gene = c("GENE1", "GENE2", "GENE3", "GENE4", "GENE5", "GENE6")
 )
-qf <- QFeatures::QFeatures(list(proteins = se))
-qf
+col_data <- data.frame(
+  sample = c("IP1", "IP2", "IP3", "IP4", "IP5", "IP6"),
+  bait = c("BaitA", "BaitA", "BaitB", "BaitB", "Ctrl", "Ctrl"),
+  CorT = c("T", "T", "T", "T", "C", "C")
+)
+quant <- matrix(
+  c(
+    25, 22, 0, 1, 1, 0,
+    18, 20, 1, 0, 0, 1,
+    0, 1, 30, 27, 1, 0,
+    1, 0, 15, 19, 0, 1,
+    5, 6, 4, 5, 6, 5,
+    2, NA, 3, 2, 2, 3
+  ),
+  nrow = 6,
+  byrow = TRUE,
+  dimnames = list(row_data$protein, col_data$sample)
+)
+quant
 ```
 
-The `proteins` assay converts to SAINT input and scores as before:
+The matrix goes to long format, one row per observed prey in an IP; `NA` and
+`0` mean not observed. Together with the two tables this gives the SAINT input.
 
-```{r qfeatures-score}
-si_qf <- saintexpress::se_to_saint_input(qf[["proteins"]], assay = "counts")
-scores_qf <- saintexpress::run_saint(si_qf, mode = "spc")
-top_per_bait(scores_qf)[, c("Bait", "Prey", "AvgP", "BFDR")]
+```{r container-to-saint}
+inter <- as.data.frame(as.table(quant), stringsAsFactors = FALSE)
+names(inter) <- c("preyId", "ipId", "quant")
+inter <- inter[!is.na(inter$quant) & inter$quant > 0, ]
+inter$baitId <- col_data$bait[match(inter$ipId, col_data$sample)]
+
+si_container <- list(
+  inter = inter[, c("ipId", "baitId", "preyId", "quant")],
+  prey = data.frame(preyId = row_data$protein, preyGeneId = row_data$gene),
+  bait = data.frame(ipId = col_data$sample, baitId = col_data$bait, CorT = col_data$CorT)
+)
+scores_container <- saintexpress::run_saint(si_container, mode = "spc")
+top_per_bait(scores_container)[, c("Bait", "Prey", "AvgP", "BFDR")]
 ```
 
-`saint_scores_to_se()` returns the scores as a `SummarizedExperiment` with
-preys in rows and baits in columns, one assay per score. Unscored prey-bait
-pairs are `NA`.
+The scores go back into a prey x bait matrix, which can be stored in any of
+the containers, for example as an assay of a `SummarizedExperiment` with baits
+as columns.
 
-```{r scores-se}
-scores_se <- saintexpress::saint_scores_to_se(scores_qf)
-scores_se
-SummarizedExperiment::assay(scores_se, "BFDR")
+```{r saint-to-matrix}
+tapply(scores_container$BFDR, scores_container[c("Prey", "Bait")], c)
 ```
 
 ## See also

@@ -1,6 +1,6 @@
-# saintexpress 0.99.1
+# saintexpress 0.99.2
 
-* `se_to_saint_input()` builds the SAINT input from a `SummarizedExperiment` with preys in rows and IPs in columns, for example an assay of a `QFeatures` object. `saint_scores_to_se()` returns the `run_saint()` scores as a `SummarizedExperiment` with preys in rows, baits in columns and one assay per score. The vignette shows both with `QFeatures`.
+* The vignette shows how to score data held in `SummarizedExperiment`, `QFeatures`, `ExpressionSet` or `anndataR`: the quantity matrix, sample table and feature table become the SAINT input in a few lines of base R, and the scores go back into a prey x bait matrix. saintexpress depends on none of these packages.
 
 # saintexpress 0.99.0
 
