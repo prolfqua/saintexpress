@@ -287,7 +287,7 @@ sessionInfo()
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] digest_0.6.39       desc_1.4.3          R6_2.6.1           
-#>  [4] fastmap_1.2.0       xfun_0.62           saintexpress_0.99.2
+#>  [4] fastmap_1.2.0       xfun_0.62           saintexpress_0.99.3
 #>  [7] cachem_1.1.0        knitr_1.52          htmltools_0.5.9    
 #> [10] rmarkdown_2.32      lifecycle_1.0.5     cli_3.6.6          
 #> [13] sass_0.4.10         pkgdown_2.2.1       textshaping_1.0.5  
