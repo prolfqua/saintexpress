@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">saintexpress</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.99.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.99.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -217,6 +217,67 @@ continuous abundances.</p>
 <p><img src="saintexpress_files/figure-html/volcano-int-1.png" class="r-plt" alt="" width="576"></p>
 </div>
 <div class="section level2">
+<h2 id="summarizedexperiment-and-qfeatures">SummarizedExperiment and QFeatures<a class="anchor" aria-label="anchor" href="#summarizedexperiment-and-qfeatures"></a>
+</h2>
+<p>Quantitative proteomics data in Bioconductor are often held in a
+<code>SummarizedExperiment</code>, or in a <code>QFeatures</code> object
+that collects several of them. <code><a href="../reference/se_to_saint_input.html">se_to_saint_input()</a></code> builds
+the SAINT input from a <code>SummarizedExperiment</code> with preys in
+rows and IPs in columns: the <code>colData</code> gives the bait and the
+test/control flag of each IP, the <code>rowData</code> the gene name of
+each prey.</p>
+<p>Here we put the simulated spectral counts into a
+<code>QFeatures</code> object:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">counts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tapply.html" class="external-link">tapply</a></span><span class="op">(</span><span class="va">si_spc</span><span class="op">$</span><span class="va">inter</span><span class="op">$</span><span class="va">quant</span>, <span class="va">si_spc</span><span class="op">$</span><span class="va">inter</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"preyId"</span>, <span class="st">"ipId"</span><span class="op">)</span><span class="op">]</span>, <span class="va">sum</span><span class="op">)</span></span>
+<span><span class="va">prey</span> <span class="op">&lt;-</span> <span class="va">si_spc</span><span class="op">$</span><span class="va">prey</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">counts</span><span class="op">)</span>, <span class="va">si_spc</span><span class="op">$</span><span class="va">prey</span><span class="op">$</span><span class="va">preyId</span><span class="op">)</span>, <span class="op">]</span></span>
+<span><span class="va">bait</span> <span class="op">&lt;-</span> <span class="va">si_spc</span><span class="op">$</span><span class="va">bait</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">counts</span><span class="op">)</span>, <span class="va">si_spc</span><span class="op">$</span><span class="va">bait</span><span class="op">$</span><span class="va">ipId</span><span class="op">)</span>, <span class="op">]</span></span>
+<span><span class="va">se</span> <span class="op">&lt;-</span> <span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">SummarizedExperiment</a></span><span class="op">(</span></span>
+<span>  assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="va">counts</span><span class="op">)</span>,</span>
+<span>  rowData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>preyGeneId <span class="op">=</span> <span class="va">prey</span><span class="op">$</span><span class="va">preyGeneId</span><span class="op">)</span>,</span>
+<span>  colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>baitId <span class="op">=</span> <span class="va">bait</span><span class="op">$</span><span class="va">baitId</span>, CorT <span class="op">=</span> <span class="va">bait</span><span class="op">$</span><span class="va">CorT</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">qf</span> <span class="op">&lt;-</span> <span class="fu">QFeatures</span><span class="fu">::</span><span class="fu"><a href="https://rformassspectrometry.github.io/QFeatures/reference/QFeatures-class.html" class="external-link">QFeatures</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>proteins <span class="op">=</span> <span class="va">se</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">qf</span></span>
+<span><span class="co">#&gt; An instance of class QFeatures (type: bulk) with 1 set:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  [1] proteins: SummarizedExperiment with 6 rows and 6 columns</span></span></code></pre></div>
+<p>The <code>proteins</code> assay converts to SAINT input and scores as
+before:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">si_qf</span> <span class="op">&lt;-</span> <span class="fu">saintexpress</span><span class="fu">::</span><span class="fu"><a href="../reference/se_to_saint_input.html">se_to_saint_input</a></span><span class="op">(</span><span class="va">qf</span><span class="op">[[</span><span class="st">"proteins"</span><span class="op">]</span><span class="op">]</span>, assay <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span></span>
+<span><span class="va">scores_qf</span> <span class="op">&lt;-</span> <span class="fu">saintexpress</span><span class="fu">::</span><span class="fu"><a href="../reference/run_saint.html">run_saint</a></span><span class="op">(</span><span class="va">si_qf</span>, mode <span class="op">=</span> <span class="st">"spc"</span><span class="op">)</span></span>
+<span><span class="fu">top_per_bait</span><span class="op">(</span><span class="va">scores_qf</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Bait"</span>, <span class="st">"Prey"</span>, <span class="st">"AvgP"</span>, <span class="st">"BFDR"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt;          Bait  Prey AvgP BFDR</span></span>
+<span><span class="co">#&gt; BaitA.1 BaitA Prey1    1    0</span></span>
+<span><span class="co">#&gt; BaitA.2 BaitA Prey2    1    0</span></span>
+<span><span class="co">#&gt; BaitB.5 BaitB Prey3    1    0</span></span>
+<span><span class="co">#&gt; BaitB.6 BaitB Prey4    1    0</span></span></code></pre></div>
+<p><code><a href="../reference/saint_scores_to_se.html">saint_scores_to_se()</a></code> returns the scores as a
+<code>SummarizedExperiment</code> with preys in rows and baits in
+columns, one assay per score. Unscored prey-bait pairs are
+<code>NA</code>.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">scores_se</span> <span class="op">&lt;-</span> <span class="fu">saintexpress</span><span class="fu">::</span><span class="fu"><a href="../reference/saint_scores_to_se.html">saint_scores_to_se</a></span><span class="op">(</span><span class="va">scores_qf</span><span class="op">)</span></span>
+<span><span class="va">scores_se</span></span>
+<span><span class="co">#&gt; class: SummarizedExperiment </span></span>
+<span><span class="co">#&gt; dim: 6 2 </span></span>
+<span><span class="co">#&gt; metadata(0):</span></span>
+<span><span class="co">#&gt; assays(11): SpecSum AvgSpec ... FoldChange BFDR</span></span>
+<span><span class="co">#&gt; rownames(6): Prey1 Prey2 ... Prey5 Prey6</span></span>
+<span><span class="co">#&gt; rowData names(1): PreyGene</span></span>
+<span><span class="co">#&gt; colnames(2): BaitA BaitB</span></span>
+<span><span class="co">#&gt; colData names(1): Bait</span></span>
+<span><span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">scores_se</span>, <span class="st">"BFDR"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       BaitA BaitB</span></span>
+<span><span class="co">#&gt; Prey1  0.00  0.16</span></span>
+<span><span class="co">#&gt; Prey2  0.00    NA</span></span>
+<span><span class="co">#&gt; Prey3    NA  0.00</span></span>
+<span><span class="co">#&gt; Prey4  0.16  0.00</span></span>
+<span><span class="co">#&gt; Prey5  0.16    NA</span></span>
+<span><span class="co">#&gt; Prey6    NA  0.00</span></span></code></pre></div>
+</div>
+<div class="section level2">
 <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a>
 </h2>
 <p>For running the original native SAINTexpress C++ binary on the same
@@ -225,7 +286,7 @@ input, see the companion package <a href="https://github.com/prolfqua/saintexpre
 <div class="section level2">
 <h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.6.2 (2026-10-29)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
@@ -248,15 +309,42 @@ input, see the companion package <a href="https://github.com/prolfqua/saintexpre
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;  [1] digest_0.6.39       desc_1.4.3          R6_2.6.1           </span></span>
-<span><span class="co">#&gt;  [4] fastmap_1.2.0       xfun_0.62           saintexpress_0.99.0</span></span>
-<span><span class="co">#&gt;  [7] cachem_1.1.0        knitr_1.52          htmltools_0.5.9    </span></span>
-<span><span class="co">#&gt; [10] rmarkdown_2.32      lifecycle_1.0.5     cli_3.6.6          </span></span>
-<span><span class="co">#&gt; [13] sass_0.4.10         pkgdown_2.2.1       textshaping_1.0.5  </span></span>
-<span><span class="co">#&gt; [16] jquerylib_0.1.4     systemfonts_1.3.2   compiler_4.6.2     </span></span>
-<span><span class="co">#&gt; [19] tools_4.6.2         ragg_1.5.2          bslib_0.12.0       </span></span>
-<span><span class="co">#&gt; [22] evaluate_1.0.5      yaml_2.3.12         otel_0.2.0         </span></span>
-<span><span class="co">#&gt; [25] jsonlite_2.0.0      rlang_1.3.0         fs_2.1.0</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] tidyr_1.3.2                 sass_0.4.10                </span></span>
+<span><span class="co">#&gt;  [3] MsCoreUtils_1.24.0          generics_0.1.4             </span></span>
+<span><span class="co">#&gt;  [5] SparseArray_1.12.3          stringi_1.8.9              </span></span>
+<span><span class="co">#&gt;  [7] lattice_0.23-1              magrittr_2.0.5             </span></span>
+<span><span class="co">#&gt;  [9] digest_0.6.39               saintexpress_0.99.1        </span></span>
+<span><span class="co">#&gt; [11] evaluate_1.0.5              grid_4.6.2                 </span></span>
+<span><span class="co">#&gt; [13] fastmap_1.2.0               plyr_1.8.9                 </span></span>
+<span><span class="co">#&gt; [15] jsonlite_2.0.0              Matrix_1.7-6               </span></span>
+<span><span class="co">#&gt; [17] ProtGenerics_1.44.0         purrr_1.2.2                </span></span>
+<span><span class="co">#&gt; [19] lazyeval_0.2.3              textshaping_1.0.5          </span></span>
+<span><span class="co">#&gt; [21] jquerylib_0.1.4             abind_1.4-8                </span></span>
+<span><span class="co">#&gt; [23] cli_3.6.6                   rlang_1.3.0                </span></span>
+<span><span class="co">#&gt; [25] XVector_0.52.0              Biobase_2.72.0             </span></span>
+<span><span class="co">#&gt; [27] cachem_1.1.0                DelayedArray_0.38.2        </span></span>
+<span><span class="co">#&gt; [29] yaml_2.3.12                 otel_0.2.0                 </span></span>
+<span><span class="co">#&gt; [31] QFeatures_1.22.0            S4Arrays_1.12.1            </span></span>
+<span><span class="co">#&gt; [33] tools_4.6.2                 reshape2_1.4.5             </span></span>
+<span><span class="co">#&gt; [35] dplyr_1.2.1                 SummarizedExperiment_1.42.0</span></span>
+<span><span class="co">#&gt; [37] BiocGenerics_0.58.1         MultiAssayExperiment_1.38.0</span></span>
+<span><span class="co">#&gt; [39] vctrs_0.7.3                 R6_2.6.1                   </span></span>
+<span><span class="co">#&gt; [41] matrixStats_1.5.0           stats4_4.6.2               </span></span>
+<span><span class="co">#&gt; [43] lifecycle_1.0.5             stringr_1.6.0              </span></span>
+<span><span class="co">#&gt; [45] Seqinfo_1.2.0               S4Vectors_0.50.3           </span></span>
+<span><span class="co">#&gt; [47] fs_2.1.0                    htmlwidgets_1.6.4          </span></span>
+<span><span class="co">#&gt; [49] IRanges_2.46.0              clue_0.3-68                </span></span>
+<span><span class="co">#&gt; [51] MASS_7.3-66                 ragg_1.5.2                 </span></span>
+<span><span class="co">#&gt; [53] cluster_2.1.8.3             pkgconfig_2.0.3            </span></span>
+<span><span class="co">#&gt; [55] desc_1.4.3                  pillar_1.11.1              </span></span>
+<span><span class="co">#&gt; [57] pkgdown_2.2.1               bslib_0.12.0               </span></span>
+<span><span class="co">#&gt; [59] Rcpp_1.1.2                  glue_1.8.1                 </span></span>
+<span><span class="co">#&gt; [61] systemfonts_1.3.2           tidyselect_1.2.1           </span></span>
+<span><span class="co">#&gt; [63] tibble_3.3.1                xfun_0.62                  </span></span>
+<span><span class="co">#&gt; [65] GenomicRanges_1.64.0        MatrixGenerics_1.24.0      </span></span>
+<span><span class="co">#&gt; [67] knitr_1.52                  AnnotationFilter_1.36.0    </span></span>
+<span><span class="co">#&gt; [69] igraph_2.3.4                htmltools_0.5.9            </span></span>
+<span><span class="co">#&gt; [71] rmarkdown_2.32              compiler_4.6.2</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

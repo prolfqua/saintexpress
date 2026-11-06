@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">saintexpress</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.99.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.99.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,6 +33,11 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.99.1" id="saintexpress-0991">saintexpress 0.99.1<a class="anchor" aria-label="anchor" href="#saintexpress-0991"></a></h2>
+<ul><li>
+<code><a href="../reference/se_to_saint_input.html">se_to_saint_input()</a></code> builds the SAINT input from a <code>SummarizedExperiment</code> with preys in rows and IPs in columns, for example an assay of a <code>QFeatures</code> object. <code><a href="../reference/saint_scores_to_se.html">saint_scores_to_se()</a></code> returns the <code><a href="../reference/run_saint.html">run_saint()</a></code> scores as a <code>SummarizedExperiment</code> with preys in rows, baits in columns and one assay per score. The vignette shows both with <code>QFeatures</code>.</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.99.0" id="saintexpress-0990">saintexpress 0.99.0<a class="anchor" aria-label="anchor" href="#saintexpress-0990"></a></h2>
 <ul><li><p>Licence changed from MIT to GPL (&gt;= 3). The package is a derivative work of the GPL-3-or-later SAINTexpress C++ sources, so a permissive licence was not applicable. Hyungwon Choi and Damian Fermin are now credited as authors and copyright holders.</p></li>
 <li><p>Attribution added: the README now documents that this package is an AI-assisted port of the GPL-3 licensed SAINTexpress C++ sources by Hyungwon Choi and Damian Fermin.</p></li>
@@ -41,7 +46,8 @@
 <li><p>Intensity scoring now handles constant complete control profiles with the median-control-SD fallback used by native SAINTexpress, while reporting the affected prey identifiers.</p></li>
 <li><p>Initial pure-R implementation of SAINTexpress spectral-count and intensity scoring with SAINT input validation.</p></li>
 </ul></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
