@@ -11,8 +11,8 @@
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Pure R Implementation of SAINTexpress">
-<meta name="description" content="A pure R implementation of the SAINTexpress scoring engines for affinity purification-mass spectrometry data, covering both the spectral-count and intensity models, together with validation of SAINT input tables. The output mirrors the native SAINTexpress list.txt format, so protein-protein interactions can be scored without external binaries. Input can be built from a SummarizedExperiment, for example an assay of a QFeatures object, and the scores can be returned as a SummarizedExperiment with preys in rows and baits in columns. The underlying method is described in Teo et al. (2014) &lt;doi:10.1016/j.jprot.2013.10.023&gt;.">
-<meta property="og:description" content="A pure R implementation of the SAINTexpress scoring engines for affinity purification-mass spectrometry data, covering both the spectral-count and intensity models, together with validation of SAINT input tables. The output mirrors the native SAINTexpress list.txt format, so protein-protein interactions can be scored without external binaries. Input can be built from a SummarizedExperiment, for example an assay of a QFeatures object, and the scores can be returned as a SummarizedExperiment with preys in rows and baits in columns. The underlying method is described in Teo et al. (2014) &lt;doi:10.1016/j.jprot.2013.10.023&gt;.">
+<meta name="description" content="A pure R implementation of the SAINTexpress scoring engines for affinity purification-mass spectrometry data, covering both the spectral-count and intensity models, together with validation of SAINT input tables. The output mirrors the native SAINTexpress list.txt format, so protein-protein interactions can be scored without external binaries. The underlying method is described in Teo et al. (2014) &lt;doi:10.1016/j.jprot.2013.10.023&gt;.">
+<meta property="og:description" content="A pure R implementation of the SAINTexpress scoring engines for affinity purification-mass spectrometry data, covering both the spectral-count and intensity models, together with validation of SAINT input tables. The output mirrors the native SAINTexpress list.txt format, so protein-protein interactions can be scored without external binaries. The underlying method is described in Teo et al. (2014) &lt;doi:10.1016/j.jprot.2013.10.023&gt;.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">saintexpress</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.99.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.99.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,26 +79,22 @@
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">saintexpress</span><span class="fu">::</span><span class="fu"><a href="reference/run_saint.html">run_saint</a></span><span class="op">(</span><span class="va">si</span>, mode <span class="op">=</span> <span class="st">"int"</span><span class="op">)</span></span></code></pre></div>
 <p><code>result</code> is a data frame in the SAINTexpress <code>list.txt</code> output shape.</p>
-<p>Data held in a <code>SummarizedExperiment</code> (preys in rows, IPs in columns), for example an assay of a <code>QFeatures</code> object, convert to SAINT input, and the scores convert back to a <code>SummarizedExperiment</code> with preys in rows and baits in columns:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">si</span> <span class="op">&lt;-</span> <span class="fu">saintexpress</span><span class="fu">::</span><span class="fu"><a href="reference/se_to_saint_input.html">se_to_saint_input</a></span><span class="op">(</span><span class="va">qf</span><span class="op">[[</span><span class="st">"proteins"</span><span class="op">]</span><span class="op">]</span>, baitId <span class="op">=</span> <span class="st">"bait"</span>, CorT <span class="op">=</span> <span class="st">"CorT"</span>, preyGeneId <span class="op">=</span> <span class="st">"gene"</span><span class="op">)</span></span>
-<span><span class="va">scores_se</span> <span class="op">&lt;-</span> <span class="fu">saintexpress</span><span class="fu">::</span><span class="fu"><a href="reference/saint_scores_to_se.html">saint_scores_to_se</a></span><span class="op">(</span><span class="fu">saintexpress</span><span class="fu">::</span><span class="fu"><a href="reference/run_saint.html">run_saint</a></span><span class="op">(</span><span class="va">si</span>, mode <span class="op">=</span> <span class="st">"spc"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="optimizers">Optimizers<a class="anchor" aria-label="anchor" href="#optimizers"></a>
 </h2>
 <p>The default optimizer is base R:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">saintexpress</span><span class="fu">::</span><span class="fu"><a href="reference/run_saint.html">run_saint</a></span><span class="op">(</span><span class="va">si</span>, mode <span class="op">=</span> <span class="st">"spc"</span>, optimizer <span class="op">=</span> <span class="st">"base"</span><span class="op">)</span></span></code></pre></div>
 <p>The optional <code>nloptr</code> optimizer can be used when the <code>nloptr</code> package is installed:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">saintexpress</span><span class="fu">::</span><span class="fu"><a href="reference/run_saint.html">run_saint</a></span><span class="op">(</span><span class="va">si</span>, mode <span class="op">=</span> <span class="st">"spc"</span>, optimizer <span class="op">=</span> <span class="st">"nloptr"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="vignette">Vignette<a class="anchor" aria-label="anchor" href="#vignette"></a>
 </h2>
 <p>A worked example with simulated AP-MS data is included as a package vignette:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"saintexpress"</span>, package <span class="op">=</span> <span class="st">"saintexpress"</span><span class="op">)</span></span></code></pre></div>
 <p>It walks through <code><a href="reference/validate_saint_input.html">validate_saint_input()</a></code> and <code><a href="reference/run_saint.html">run_saint()</a></code> for both <code>spc</code> and <code>int</code> modes on a 6-prey/4-bait synthetic experiment with known true interactors, and mirrors the structure of the companion <a href="https://github.com/prolfqua/saintexpressbin" class="external-link"><code>saintexpressbin</code></a> vignette so the two engines can be compared side by side.</p>
 </div>

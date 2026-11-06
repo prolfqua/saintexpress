@@ -1,17 +1,5 @@
 # Changelog
 
-## saintexpress 0.99.1
-
-- [`se_to_saint_input()`](https://prolfqua.github.io/saintexpress/reference/se_to_saint_input.md)
-  builds the SAINT input from a `SummarizedExperiment` with preys in
-  rows and IPs in columns, for example an assay of a `QFeatures` object.
-  [`saint_scores_to_se()`](https://prolfqua.github.io/saintexpress/reference/saint_scores_to_se.md)
-  returns the
-  [`run_saint()`](https://prolfqua.github.io/saintexpress/reference/run_saint.md)
-  scores as a `SummarizedExperiment` with preys in rows, baits in
-  columns and one assay per score. The vignette shows both with
-  `QFeatures`.
-
 ## saintexpress 0.99.0
 
 - Licence changed from MIT to GPL (\>= 3). The package is a derivative

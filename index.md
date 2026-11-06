@@ -52,16 +52,6 @@ result <- saintexpress::run_saint(si, mode = "int")
 
 `result` is a data frame in the SAINTexpress `list.txt` output shape.
 
-Data held in a `SummarizedExperiment` (preys in rows, IPs in columns),
-for example an assay of a `QFeatures` object, convert to SAINT input,
-and the scores convert back to a `SummarizedExperiment` with preys in
-rows and baits in columns:
-
-``` r
-si <- saintexpress::se_to_saint_input(qf[["proteins"]], baitId = "bait", CorT = "CorT", preyGeneId = "gene")
-scores_se <- saintexpress::saint_scores_to_se(saintexpress::run_saint(si, mode = "spc"))
-```
-
 ## Optimizers
 
 The default optimizer is base R:

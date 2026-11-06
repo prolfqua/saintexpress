@@ -163,73 +163,6 @@ plot_volcano(scores_int, "SAINTexpress intensity volcano plot")
 
 ![](saintexpress_files/figure-html/volcano-int-1.png)
 
-## SummarizedExperiment and QFeatures
-
-Quantitative proteomics data in Bioconductor are often held in a
-`SummarizedExperiment`, or in a `QFeatures` object that collects several
-of them.
-[`se_to_saint_input()`](https://prolfqua.github.io/saintexpress/reference/se_to_saint_input.md)
-builds the SAINT input from a `SummarizedExperiment` with preys in rows
-and IPs in columns: the `colData` gives the bait and the test/control
-flag of each IP, the `rowData` the gene name of each prey.
-
-Here we put the simulated spectral counts into a `QFeatures` object:
-
-``` r
-counts <- tapply(si_spc$inter$quant, si_spc$inter[c("preyId", "ipId")], sum)
-prey <- si_spc$prey[match(rownames(counts), si_spc$prey$preyId), ]
-bait <- si_spc$bait[match(colnames(counts), si_spc$bait$ipId), ]
-se <- SummarizedExperiment::SummarizedExperiment(
-  assays = list(counts = counts),
-  rowData = data.frame(preyGeneId = prey$preyGeneId),
-  colData = data.frame(baitId = bait$baitId, CorT = bait$CorT)
-)
-qf <- QFeatures::QFeatures(list(proteins = se))
-qf
-#> An instance of class QFeatures (type: bulk) with 1 set:
-#> 
-#>  [1] proteins: SummarizedExperiment with 6 rows and 6 columns
-```
-
-The `proteins` assay converts to SAINT input and scores as before:
-
-``` r
-si_qf <- saintexpress::se_to_saint_input(qf[["proteins"]], assay = "counts")
-scores_qf <- saintexpress::run_saint(si_qf, mode = "spc")
-top_per_bait(scores_qf)[, c("Bait", "Prey", "AvgP", "BFDR")]
-#>          Bait  Prey AvgP BFDR
-#> BaitA.1 BaitA Prey1    1    0
-#> BaitA.2 BaitA Prey2    1    0
-#> BaitB.5 BaitB Prey3    1    0
-#> BaitB.6 BaitB Prey4    1    0
-```
-
-[`saint_scores_to_se()`](https://prolfqua.github.io/saintexpress/reference/saint_scores_to_se.md)
-returns the scores as a `SummarizedExperiment` with preys in rows and
-baits in columns, one assay per score. Unscored prey-bait pairs are
-`NA`.
-
-``` r
-scores_se <- saintexpress::saint_scores_to_se(scores_qf)
-scores_se
-#> class: SummarizedExperiment 
-#> dim: 6 2 
-#> metadata(0):
-#> assays(11): SpecSum AvgSpec ... FoldChange BFDR
-#> rownames(6): Prey1 Prey2 ... Prey5 Prey6
-#> rowData names(1): PreyGene
-#> colnames(2): BaitA BaitB
-#> colData names(1): Bait
-SummarizedExperiment::assay(scores_se, "BFDR")
-#>       BaitA BaitB
-#> Prey1  0.00  0.16
-#> Prey2  0.00    NA
-#> Prey3    NA  0.00
-#> Prey4  0.16  0.00
-#> Prey5  0.16    NA
-#> Prey6    NA  0.00
-```
-
 ## See also
 
 For running the original native SAINTexpress C++ binary on the same
@@ -261,40 +194,14 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] tidyr_1.3.2                 sass_0.4.10                
-#>  [3] MsCoreUtils_1.24.0          generics_0.1.4             
-#>  [5] SparseArray_1.12.3          stringi_1.8.9              
-#>  [7] lattice_0.23-1              magrittr_2.0.5             
-#>  [9] digest_0.6.39               saintexpress_0.99.1        
-#> [11] evaluate_1.0.5              grid_4.6.2                 
-#> [13] fastmap_1.2.0               plyr_1.8.9                 
-#> [15] jsonlite_2.0.0              Matrix_1.7-6               
-#> [17] ProtGenerics_1.44.0         purrr_1.2.2                
-#> [19] lazyeval_0.2.3              textshaping_1.0.5          
-#> [21] jquerylib_0.1.4             abind_1.4-8                
-#> [23] cli_3.6.6                   rlang_1.3.0                
-#> [25] XVector_0.52.0              Biobase_2.72.0             
-#> [27] cachem_1.1.0                DelayedArray_0.38.2        
-#> [29] yaml_2.3.12                 otel_0.2.0                 
-#> [31] QFeatures_1.22.0            S4Arrays_1.12.1            
-#> [33] tools_4.6.2                 reshape2_1.4.5             
-#> [35] dplyr_1.2.1                 SummarizedExperiment_1.42.0
-#> [37] BiocGenerics_0.58.1         MultiAssayExperiment_1.38.0
-#> [39] vctrs_0.7.3                 R6_2.6.1                   
-#> [41] matrixStats_1.5.0           stats4_4.6.2               
-#> [43] lifecycle_1.0.5             stringr_1.6.0              
-#> [45] Seqinfo_1.2.0               S4Vectors_0.50.3           
-#> [47] fs_2.1.0                    htmlwidgets_1.6.4          
-#> [49] IRanges_2.46.0              clue_0.3-68                
-#> [51] MASS_7.3-66                 ragg_1.5.2                 
-#> [53] cluster_2.1.8.3             pkgconfig_2.0.3            
-#> [55] desc_1.4.3                  pillar_1.11.1              
-#> [57] pkgdown_2.2.1               bslib_0.12.0               
-#> [59] Rcpp_1.1.2                  glue_1.8.1                 
-#> [61] systemfonts_1.3.2           tidyselect_1.2.1           
-#> [63] tibble_3.3.1                xfun_0.62                  
-#> [65] GenomicRanges_1.64.0        MatrixGenerics_1.24.0      
-#> [67] knitr_1.52                  AnnotationFilter_1.36.0    
-#> [69] igraph_2.3.4                htmltools_0.5.9            
-#> [71] rmarkdown_2.32              compiler_4.6.2
+#>  [1] digest_0.6.39       desc_1.4.3          R6_2.6.1           
+#>  [4] fastmap_1.2.0       xfun_0.62           saintexpress_0.99.0
+#>  [7] cachem_1.1.0        knitr_1.52          htmltools_0.5.9    
+#> [10] rmarkdown_2.32      lifecycle_1.0.5     cli_3.6.6          
+#> [13] sass_0.4.10         pkgdown_2.2.1       textshaping_1.0.5  
+#> [16] jquerylib_0.1.4     systemfonts_1.3.2   compiler_4.6.2     
+#> [19] tools_4.6.2         ragg_1.5.2          bslib_0.12.0       
+#> [22] evaluate_1.0.5      yaml_2.3.12         otel_0.2.0         
+#> [25] jsonlite_2.0.0      rlang_1.3.0         fs_2.1.0           
+#> [28] htmlwidgets_1.6.4
 ```
