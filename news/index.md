@@ -1,5 +1,13 @@
 # Changelog
 
+## saintexpress 0.99.2
+
+- The vignette shows how to score data held in `SummarizedExperiment`,
+  `QFeatures`, `ExpressionSet` or `anndataR`: the quantity matrix,
+  sample table and feature table become the SAINT input in a few lines
+  of base R, and the scores go back into a prey x bait matrix.
+  saintexpress depends on none of these packages.
+
 ## saintexpress 0.99.0
 
 - Licence changed from MIT to GPL (\>= 3). The package is a derivative

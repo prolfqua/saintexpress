@@ -163,6 +163,98 @@ plot_volcano(scores_int, "SAINTexpress intensity volcano plot")
 
 ![](saintexpress_files/figure-html/volcano-int-1.png)
 
+## Data in SummarizedExperiment, QFeatures, ExpressionSet or anndataR
+
+Quantitative proteomics data are often held in a container:
+`SummarizedExperiment` or `QFeatures`, `ExpressionSet`, or `anndataR`
+when the data are exchanged with Python. saintexpress depends on none of
+them. Each container holds the same three pieces, and these are all
+[`run_saint()`](https://prolfqua.github.io/saintexpress/reference/run_saint.md)
+needs:
+
+| Piece                           | SummarizedExperiment, QFeatures assay | ExpressionSet | anndataR     |
+|---------------------------------|---------------------------------------|---------------|--------------|
+| Quantity matrix, preys x IPs    | `assay(se)`                           | `exprs(eset)` | `t(adata$X)` |
+| Sample table, one row per IP    | `colData(se)`                         | `pData(eset)` | `adata$obs`  |
+| Feature table, one row per prey | `rowData(se)`                         | `fData(eset)` | `adata$var`  |
+
+We start from these three pieces for a small dummy experiment: two baits
+with two IPs each and two control IPs. `P1` and `P2` bind `BaitA`, `P3`
+and `P4` bind `BaitB`, `P5` and `P6` are background.
+
+``` r
+row_data <- data.frame(
+  protein = c("P1", "P2", "P3", "P4", "P5", "P6"),
+  gene = c("GENE1", "GENE2", "GENE3", "GENE4", "GENE5", "GENE6")
+)
+col_data <- data.frame(
+  sample = c("IP1", "IP2", "IP3", "IP4", "IP5", "IP6"),
+  bait = c("BaitA", "BaitA", "BaitB", "BaitB", "Ctrl", "Ctrl"),
+  CorT = c("T", "T", "T", "T", "C", "C")
+)
+quant <- matrix(
+  c(
+    25, 22, 0, 1, 1, 0,
+    18, 20, 1, 0, 0, 1,
+    0, 1, 30, 27, 1, 0,
+    1, 0, 15, 19, 0, 1,
+    5, 6, 4, 5, 6, 5,
+    2, NA, 3, 2, 2, 3
+  ),
+  nrow = 6,
+  byrow = TRUE,
+  dimnames = list(row_data$protein, col_data$sample)
+)
+quant
+#>    IP1 IP2 IP3 IP4 IP5 IP6
+#> P1  25  22   0   1   1   0
+#> P2  18  20   1   0   0   1
+#> P3   0   1  30  27   1   0
+#> P4   1   0  15  19   0   1
+#> P5   5   6   4   5   6   5
+#> P6   2  NA   3   2   2   3
+```
+
+The matrix goes to long format, one row per observed prey in an IP; `NA`
+and `0` mean not observed. Together with the two tables this gives the
+SAINT input.
+
+``` r
+inter <- as.data.frame(as.table(quant), stringsAsFactors = FALSE)
+names(inter) <- c("preyId", "ipId", "quant")
+inter <- inter[!is.na(inter$quant) & inter$quant > 0, ]
+inter$baitId <- col_data$bait[match(inter$ipId, col_data$sample)]
+
+si_container <- list(
+  inter = inter[, c("ipId", "baitId", "preyId", "quant")],
+  prey = data.frame(preyId = row_data$protein, preyGeneId = row_data$gene),
+  bait = data.frame(ipId = col_data$sample, baitId = col_data$bait, CorT = col_data$CorT)
+)
+scores_container <- saintexpress::run_saint(si_container, mode = "spc")
+top_per_bait(scores_container)[, c("Bait", "Prey", "AvgP", "BFDR")]
+#>          Bait Prey AvgP BFDR
+#> BaitA.1 BaitA   P1    1    0
+#> BaitA.2 BaitA   P2    1    0
+#> BaitB.8 BaitB   P3    1    0
+#> BaitB.9 BaitB   P4    1    0
+```
+
+The scores go back into a prey x bait matrix, which can be stored in any
+of the containers, for example as an assay of a `SummarizedExperiment`
+with baits as columns.
+
+``` r
+tapply(scores_container$BFDR, scores_container[c("Prey", "Bait")], c)
+#>     Bait
+#> Prey BaitA BaitB
+#>   P1  0.00  0.33
+#>   P2  0.00  0.33
+#>   P3  0.33  0.00
+#>   P4  0.33  0.00
+#>   P5  0.20  0.33
+#>   P6  0.33  0.00
+```
+
 ## See also
 
 For running the original native SAINTexpress C++ binary on the same
@@ -195,7 +287,7 @@ sessionInfo()
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] digest_0.6.39       desc_1.4.3          R6_2.6.1           
-#>  [4] fastmap_1.2.0       xfun_0.62           saintexpress_0.99.0
+#>  [4] fastmap_1.2.0       xfun_0.62           saintexpress_0.99.2
 #>  [7] cachem_1.1.0        knitr_1.52          htmltools_0.5.9    
 #> [10] rmarkdown_2.32      lifecycle_1.0.5     cli_3.6.6          
 #> [13] sass_0.4.10         pkgdown_2.2.1       textshaping_1.0.5  

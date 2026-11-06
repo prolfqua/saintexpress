@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">saintexpress</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.99.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.99.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -217,6 +217,121 @@ continuous abundances.</p>
 <p><img src="saintexpress_files/figure-html/volcano-int-1.png" class="r-plt" alt="" width="576"></p>
 </div>
 <div class="section level2">
+<h2 id="data-in-summarizedexperiment-qfeatures-expressionset-or-anndatar">Data in SummarizedExperiment, QFeatures, ExpressionSet or
+anndataR<a class="anchor" aria-label="anchor" href="#data-in-summarizedexperiment-qfeatures-expressionset-or-anndatar"></a>
+</h2>
+<p>Quantitative proteomics data are often held in a container:
+<code>SummarizedExperiment</code> or <code>QFeatures</code>,
+<code>ExpressionSet</code>, or <code>anndataR</code> when the data are
+exchanged with Python. saintexpress depends on none of them. Each
+container holds the same three pieces, and these are all
+<code><a href="../reference/run_saint.html">run_saint()</a></code> needs:</p>
+<table class="table">
+<colgroup>
+<col width="25%">
+<col width="25%">
+<col width="25%">
+<col width="25%">
+</colgroup>
+<thead><tr class="header">
+<th>Piece</th>
+<th>SummarizedExperiment, QFeatures assay</th>
+<th>ExpressionSet</th>
+<th>anndataR</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Quantity matrix, preys x IPs</td>
+<td><code>assay(se)</code></td>
+<td><code>exprs(eset)</code></td>
+<td><code>t(adata$X)</code></td>
+</tr>
+<tr class="even">
+<td>Sample table, one row per IP</td>
+<td><code>colData(se)</code></td>
+<td><code>pData(eset)</code></td>
+<td><code>adata$obs</code></td>
+</tr>
+<tr class="odd">
+<td>Feature table, one row per prey</td>
+<td><code>rowData(se)</code></td>
+<td><code>fData(eset)</code></td>
+<td><code>adata$var</code></td>
+</tr>
+</tbody>
+</table>
+<p>We start from these three pieces for a small dummy experiment: two
+baits with two IPs each and two control IPs. <code>P1</code> and
+<code>P2</code> bind <code>BaitA</code>, <code>P3</code> and
+<code>P4</code> bind <code>BaitB</code>, <code>P5</code> and
+<code>P6</code> are background.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">row_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  protein <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"P1"</span>, <span class="st">"P2"</span>, <span class="st">"P3"</span>, <span class="st">"P4"</span>, <span class="st">"P5"</span>, <span class="st">"P6"</span><span class="op">)</span>,</span>
+<span>  gene <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GENE1"</span>, <span class="st">"GENE2"</span>, <span class="st">"GENE3"</span>, <span class="st">"GENE4"</span>, <span class="st">"GENE5"</span>, <span class="st">"GENE6"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">col_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"IP1"</span>, <span class="st">"IP2"</span>, <span class="st">"IP3"</span>, <span class="st">"IP4"</span>, <span class="st">"IP5"</span>, <span class="st">"IP6"</span><span class="op">)</span>,</span>
+<span>  bait <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BaitA"</span>, <span class="st">"BaitA"</span>, <span class="st">"BaitB"</span>, <span class="st">"BaitB"</span>, <span class="st">"Ctrl"</span>, <span class="st">"Ctrl"</span><span class="op">)</span>,</span>
+<span>  CorT <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"T"</span>, <span class="st">"T"</span>, <span class="st">"T"</span>, <span class="st">"T"</span>, <span class="st">"C"</span>, <span class="st">"C"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">quant</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="fl">25</span>, <span class="fl">22</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>,</span>
+<span>    <span class="fl">18</span>, <span class="fl">20</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>,</span>
+<span>    <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">30</span>, <span class="fl">27</span>, <span class="fl">1</span>, <span class="fl">0</span>,</span>
+<span>    <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">15</span>, <span class="fl">19</span>, <span class="fl">0</span>, <span class="fl">1</span>,</span>
+<span>    <span class="fl">5</span>, <span class="fl">6</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">6</span>, <span class="fl">5</span>,</span>
+<span>    <span class="fl">2</span>, <span class="cn">NA</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  nrow <span class="op">=</span> <span class="fl">6</span>,</span>
+<span>  byrow <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">row_data</span><span class="op">$</span><span class="va">protein</span>, <span class="va">col_data</span><span class="op">$</span><span class="va">sample</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">quant</span></span>
+<span><span class="co">#&gt;    IP1 IP2 IP3 IP4 IP5 IP6</span></span>
+<span><span class="co">#&gt; P1  25  22   0   1   1   0</span></span>
+<span><span class="co">#&gt; P2  18  20   1   0   0   1</span></span>
+<span><span class="co">#&gt; P3   0   1  30  27   1   0</span></span>
+<span><span class="co">#&gt; P4   1   0  15  19   0   1</span></span>
+<span><span class="co">#&gt; P5   5   6   4   5   6   5</span></span>
+<span><span class="co">#&gt; P6   2  NA   3   2   2   3</span></span></code></pre></div>
+<p>The matrix goes to long format, one row per observed prey in an IP;
+<code>NA</code> and <code>0</code> mean not observed. Together with the
+two tables this gives the SAINT input.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">inter</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">as.table</a></span><span class="op">(</span><span class="va">quant</span><span class="op">)</span>, stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">inter</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"preyId"</span>, <span class="st">"ipId"</span>, <span class="st">"quant"</span><span class="op">)</span></span>
+<span><span class="va">inter</span> <span class="op">&lt;-</span> <span class="va">inter</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">inter</span><span class="op">$</span><span class="va">quant</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">inter</span><span class="op">$</span><span class="va">quant</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="op">]</span></span>
+<span><span class="va">inter</span><span class="op">$</span><span class="va">baitId</span> <span class="op">&lt;-</span> <span class="va">col_data</span><span class="op">$</span><span class="va">bait</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">inter</span><span class="op">$</span><span class="va">ipId</span>, <span class="va">col_data</span><span class="op">$</span><span class="va">sample</span><span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">si_container</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  inter <span class="op">=</span> <span class="va">inter</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ipId"</span>, <span class="st">"baitId"</span>, <span class="st">"preyId"</span>, <span class="st">"quant"</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>  prey <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>preyId <span class="op">=</span> <span class="va">row_data</span><span class="op">$</span><span class="va">protein</span>, preyGeneId <span class="op">=</span> <span class="va">row_data</span><span class="op">$</span><span class="va">gene</span><span class="op">)</span>,</span>
+<span>  bait <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>ipId <span class="op">=</span> <span class="va">col_data</span><span class="op">$</span><span class="va">sample</span>, baitId <span class="op">=</span> <span class="va">col_data</span><span class="op">$</span><span class="va">bait</span>, CorT <span class="op">=</span> <span class="va">col_data</span><span class="op">$</span><span class="va">CorT</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">scores_container</span> <span class="op">&lt;-</span> <span class="fu">saintexpress</span><span class="fu">::</span><span class="fu"><a href="../reference/run_saint.html">run_saint</a></span><span class="op">(</span><span class="va">si_container</span>, mode <span class="op">=</span> <span class="st">"spc"</span><span class="op">)</span></span>
+<span><span class="fu">top_per_bait</span><span class="op">(</span><span class="va">scores_container</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Bait"</span>, <span class="st">"Prey"</span>, <span class="st">"AvgP"</span>, <span class="st">"BFDR"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt;          Bait Prey AvgP BFDR</span></span>
+<span><span class="co">#&gt; BaitA.1 BaitA   P1    1    0</span></span>
+<span><span class="co">#&gt; BaitA.2 BaitA   P2    1    0</span></span>
+<span><span class="co">#&gt; BaitB.8 BaitB   P3    1    0</span></span>
+<span><span class="co">#&gt; BaitB.9 BaitB   P4    1    0</span></span></code></pre></div>
+<p>The scores go back into a prey x bait matrix, which can be stored in
+any of the containers, for example as an assay of a
+<code>SummarizedExperiment</code> with baits as columns.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/tapply.html" class="external-link">tapply</a></span><span class="op">(</span><span class="va">scores_container</span><span class="op">$</span><span class="va">BFDR</span>, <span class="va">scores_container</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Prey"</span>, <span class="st">"Bait"</span><span class="op">)</span><span class="op">]</span>, <span class="va">c</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     Bait</span></span>
+<span><span class="co">#&gt; Prey BaitA BaitB</span></span>
+<span><span class="co">#&gt;   P1  0.00  0.33</span></span>
+<span><span class="co">#&gt;   P2  0.00  0.33</span></span>
+<span><span class="co">#&gt;   P3  0.33  0.00</span></span>
+<span><span class="co">#&gt;   P4  0.33  0.00</span></span>
+<span><span class="co">#&gt;   P5  0.20  0.33</span></span>
+<span><span class="co">#&gt;   P6  0.33  0.00</span></span></code></pre></div>
+</div>
+<div class="section level2">
 <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a>
 </h2>
 <p>For running the original native SAINTexpress C++ binary on the same
@@ -225,7 +340,7 @@ input, see the companion package <a href="https://github.com/prolfqua/saintexpre
 <div class="section level2">
 <h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.6.2 (2026-10-29)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
@@ -249,7 +364,7 @@ input, see the companion package <a href="https://github.com/prolfqua/saintexpre
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] digest_0.6.39       desc_1.4.3          R6_2.6.1           </span></span>
-<span><span class="co">#&gt;  [4] fastmap_1.2.0       xfun_0.62           saintexpress_0.99.0</span></span>
+<span><span class="co">#&gt;  [4] fastmap_1.2.0       xfun_0.62           saintexpress_0.99.2</span></span>
 <span><span class="co">#&gt;  [7] cachem_1.1.0        knitr_1.52          htmltools_0.5.9    </span></span>
 <span><span class="co">#&gt; [10] rmarkdown_2.32      lifecycle_1.0.5     cli_3.6.6          </span></span>
 <span><span class="co">#&gt; [13] sass_0.4.10         pkgdown_2.2.1       textshaping_1.0.5  </span></span>
