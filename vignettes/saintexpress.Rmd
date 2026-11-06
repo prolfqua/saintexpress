@@ -137,6 +137,48 @@ top_per_bait(scores_int)[, c("Bait", "Prey", "AvgP", "BFDR")]
 plot_volcano(scores_int, "SAINTexpress intensity volcano plot")
 ```
 
+## SummarizedExperiment and QFeatures
+
+Quantitative proteomics data in Bioconductor are often held in a
+`SummarizedExperiment`, or in a `QFeatures` object that collects several of
+them. `se_to_saint_input()` builds the SAINT input from a
+`SummarizedExperiment` with preys in rows and IPs in columns: the `colData`
+gives the bait and the test/control flag of each IP, the `rowData` the gene
+name of each prey.
+
+Here we put the simulated spectral counts into a `QFeatures` object:
+
+```{r qfeatures, message = FALSE}
+counts <- tapply(si_spc$inter$quant, si_spc$inter[c("preyId", "ipId")], sum)
+prey <- si_spc$prey[match(rownames(counts), si_spc$prey$preyId), ]
+bait <- si_spc$bait[match(colnames(counts), si_spc$bait$ipId), ]
+se <- SummarizedExperiment::SummarizedExperiment(
+  assays = list(counts = counts),
+  rowData = data.frame(preyGeneId = prey$preyGeneId),
+  colData = data.frame(baitId = bait$baitId, CorT = bait$CorT)
+)
+qf <- QFeatures::QFeatures(list(proteins = se))
+qf
+```
+
+The `proteins` assay converts to SAINT input and scores as before:
+
+```{r qfeatures-score}
+si_qf <- saintexpress::se_to_saint_input(qf[["proteins"]], assay = "counts")
+scores_qf <- saintexpress::run_saint(si_qf, mode = "spc")
+top_per_bait(scores_qf)[, c("Bait", "Prey", "AvgP", "BFDR")]
+```
+
+`saint_scores_to_se()` returns the scores as a `SummarizedExperiment` with
+preys in rows and baits in columns, one assay per score. Unscored prey-bait
+pairs are `NA`.
+
+```{r scores-se}
+scores_se <- saintexpress::saint_scores_to_se(scores_qf)
+scores_se
+SummarizedExperiment::assay(scores_se, "BFDR")
+```
+
 ## See also
 
 For running the original native SAINTexpress C++ binary on the same input,
