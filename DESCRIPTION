@@ -1,6 +1,6 @@
 Package: saintexpress
 Title: Pure R Implementation of SAINTexpress
-Version: 0.99.3
+Version: 0.99.4
 Authors@R: c(
     person("Witold", "Wolski", , "witold.wolski@fgcz.uzh.ch",
         role = "cre",
