@@ -245,79 +245,97 @@ boosted <- scores_topo[scores_topo$TopoAvgP > scores_topo$AvgP, ]
 head(boosted[, c("Bait", "Prey", "AvgP", "TopoAvgP", "SaintScore", "boosted_by")])
 ```
 
-## Data in SummarizedExperiment, QFeatures, ExpressionSet or anndataR
+## Data in ExpressionSet, SummarizedExperiment, QFeatures or anndataR
 
-Quantitative proteomics data are often held in a container: a
-`SummarizedExperiment`, an assay of a `QFeatures` object, an `ExpressionSet`,
+Quantitative proteomics data are often held in a container: an
+`ExpressionSet`, a `SummarizedExperiment`, an assay of a `QFeatures` object,
 or an `anndataR` object when data are exchanged with Python. saintexpress
 depends on none of them. Each holds the three pieces `run_saint()` needs:
 
-| Piece | SummarizedExperiment, QFeatures assay | ExpressionSet | anndataR |
+| Piece | ExpressionSet | SummarizedExperiment, QFeatures assay | anndataR |
 |---|---|---|---|
-| Quantity matrix, preys x IPs | `assay(se)` | `exprs(eset)` | `t(adata$X)` |
-| Sample table, one row per IP | `colData(se)` | `pData(eset)` | `adata$obs` |
-| Feature table, one row per prey | `rowData(se)` | `fData(eset)` | `adata$var` |
+| Quantity matrix, preys x IPs | `exprs(eset)` | `assay(se)` | `t(adata$X)` |
+| Sample table, one row per IP | `pData(eset)` | `colData(se)` | `adata$obs` |
+| Feature table, one row per prey | `fData(eset)` | `rowData(se)` | `adata$var` |
 
-The function below scores a `SummarizedExperiment` and returns the scores as a
-`SummarizedExperiment` with preys in rows and baits in columns. It needs the
-SummarizedExperiment package; the same steps work with the accessors of the
-other containers.
+The function below scores an `ExpressionSet` and returns the scores as an
+`ExpressionSet` with preys in rows and baits in columns: `exprs()` holds
+`AvgP`, and `MaxP`, `SaintScore`, `FoldChange` and `BFDR` are further assay
+data elements. It needs the Biobase package.
 
-```{r se-wrapper, eval = requireNamespace("SummarizedExperiment", quietly = TRUE)}
-run_saint_se <- function(se, assay = 1, bait = "bait", cort = "CorT",
-                         mode = "spc", ...) {
-  quant <- SummarizedExperiment::assay(se, assay)
-  samples <- SummarizedExperiment::colData(se)
-  inter <- as.data.frame(as.table(quant), stringsAsFactors = FALSE)
-  names(inter) <- c("preyId", "ipId", "quant")
-  inter <- inter[!is.na(inter$quant) & inter$quant > 0, ]
-  inter$baitId <- samples[[bait]][match(inter$ipId, colnames(se))]
+```{r eset-wrapper, eval = requireNamespace("Biobase", quietly = TRUE)}
+run_saint_eset <- function(eset, bait = "bait", cort = "CorT",
+                           mode = "spc", ...) {
+  quant <- Biobase::exprs(eset)
+  samples <- Biobase::pData(eset)
+  detected <- which(!is.na(quant) & quant > 0, arr.ind = TRUE)
   si <- list(
-    inter = inter[, c("ipId", "baitId", "preyId", "quant")],
-    prey = data.frame(preyId = rownames(se)),
-    bait = data.frame(ipId = colnames(se), baitId = samples[[bait]],
+    inter = data.frame(
+      ipId = colnames(quant)[detected[, 2]],
+      baitId = samples[[bait]][detected[, 2]],
+      preyId = rownames(quant)[detected[, 1]],
+      quant = quant[detected]
+    ),
+    prey = data.frame(preyId = rownames(quant)),
+    bait = data.frame(ipId = colnames(quant), baitId = samples[[bait]],
                       CorT = samples[[cort]])
   )
   scores <- run_saint(si, mode = mode, ...)
 
   baits <- sort(unique(scores$Bait))
-  cell <- cbind(match(scores$Prey, rownames(se)), match(scores$Bait, baits))
+  cell <- cbind(match(scores$Prey, rownames(quant)), match(scores$Bait, baits))
   to_matrix <- function(column) {
-    m <- matrix(NA_real_, nrow(se), length(baits),
-                dimnames = list(rownames(se), baits))
+    m <- matrix(NA_real_, nrow(quant), length(baits),
+                dimnames = list(rownames(quant), baits))
     m[cell] <- scores[[column]]
     m
   }
-  columns <- c("AvgP", "MaxP", "SaintScore", "FoldChange", "BFDR")
-  SummarizedExperiment::SummarizedExperiment(
-    assays = setNames(lapply(columns, to_matrix), columns),
-    rowData = SummarizedExperiment::rowData(se),
-    colData = data.frame(bait = baits, row.names = baits)
+  Biobase::ExpressionSet(
+    assayData = Biobase::assayDataNew(
+      exprs = to_matrix("AvgP"),
+      MaxP = to_matrix("MaxP"),
+      SaintScore = to_matrix("SaintScore"),
+      FoldChange = to_matrix("FoldChange"),
+      BFDR = to_matrix("BFDR")
+    ),
+    phenoData = Biobase::AnnotatedDataFrame(
+      data.frame(bait = baits, row.names = baits)
+    ),
+    featureData = Biobase::featureData(eset)
   )
 }
 ```
 
-We put the TIP49 counts into a `SummarizedExperiment` and score it:
+We put the TIP49 counts into an `ExpressionSet` and score it:
 
-```{r se-run, eval = requireNamespace("SummarizedExperiment", quietly = TRUE)}
+```{r eset-run, eval = requireNamespace("Biobase", quietly = TRUE)}
 counts <- tapply(
   si$inter[[4]],
   list(factor(si$inter[[3]], levels = si$prey[[1]]),
        factor(si$inter[[1]], levels = si$bait[[1]])),
   sum
 )
-se <- SummarizedExperiment::SummarizedExperiment(
-  assays = list(counts = counts),
-  rowData = data.frame(length = si$prey[[2]], row.names = si$prey[[1]]),
-  colData = data.frame(bait = si$bait[[2]], CorT = si$bait[[3]],
-                       row.names = si$bait[[1]])
+eset <- Biobase::ExpressionSet(
+  counts,
+  phenoData = Biobase::AnnotatedDataFrame(
+    data.frame(bait = si$bait[[2]], CorT = si$bait[[3]],
+               row.names = si$bait[[1]])
+  )
 )
-se
+eset
 
-scores_se <- run_saint_se(se)
-scores_se
-SummarizedExperiment::assay(scores_se, "BFDR")[c("ACTR5", "ACTR8", "INO80B"),
-                                              c("RUVBL1", "RUVBL2", "INO80B")]
+scores_eset <- run_saint_eset(eset)
+scores_eset
+Biobase::assayDataElement(scores_eset, "BFDR")[c("ACTR5", "ACTR8", "INO80B"),
+                                               c("RUVBL1", "RUVBL2", "INO80B")]
+```
+
+A `SummarizedExperiment`, or an assay of a `QFeatures` object, converts to an
+`ExpressionSet` with the coercion that the SummarizedExperiment package
+provides:
+
+```{r se-to-eset, eval = FALSE}
+scores_se <- run_saint_eset(as(se, "ExpressionSet"))
 ```
 
 ## See also

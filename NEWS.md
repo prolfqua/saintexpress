@@ -12,7 +12,7 @@
 
 * New package help page `?saintexpress`; `?run_saint` documents the input and output columns.
 
-* The vignette introduces AP-MS interaction scoring, runs on the TIP49 data, compares the scores with native SAINTexpress, explains the tuning arguments and shows a wrapper that scores a `SummarizedExperiment`.
+* The vignette introduces AP-MS interaction scoring, runs on the TIP49 data, compares the scores with native SAINTexpress, explains the tuning arguments and shows a wrapper that scores an `ExpressionSet` and returns the scores as one (Biobase in Suggests).
 
 # saintexpress 0.99.2
 
