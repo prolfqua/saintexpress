@@ -25,48 +25,20 @@
 }
 
 .saint_int_prepare_tables <- function(si) {
-    stopifnot(names(si) == c("inter", "prey", "bait"))
-
-    inter <- as.data.frame(si$inter, stringsAsFactors = FALSE)
-    prey <- as.data.frame(si$prey, stringsAsFactors = FALSE)
-    bait <- as.data.frame(si$bait, stringsAsFactors = FALSE)
-
-    names(inter)[seq_len(min(4, ncol(inter)))] <- c(
-        "ipId",
-        "baitId",
-        "preyId",
-        "quant"
-    )[seq_len(min(4, ncol(inter)))]
-    names(bait)[seq_len(min(3, ncol(bait)))] <- c(
-        "ipId",
-        "baitId",
-        "CorT"
-    )[seq_len(min(3, ncol(bait)))]
-    prey <- .saint_int_normalize_prey_table(prey)
-
-    if (!all(c("ipId", "baitId", "preyId", "quant") %in% names(inter))) {
-        stop("inter must have columns ipId, baitId, preyId, quant")
-    }
-    if (!all(c("preyId", "preyGeneId") %in% names(prey))) {
-        stop("prey must have columns preyId and preyGeneId")
-    }
-    if (!all(c("ipId", "baitId", "CorT") %in% names(bait))) {
-        stop("bait must have columns ipId, baitId, CorT")
-    }
-    if (anyDuplicated(prey$preyId)) {
-        stop("duplicate preys in prey file")
-    }
-    if (!all(bait$CorT %in% c("T", "C"))) {
-        stop("3rd column of bait file must be 'T' or 'C'")
-    }
-
-    prey$row <- seq_len(nrow(prey))
-    list(inter = inter, prey = prey, bait = bait)
+    tables <- .saint_resolve_tables(si)
+    tables$prey$row <- seq_len(nrow(tables$prey))
+    tables
 }
 
 .saint_int_normalize_prey_table <- function(prey) {
     if (all(c("preyId", "preyGeneId") %in% names(prey))) {
         return(prey)
+    }
+    if ("preyId" %in% names(prey) && names(prey)[[1]] != "preyId") {
+        stop(
+            "prey: column 'preyId' must come first unless the table also ",
+            "has a 'preyGeneId' column"
+        )
     }
 
     prey_raw <- prey
@@ -251,11 +223,7 @@
     stats::dnorm(x, mean = mu, sd = sigma, log = TRUE)
 }
 
-.saint_int_build_model <- function(parsed, p2p_mapping = NULL, L = 100L) {
-    if (L <= 0) {
-        stop("L is must be a positive integer.")
-    }
-
+.saint_int_build_model <- function(parsed, p2p_mapping = NULL) {
     dimensions <- .saint_int_model_dimensions(parsed)
     replicates <- .saint_int_replicate_layout(parsed, dimensions$nbait)
     controls <- .saint_int_estimate_control_model(
@@ -1038,13 +1006,12 @@ saint_int_r <- function(
     si,
     optimizer = c("base", "nloptr"),
     R = 100L,
-    L = 100L,
     p2p_mapping = NULL
 ) {
     optimizer <- match.arg(optimizer)
     parsed <- .saint_int_read_tables(si)
     parsed <- .saint_int_normalize(parsed)
-    model <- .saint_int_build_model(parsed, p2p_mapping = p2p_mapping, L = L)
+    model <- .saint_int_build_model(parsed, p2p_mapping = p2p_mapping)
     attr(model, "R") <- R
 
     gamma0 <- .saint_int_computation(

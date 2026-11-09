@@ -2,28 +2,119 @@
 % Please edit documentation in R/run_saint.R
 \name{run_saint}
 \alias{run_saint}
-\title{Run the pure-R SAINTexpress engine}
+\title{Score AP-MS interactions with SAINTexpress}
 \usage{
-run_saint(si, mode = c("spc", "int"), optimizer = c("base", "nloptr"), ...)
+run_saint(
+  si,
+  mode = c("spc", "int"),
+  optimizer = c("base", "nloptr"),
+  R = 100L,
+  L = 100L,
+  p2p_mapping = NULL
+)
 }
 \arguments{
-\item{si}{A named list with elements \code{inter}, \code{prey}, \code{bait} (data frames).}
+\item{si}{A named list with the data frames \code{inter}, \code{prey} and \code{bait}, in
+any order. See the section "Input tables".}
 
 \item{mode}{\code{"spc"} for spectral counts, \code{"int"} for intensities.}
 
-\item{optimizer}{\code{"base"} (default; uses \code{\link[stats:optim]{stats::optim()}}) or \code{"nloptr"}
-(uses NLopt COBYLA via the optional \strong{nloptr} package).}
+\item{optimizer}{Optimizer for the model parameters (\code{beta1}, \code{gamma}):
+\code{"base"} (default) uses \code{\link[stats:optim]{stats::optim()}} with method \code{"L-BFGS-B"};
+\code{"nloptr"} uses NLopt COBYLA, as native SAINTexpress does, and needs the
+\strong{nloptr} package. Both give nearly identical scores.}
 
-\item{...}{Additional arguments forwarded to the internal scorers
-\code{saint_spc_r()} or \code{saint_int_r()} (e.g. \code{R}, \code{L}, \code{frequency},
-\code{p2p_mapping}).}
+\item{R}{Integer >= 1, default 100. The most replicates averaged into
+\code{AvgP}: for a bait with more than \code{R} replicates, \code{AvgP} is the mean of
+the \code{R} highest replicate probabilities. Native option \code{-R}.}
+
+\item{L}{Integer >= 1, default 100. Spectral counts only: the number of
+control IPs, taken in decreasing order of the prey's count, used to
+estimate the prey's background (false-interaction) distribution. Native
+option \code{-L}. Checked but not used for \code{mode = "int"}, as in native
+SAINTexpress-int.}
+
+\item{p2p_mapping}{\code{NULL} (default) or a list of known prey-prey
+interactions, used as a prior that boosts the scores of preys whose
+partners are also detected with the bait. The list has one element per
+row of \code{si$prey}, in the same order; element \code{i} is an integer vector with
+the row numbers of the preys linked to prey \code{i} (\code{integer(0)} for none).
+It plays the role of the optional fourth input file of native
+SAINTexpress (for example GO complexes). With \code{NULL}, \code{TopoAvgP} and
+\code{TopoMaxP} equal \code{AvgP} and \code{MaxP}.}
 }
 \value{
-A data frame in the SAINTexpress \code{list.txt} shape.
+A data frame with one row per bait-prey pair, with the columns of
+the native SAINTexpress \code{list.txt}:\tabular{ll}{
+   Column \tab Content \cr
+   \code{Bait}, \code{Prey}, \code{PreyGene} \tab Bait, prey and prey gene name \cr
+   \code{Spec} / \code{Intensity} \tab Prey value per replicate IP, joined by vertical bars (int: normalised, \code{.} = absent) \cr
+   \code{SpecSum} / \code{IntensitySum} \tab Sum over the replicates \cr
+   \code{AvgSpec} / \code{AvgIntensity} \tab Mean over the replicates \cr
+   \code{NumReplicates} \tab Number of replicate IPs of the bait \cr
+   \code{ctrlCounts} / \code{ctrlIntensity} \tab Prey value per control IP, joined by vertical bars \cr
+   \code{AvgP} \tab Probability of a true interaction, averaged over the top \code{R} replicates \cr
+   \code{MaxP} \tab Highest replicate probability \cr
+   \code{TopoAvgP}, \code{TopoMaxP} \tab \code{AvgP} and \code{MaxP} with the \code{p2p_mapping} prior \cr
+   \code{SaintScore} \tab \code{max(AvgP, TopoAvgP)} \cr
+   \code{logOddsScore} / \code{OddsScore} \tab Lowest replicate log odds of true vs false interaction \cr
+   \code{FoldChange} \tab Mean over the replicates divided by the control (background) mean \cr
+   \code{BFDR} \tab Bayesian false discovery rate of the pair, from \code{AvgP} \cr
+   \code{boosted_by} \tab Linked preys from \code{p2p_mapping} that support the pair, joined by vertical bars \cr
+}
+
+
+Names before the slash are for \code{mode = "spc"}, after it for \code{"int"}.
 }
 \description{
-Dispatches to the spectral-count or intensity scorer.
+Runs the pure-R SAINTexpress engine: the spectral-count model
+(\code{SAINTexpress-spc}) for \code{mode = "spc"}, the intensity model
+(\code{SAINTexpress-int}) for \code{mode = "int"}. Both agree with native
+SAINTexpress 3.6.3 up to small numerical differences; the package tests
+compare them on the TIP49 data in \code{inst/extdata/tip49}.
 }
+\section{Input tables}{
+
+Columns are matched by name when all required names are present; otherwise
+by position, in the order listed (as in the headerless native input files).
+A column that already carries a required name must then be at that name's
+position. Further columns are ignored.
+
+\code{inter}, one row per prey detected in an IP (purification):\tabular{lll}{
+   Column \tab Type \tab Content \cr
+   \code{ipId} \tab character \tab IP identifier, as in \code{bait$ipId} \cr
+   \code{baitId} \tab character \tab Bait of the IP, as in \code{bait$baitId} \cr
+   \code{preyId} \tab character \tab Prey identifier, as in \code{prey$preyId} \cr
+   \code{quant} \tab numeric \tab Spectral count, >= 0 (\code{"spc"}), or intensity, > 0 (\code{"int"}) \cr
+}
+
+
+\code{prey}, one row per prey:\tabular{lll}{
+   Column \tab Type \tab Content \cr
+   \code{preyId} \tab character \tab Unique prey identifier \cr
+   \code{preyLength} \tab numeric \tab Protein length (optional, not used in scoring) \cr
+   \code{preyGeneId} \tab character \tab Gene name, reported as \code{PreyGene} (optional, defaults to \code{preyId}) \cr
+}
+
+
+The \code{prey} table is matched by name when it has both \code{preyId} and
+\code{preyGeneId}. Otherwise the first column is \code{preyId}; with two columns the
+second is \code{preyLength} if numeric, else \code{preyGeneId}; with three or more,
+the second is \code{preyLength} and the third \code{preyGeneId}.
+
+\code{bait}, one row per IP:\tabular{lll}{
+   Column \tab Type \tab Content \cr
+   \code{ipId} \tab character \tab Unique IP identifier \cr
+   \code{baitId} \tab character \tab Bait name; replicate IPs share it \cr
+   \code{CorT} \tab character \tab \code{"T"} for a test IP, \code{"C"} for a negative control \cr
+}
+
+
+Every \code{inter$ipId} must be in \code{bait}, every \code{inter$preyId} in \code{prey}, and
+\code{inter$baitId} must agree with \code{bait}. At least one test and one control IP
+are needed.
+}
+
 \examples{
 si <- list(
   inter = data.frame(
@@ -44,4 +135,16 @@ si <- list(
   )
 )
 run_saint(si, mode = "spc")
+
+# Prey1 and Prey2 are known to interact
+run_saint(si, mode = "spc", p2p_mapping = list(2L, 1L))
+}
+\references{
+Teo G, Liu G, Zhang J, Nesvizhskii AI, Gingras AC, Choi H
+(2014). SAINTexpress: Improvements and additional features in
+Significance Analysis of INTeractome software. Journal of Proteomics,
+100, 37-43. \doi{10.1016/j.jprot.2013.10.023}
+}
+\seealso{
+\code{\link[=validate_saint_input]{validate_saint_input()}}
 }

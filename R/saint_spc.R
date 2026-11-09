@@ -69,16 +69,7 @@
     test_mat
 }
 
-.saint_spc_build_model <- function(
-    parsed,
-    p2p_mapping = NULL,
-    L = 100L,
-    frequency = 0.5
-) {
-    if (L <= 0) {
-        stop("L is must be a positive integer.")
-    }
-
+.saint_spc_build_model <- function(parsed, p2p_mapping = NULL, L = 100L) {
     dimensions <- .saint_int_model_dimensions(parsed)
     replicates <- .saint_int_replicate_layout(parsed, dimensions$nbait)
     controls <- .saint_spc_estimate_control_model(parsed$ctrl_mat, L = L)
@@ -95,8 +86,7 @@
         replicates,
         controls,
         tests,
-        p2p_mapping,
-        frequency
+        p2p_mapping
     )
 }
 
@@ -135,7 +125,6 @@
     list(
         test_mat = test_mat,
         test_mat1 = test_mat,
-        test_SS = .saint_spc_test_sum_matrix(test_mat),
         d = .saint_spc_signal_shift(test_mat_DATA, controls$eta),
         Z = .saint_spc_initial_z(test_mat, controls$eta)
     )
@@ -147,8 +136,7 @@
     replicates,
     controls,
     tests,
-    p2p_mapping,
-    frequency
+    p2p_mapping
 ) {
     list(
         nprey = dimensions$nprey,
@@ -156,12 +144,10 @@
         test_mat_DATA = parsed$test_mat,
         test_mat = tests$test_mat,
         test_mat1 = tests$test_mat1,
-        test_SS = tests$test_SS,
         n_rep_vec = replicates$n_rep_vec,
         p2p_mapping = p2p_mapping,
         ctrl_mean = controls$ctrl_mean,
         n_ctrl_ip = dimensions$n_ctrl_ip,
-        apply_MRF = .saint_spc_apply_mrf(tests$Z, parsed$test_mat, frequency),
         Z = tests$Z,
         beta0 = 0,
         beta1 = 0,
@@ -180,16 +166,6 @@
     stats::var(x)
 }
 
-.saint_spc_test_sum_matrix <- function(test_mat) {
-    out <- matrix(0, nrow = nrow(test_mat), ncol = ncol(test_mat))
-    for (prey_row in seq_len(nrow(test_mat))) {
-        for (bait_col in seq_len(ncol(test_mat))) {
-            out[prey_row, bait_col] <- sum(test_mat[[prey_row, bait_col]])
-        }
-    }
-    out
-}
-
 .saint_spc_signal_shift <- function(test_mat_DATA, eta) {
     d <- numeric(nrow(test_mat_DATA))
     for (prey_row in seq_len(nrow(test_mat_DATA))) {
@@ -206,18 +182,6 @@
             test_mat[[prey_row, bait_col]] > (2 * eta[[prey_row]])
         }
     )
-}
-
-.saint_spc_apply_mrf <- function(Z, test_mat_DATA, frequency) {
-    apply_mrf <- logical(nrow(Z))
-    for (prey_row in seq_len(nrow(Z))) {
-        z_sum <- 0
-        for (bait_col in seq_len(ncol(Z))) {
-            z_sum <- z_sum + sum(Z[[prey_row, bait_col]])
-        }
-        apply_mrf[[prey_row]] <- z_sum < ncol(test_mat_DATA) * frequency
-    }
-    apply_mrf
 }
 
 .saint_spc_gp_log_pmf <- function(x, lambda1, lambda2) {
@@ -623,17 +587,11 @@ saint_spc_r <- function(
     optimizer = c("base", "nloptr"),
     R = 100L,
     L = 100L,
-    frequency = 0.5,
     p2p_mapping = NULL
 ) {
     optimizer <- match.arg(optimizer)
     parsed <- .saint_spc_read_tables(si)
-    model <- .saint_spc_build_model(
-        parsed,
-        p2p_mapping = p2p_mapping,
-        L = L,
-        frequency = frequency
-    )
+    model <- .saint_spc_build_model(parsed, p2p_mapping = p2p_mapping, L = L)
     attr(model, "R") <- R
 
     gamma0 <- .saint_spc_computation(

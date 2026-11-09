@@ -4,23 +4,81 @@
 \alias{validate_saint_input}
 \title{Validate a SAINT input list}
 \usage{
-validate_saint_input(si)
+validate_saint_input(si, mode = c("spc", "int"))
 }
 \arguments{
-\item{si}{A named list with elements \code{inter}, \code{prey}, \code{bait}.}
+\item{si}{A named list with the data frames \code{inter}, \code{prey} and \code{bait}, in
+any order. See the section "Input tables".}
+
+\item{mode}{\code{"spc"} for spectral counts, \code{"int"} for intensities. Sets the
+allowed range of \code{quant}.}
 }
 \value{
-\code{TRUE} invisibly on success; otherwise stops with a message.
+\code{TRUE} invisibly on success; otherwise stops with a message naming
+the table and column at fault.
 }
 \description{
-Checks that \code{si} is a list with exactly the elements \code{inter}, \code{prey}, \code{bait},
-and that each is a data frame.
+Checks that \code{si} is valid input for \code{\link[=run_saint]{run_saint()}}: if \code{validate_saint_input()}
+passes, \code{run_saint()} accepts the same \code{si} and \code{mode}. The checks are the
+ones listed in the section "Input tables" below, applied after the columns
+have been matched by name or position.
 }
+\section{Input tables}{
+
+Columns are matched by name when all required names are present; otherwise
+by position, in the order listed (as in the headerless native input files).
+A column that already carries a required name must then be at that name's
+position. Further columns are ignored.
+
+\code{inter}, one row per prey detected in an IP (purification):\tabular{lll}{
+   Column \tab Type \tab Content \cr
+   \code{ipId} \tab character \tab IP identifier, as in \code{bait$ipId} \cr
+   \code{baitId} \tab character \tab Bait of the IP, as in \code{bait$baitId} \cr
+   \code{preyId} \tab character \tab Prey identifier, as in \code{prey$preyId} \cr
+   \code{quant} \tab numeric \tab Spectral count, >= 0 (\code{"spc"}), or intensity, > 0 (\code{"int"}) \cr
+}
+
+
+\code{prey}, one row per prey:\tabular{lll}{
+   Column \tab Type \tab Content \cr
+   \code{preyId} \tab character \tab Unique prey identifier \cr
+   \code{preyLength} \tab numeric \tab Protein length (optional, not used in scoring) \cr
+   \code{preyGeneId} \tab character \tab Gene name, reported as \code{PreyGene} (optional, defaults to \code{preyId}) \cr
+}
+
+
+The \code{prey} table is matched by name when it has both \code{preyId} and
+\code{preyGeneId}. Otherwise the first column is \code{preyId}; with two columns the
+second is \code{preyLength} if numeric, else \code{preyGeneId}; with three or more,
+the second is \code{preyLength} and the third \code{preyGeneId}.
+
+\code{bait}, one row per IP:\tabular{lll}{
+   Column \tab Type \tab Content \cr
+   \code{ipId} \tab character \tab Unique IP identifier \cr
+   \code{baitId} \tab character \tab Bait name; replicate IPs share it \cr
+   \code{CorT} \tab character \tab \code{"T"} for a test IP, \code{"C"} for a negative control \cr
+}
+
+
+Every \code{inter$ipId} must be in \code{bait}, every \code{inter$preyId} in \code{prey}, and
+\code{inter$baitId} must agree with \code{bait}. At least one test and one control IP
+are needed.
+}
+
 \examples{
 si <- list(
-  inter = data.frame(ipId = "IP1", baitId = "BaitA", preyId = "Prey1"),
-  prey = data.frame(preyId = "Prey1"),
-  bait = data.frame(ipId = "IP1", baitId = "BaitA", CorT = "T")
+  inter = data.frame(
+    ipId = c("IP1", "IP2", "IP3"),
+    baitId = c("BaitA", "BaitA", "Ctrl"),
+    preyId = c("Prey1", "Prey1", "Prey1"),
+    quant = c(12, 9, 1)
+  ),
+  prey = data.frame(preyId = "Prey1", preyLength = 500, preyGeneId = "GENE1"),
+  bait = data.frame(
+    ipId = c("IP1", "IP2", "IP3"),
+    baitId = c("BaitA", "BaitA", "Ctrl"),
+    CorT = c("T", "T", "C")
+  )
 )
-validate_saint_input(si)
+validate_saint_input(si, mode = "spc")
 }
