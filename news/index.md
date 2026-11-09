@@ -1,5 +1,43 @@
 # Changelog
 
+## saintexpress 0.99.4
+
+- Input columns are matched by name. Before, the first four columns of
+  `inter` and the first three of `bait` were renamed by position, so
+  correctly named columns in another order gave wrong scores without an
+  error. Tables without the required names, such as the headerless
+  native input files, are still matched by position; a required name at
+  the wrong position is now an error.
+
+- `validate_saint_input(si, mode)` checks columns, types, `CorT` values,
+  duplicated ids and that the tables fit together. If it passes,
+  [`run_saint()`](https://prolfqua.github.io/saintexpress/reference/run_saint.md)
+  accepts the input.
+  [`run_saint()`](https://prolfqua.github.io/saintexpress/reference/run_saint.md)
+  accepts the elements of `si` in any order.
+
+- [`run_saint()`](https://prolfqua.github.io/saintexpress/reference/run_saint.md)
+  has the documented arguments `R`, `L` and `p2p_mapping` instead of
+  `...`, and checks them. `frequency` is removed: it had no effect, as
+  in native SAINTexpress 3.6.3. `L` applies to spectral counts only.
+
+- `optimizer = "nloptr"` stops with an error when nloptr is not
+  installed, instead of using
+  [`stats::optim()`](https://rdrr.io/r/stats/optim.html) without notice.
+
+- The TIP49 example data and the native SAINTexpress 3.6.3 results for
+  it are in `inst/extdata/tip49`.
+
+- New package help page
+  [`?saintexpress`](https://prolfqua.github.io/saintexpress/reference/saintexpress-package.md);
+  [`?run_saint`](https://prolfqua.github.io/saintexpress/reference/run_saint.md)
+  documents the input and output columns.
+
+- The vignette introduces AP-MS interaction scoring, runs on the TIP49
+  data, compares the scores with native SAINTexpress, explains the
+  tuning arguments and shows a wrapper that scores a
+  `SummarizedExperiment`.
+
 ## saintexpress 0.99.2
 
 - The vignette shows how to score data held in `SummarizedExperiment`,
