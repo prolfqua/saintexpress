@@ -2,3 +2,12 @@
 
 export(run_saint)
 export(validate_saint_input)
+importFrom(stats,
+  coef,
+  complete.cases,
+  dnorm,
+  lm,
+  median,
+  optim,
+  var
+)
