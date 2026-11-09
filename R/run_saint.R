@@ -134,9 +134,6 @@ run_saint <- function(
     if (optimizer == "nloptr" && !requireNamespace("nloptr", quietly = TRUE)) {
         stop("optimizer = \"nloptr\" needs the nloptr package.")
     }
-    if (mode == "spc") {
-        saint_spc_r(si, optimizer = optimizer, R = R, L = L, p2p_mapping = p2p_mapping)
-    } else {
-        saint_int_r(si, optimizer = optimizer, R = R, p2p_mapping = p2p_mapping)
-    }
+    ops <- if (mode == "spc") .saint_spc_ops(L) else .saint_int_ops()
+    .saint_run(si, ops, optimizer = optimizer, R = R, p2p_mapping = p2p_mapping)
 }

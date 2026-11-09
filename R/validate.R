@@ -138,7 +138,7 @@ validate_saint_input <- function(si, mode = c("spc", "int")) {
             c("ipId", "baitId", "preyId", "quant"),
             "inter"
         ),
-        prey = .saint_int_normalize_prey_table(
+        prey = .saint_normalize_prey_table(
             as.data.frame(si$prey, stringsAsFactors = FALSE)
         ),
         bait = .saint_resolve_columns(
@@ -147,6 +147,48 @@ validate_saint_input <- function(si, mode = c("spc", "int")) {
             "bait"
         )
     )
+}
+
+# Prey tables named preyId, preyGeneId are kept; otherwise column 1 is
+# preyId and columns 2-3 are preyLength and/or preyGeneId.
+.saint_normalize_prey_table <- function(prey) {
+    if (all(c("preyId", "preyGeneId") %in% names(prey))) {
+        return(prey)
+    }
+    if ("preyId" %in% names(prey) && names(prey)[[1]] != "preyId") {
+        stop(
+            "prey: column 'preyId' must come first unless the table also ",
+            "has a 'preyGeneId' column"
+        )
+    }
+    out <- data.frame(
+        preyId = as.character(prey[[1]]),
+        preyLength = 0,
+        preyGeneId = as.character(prey[[1]]),
+        stringsAsFactors = FALSE
+    )
+    if (ncol(prey) == 2) {
+        prey_length <- .saint_parse_length_column(prey[[2]])
+        if (prey_length$is_length) {
+            out$preyLength <- prey_length$values
+        } else {
+            out$preyGeneId <- as.character(prey[[2]])
+        }
+    } else if (ncol(prey) > 2) {
+        out$preyLength <- as.numeric(prey[[2]])
+        out$preyGeneId <- as.character(prey[[3]])
+    }
+    out
+}
+
+.saint_parse_length_column <- function(x) {
+    if (is.numeric(x)) {
+        return(list(is_length = !anyNA(x), values = x))
+    }
+    x <- trimws(as.character(x))
+    numeric_pattern <- "^[-+]?(?:\\d+\\.?\\d*|\\.\\d+)(?:[eE][-+]?\\d+)?$"
+    is_length <- all(nzchar(x)) && all(grepl(numeric_pattern, x))
+    list(is_length = is_length, values = if (is_length) as.numeric(x) else numeric())
 }
 
 .saint_check_ids <- function(df, columns, table) {
