@@ -71,7 +71,7 @@ Runs the pure-R SAINTexpress engine: the spectral-count model
 (\code{SAINTexpress-spc}) for \code{mode = "spc"}, the intensity model
 (\code{SAINTexpress-int}) for \code{mode = "int"}. Both agree with native
 SAINTexpress 3.6.3 up to small numerical differences; the package tests
-compare them on the TIP49 data in \code{inst/extdata/tip49}.
+compare them on a subset of the TIP49 data in \code{inst/extdata/tip49}.
 }
 \section{Input tables}{
 

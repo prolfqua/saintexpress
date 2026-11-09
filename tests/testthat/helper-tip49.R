@@ -1,5 +1,5 @@
-# TIP49 example data (inst/extdata/tip49) and cached run_saint() results, so
-# that the slow TIP49 runs are shared between test files.
+# TIP49 subset (inst/extdata/tip49) and cached run_saint() results, shared
+# between test files.
 
 tip49_dir <- function() {
     system.file("extdata", "tip49", package = "saintexpress")

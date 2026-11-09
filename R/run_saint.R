@@ -4,7 +4,7 @@
 #' (`SAINTexpress-spc`) for `mode = "spc"`, the intensity model
 #' (`SAINTexpress-int`) for `mode = "int"`. Both agree with native
 #' SAINTexpress 3.6.3 up to small numerical differences; the package tests
-#' compare them on the TIP49 data in `inst/extdata/tip49`.
+#' compare them on a subset of the TIP49 data in `inst/extdata/tip49`.
 #'
 #' @param si A named list with the data frames `inter`, `prey` and `bait`, in
 #'   any order. See the section "Input tables".

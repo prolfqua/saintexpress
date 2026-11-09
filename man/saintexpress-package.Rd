@@ -24,9 +24,9 @@ Main functions:
 \item \code{\link[=validate_saint_input]{validate_saint_input()}} checks a SAINT input list before scoring.
 }
 
-The real AP-MS dataset TIP49 (the example shipped with SAINTexpress) and the
-native SAINTexpress 3.6.3 results for it are in \code{inst/extdata/tip49}; see
-the vignette.
+A subset of the real AP-MS dataset TIP49 (the example shipped with
+SAINTexpress) and the native SAINTexpress 3.6.3 results for it are in
+\code{inst/extdata/tip49}; see the vignette.
 }
 \references{
 Teo G, Liu G, Zhang J, Nesvizhskii AI, Gingras AC, Choi H

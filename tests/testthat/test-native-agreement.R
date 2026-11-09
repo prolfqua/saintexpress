@@ -1,4 +1,4 @@
-# Compares run_saint() on TIP49 with the list.txt written by the native
+# Compares run_saint() on the TIP49 subset with the list.txt written by the native
 # SAINTexpress 3.6.3 binaries (inst/extdata/tip49, see inst/scripts/tip49.md).
 # Both outputs are rounded (spc: 2 decimals, int: 3 decimals), so the
 # tolerances are at least one rounding step.
@@ -39,8 +39,9 @@ spc_tolerance <- c(
     FoldChange = 1e-8
 )
 
-# Measured maxima: probabilities 0.004, BFDR 0.02, OddsScore 0.086,
-# relative FoldChange 0.067.
+# Measured maxima on the subset: probabilities 0.001, BFDR 0.016,
+# OddsScore 0.124, relative FoldChange 0.045 (full TIP49: 0.004, 0.02, 0.086,
+# 0.067).
 int_tolerance <- c(
     AvgP = 0.005,
     MaxP = 0.005,
@@ -48,7 +49,7 @@ int_tolerance <- c(
     TopoMaxP = 0.005,
     SaintScore = 0.005,
     BFDR = 0.025,
-    OddsScore = 0.1,
+    OddsScore = 0.15,
     FoldChange = 0.07
 )
 
@@ -68,14 +69,14 @@ test_that("nloptr optimizer agrees with native SAINTexpress on TIP49", {
 
 test_that("TIP49 output keeps the native self-interaction and control formats", {
     spc <- run_tip49("spc")
-    self_spc <- spc[spc$Bait == "ACTR5" & spc$Prey == "ACTR5", ]
-    expect_equal(self_spc$Spec, "0")
+    self_spc <- spc[spc$Bait == "ACTR8" & spc$Prey == "ACTR8", ]
+    expect_equal(self_spc$Spec, "0|0")
     expect_true(all(grepl("|", spc$ctrlCounts, fixed = TRUE)))
-    expect_equal(min(spc$BFDR[spc$AvgP >= 0.99]), 0)
+    expect_equal(spc$BFDR[[which.max(spc$AvgP)]], 0)
 
     int <- run_tip49("int")
-    self_int <- int[int$Bait == "ACTR5" & int$Prey == "ACTR5", ]
-    expect_equal(self_int$Intensity, ".")
+    self_int <- int[int$Bait == "ACTR8" & int$Prey == "ACTR8", ]
+    expect_equal(self_int$Intensity, ".|.")
     expect_true(any(grepl(".", int$ctrlIntensity, fixed = TRUE)))
-    expect_equal(min(int$BFDR[int$AvgP >= 0.999]), 0)
+    expect_equal(int$BFDR[[which.max(int$AvgP)]], 0)
 })

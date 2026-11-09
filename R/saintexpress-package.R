@@ -15,9 +15,9 @@
 #' * [run_saint()] scores a SAINT input list.
 #' * [validate_saint_input()] checks a SAINT input list before scoring.
 #'
-#' The real AP-MS dataset TIP49 (the example shipped with SAINTexpress) and the
-#' native SAINTexpress 3.6.3 results for it are in `inst/extdata/tip49`; see
-#' the vignette.
+#' A subset of the real AP-MS dataset TIP49 (the example shipped with
+#' SAINTexpress) and the native SAINTexpress 3.6.3 results for it are in
+#' `inst/extdata/tip49`; see the vignette.
 #'
 #' @references Teo G, Liu G, Zhang J, Nesvizhskii AI, Gingras AC, Choi H
 #'   (2014). SAINTexpress: Improvements and additional features in
