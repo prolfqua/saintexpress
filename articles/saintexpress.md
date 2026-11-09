@@ -88,18 +88,18 @@ lapply(si, head, 3)
 takes a list of three data frames. Their columns are matched by name
 when all required names are present, otherwise by position, as here.
 
-| Table   | Column       | Type      | Content                                       |
-|---------|--------------|-----------|-----------------------------------------------|
-| `inter` | `ipId`       | character | Purification (IP)                             |
-|         | `baitId`     | character | Bait of the IP                                |
-|         | `preyId`     | character | Prey                                          |
-|         | `quant`      | numeric   | Spectral count (\>= 0) or intensity (\> 0)    |
-| `prey`  | `preyId`     | character | Prey, unique                                  |
-|         | `preyLength` | numeric   | Protein length (optional, not used)           |
-|         | `preyGeneId` | character | Gene name (optional, defaults to `preyId`)    |
-| `bait`  | `ipId`       | character | Purification, unique                          |
-|         | `baitId`     | character | Bait; replicate IPs share it                  |
-|         | `CorT`       | character | `T` for a bait IP, `C` for a negative control |
+| Table   | Column       | Type      | Content                                                 |
+|---------|--------------|-----------|---------------------------------------------------------|
+| `inter` | `ipId`       | character | Purification (IP)                                       |
+|         | `baitId`     | character | Bait of the IP                                          |
+|         | `preyId`     | character | Prey                                                    |
+|         | `quant`      | numeric   | Spectral count (whole number \>= 0) or intensity (\> 0) |
+| `prey`  | `preyId`     | character | Prey, unique                                            |
+|         | `preyLength` | numeric   | Protein length (optional, not used)                     |
+|         | `preyGeneId` | character | Gene name (optional, defaults to `preyId`)              |
+| `bait`  | `ipId`       | character | Purification, unique                                    |
+|         | `baitId`     | character | Bait; replicate IPs share it                            |
+|         | `CorT`       | character | `T` for a bait IP, `C` for a negative control           |
 
 [`validate_saint_input()`](https://prolfqua.github.io/saintexpress/reference/validate_saint_input.md)
 checks the tables. If it passes,

@@ -9,12 +9,18 @@
   native input files, are still matched by position; a required name at
   the wrong position is now an error.
 
-- `validate_saint_input(si, mode)` checks columns, types, `CorT` values,
-  duplicated ids and that the tables fit together. If it passes,
+- `validate_saint_input(si, mode)` checks columns, types, finite `quant`
+  (whole numbers for spectral counts), `CorT` values, duplicated ids,
+  each prey at most once per IP, and that the tables fit together. If it
+  passes,
   [`run_saint()`](https://prolfqua.github.io/saintexpress/reference/run_saint.md)
   accepts the input.
   [`run_saint()`](https://prolfqua.github.io/saintexpress/reference/run_saint.md)
   accepts the elements of `si` in any order.
+
+- Id columns given as factors are treated like character ids. Before, a
+  factor `baitId` stopped the bait’s own prey from being masked, as
+  native SAINTexpress does.
 
 - [`run_saint()`](https://prolfqua.github.io/saintexpress/reference/run_saint.md)
   has the documented arguments `R`, `L` and `p2p_mapping` instead of

@@ -40,13 +40,13 @@ at that name's position. Further columns are ignored.
 
 `inter`, one row per prey detected in an IP (purification):
 
-|          |           |                                                               |
-|----------|-----------|---------------------------------------------------------------|
-| Column   | Type      | Content                                                       |
-| `ipId`   | character | IP identifier, as in `bait$ipId`                              |
-| `baitId` | character | Bait of the IP, as in `bait$baitId`                           |
-| `preyId` | character | Prey identifier, as in `prey$preyId`                          |
-| `quant`  | numeric   | Spectral count, \>= 0 (`"spc"`), or intensity, \> 0 (`"int"`) |
+|          |           |                                                                            |
+|----------|-----------|----------------------------------------------------------------------------|
+| Column   | Type      | Content                                                                    |
+| `ipId`   | character | IP identifier, as in `bait$ipId`                                           |
+| `baitId` | character | Bait of the IP, as in `bait$baitId`                                        |
+| `preyId` | character | Prey identifier, as in `prey$preyId`                                       |
+| `quant`  | numeric   | Spectral count, whole number \>= 0 (`"spc"`), or intensity, \> 0 (`"int"`) |
 
 `prey`, one row per prey:
 
@@ -72,8 +72,8 @@ more, the second is `preyLength` and the third `preyGeneId`.
 | `CorT`   | character | `"T"` for a test IP, `"C"` for a negative control |
 
 Every `inter$ipId` must be in `bait`, every `inter$preyId` in `prey`,
-and `inter$baitId` must agree with `bait`. At least one test and one
-control IP are needed.
+each prey at most once per IP, and `inter$baitId` must agree with
+`bait`. At least one test and one control IP are needed.
 
 ## Examples
 
