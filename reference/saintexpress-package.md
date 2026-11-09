@@ -21,8 +21,8 @@ Main functions:
 - [`validate_saint_input()`](https://prolfqua.github.io/saintexpress/reference/validate_saint_input.md)
   checks a SAINT input list before scoring.
 
-The real AP-MS dataset TIP49 (the example shipped with SAINTexpress) and
-the native SAINTexpress 3.6.3 results for it are in
+A subset of the real AP-MS dataset TIP49 (the example shipped with
+SAINTexpress) and the native SAINTexpress 3.6.3 results for it are in
 `inst/extdata/tip49`; see the vignette.
 
 ## References

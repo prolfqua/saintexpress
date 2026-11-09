@@ -109,10 +109,12 @@ Interactions filtered by SAINT can be its input.</li>
 <div class="section level2">
 <h2 id="the-tip49-data">The TIP49 data<a class="anchor" aria-label="anchor" href="#the-tip49-data"></a>
 </h2>
-<p>saintexpress ships the example data of SAINTexpress: an AP-MS
-experiment on human protein complexes containing TIP49a/TIP49b
-(RUVBL1/RUVBL2), with spectral counts for 27 baits in 35 purifications
-and 9 negative controls (Sardiu et al. 2008). The files are the
+<p>saintexpress ships a subset of the example data of SAINTexpress, an
+AP-MS experiment on human protein complexes containing TIP49a/TIP49b
+(RUVBL1/RUVBL2) with spectral counts (Sardiu et al. 2008). The subset
+keeps 4 baits (ACTR8, ZNHIT1, INO80B, VPS72) in 7 purifications, all 9
+negative controls, and the 78 preys seen in at least 3 bait
+purifications (<code>inst/scripts/tip49.md</code>). The files are the
 headerless tables native SAINTexpress reads.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://prolfqua.github.io/saintexpress/">saintexpress</a></span><span class="op">)</span></span>
@@ -127,10 +129,10 @@ headerless tables native SAINTexpress reads.</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">si</span>, <span class="va">head</span>, <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $inter</span></span>
-<span><span class="co">#&gt;     V1    V2     V3  V4</span></span>
-<span><span class="co">#&gt; 1 ARP5 ACTR5  ACTR5 417</span></span>
-<span><span class="co">#&gt; 2 ARP5 ACTR5 RUVBL2  73</span></span>
-<span><span class="co">#&gt; 3 ARP5 ACTR5 RUVBL1  50</span></span>
+<span><span class="co">#&gt;       V1    V2     V3 V4</span></span>
+<span><span class="co">#&gt; 1 ARP8_1 ACTR8  ACTR5 10</span></span>
+<span><span class="co">#&gt; 2 ARP8_1 ACTR8 RUVBL2 16</span></span>
+<span><span class="co">#&gt; 3 ARP8_1 ACTR8 RUVBL1 38</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $prey</span></span>
 <span><span class="co">#&gt;       V1  V2</span></span>
@@ -139,10 +141,10 @@ headerless tables native SAINTexpress reads.</p>
 <span><span class="co">#&gt; 3 RUVBL1 456</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $bait</span></span>
-<span><span class="co">#&gt;       V1    V2 V3</span></span>
-<span><span class="co">#&gt; 1   ARP5 ACTR5  T</span></span>
-<span><span class="co">#&gt; 2 ARP6_1 ACTR6  T</span></span>
-<span><span class="co">#&gt; 3 ARP6_2 ACTR6  T</span></span></code></pre></div>
+<span><span class="co">#&gt;       V1     V2 V3</span></span>
+<span><span class="co">#&gt; 1 ARP8_1  ACTR8  T</span></span>
+<span><span class="co">#&gt; 2 ARP8_2  ACTR8  T</span></span>
+<span><span class="co">#&gt; 3   Ies2 INO80B  T</span></span></code></pre></div>
 <p><code><a href="../reference/run_saint.html">run_saint()</a></code> takes a list of three data frames. Their
 columns are matched by name when all required names are present,
 otherwise by position, as here.</p>
@@ -236,7 +238,7 @@ column at fault.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scores</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_saint.html">run_saint</a></span><span class="op">(</span><span class="va">si</span>, mode <span class="op">=</span> <span class="st">"spc"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">scores</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 5521   17</span></span>
+<span><span class="co">#&gt; [1] 237  17</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">scores</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "Bait"          "Prey"          "PreyGene"      "Spec"         </span></span>
 <span><span class="co">#&gt;  [5] "SpecSum"       "AvgSpec"       "NumReplicates" "ctrlCounts"   </span></span>
@@ -295,34 +297,34 @@ highest one</td>
 </tr>
 </tbody>
 </table>
-<p>The highest-scoring preys of the bait RUVBL1 include its partner
-RUVBL2 and subunits of chromatin-remodelling complexes that contain
-RUVBL1, such as SRCAP, EP400 and TRRAP, all absent or nearly absent from
-the controls:</p>
+<p>The highest-scoring preys of the bait ZNHIT1 include the other
+subunits of the SRCAP chromatin-remodelling complex it belongs to, such
+as SRCAP, ACTR6, DMAP1, RUVBL1, RUVBL2, YEATS4 and VPS72, all absent or
+nearly absent from the controls:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ruvbl1</span> <span class="op">&lt;-</span> <span class="va">scores</span><span class="op">[</span><span class="va">scores</span><span class="op">$</span><span class="va">Bait</span> <span class="op">==</span> <span class="st">"RUVBL1"</span>, <span class="op">]</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ruvbl1</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">ruvbl1</span><span class="op">$</span><span class="va">AvgP</span>, <span class="op">-</span><span class="va">ruvbl1</span><span class="op">$</span><span class="va">FoldChange</span><span class="op">)</span>,</span>
+<code class="sourceCode R"><span><span class="va">znhit1</span> <span class="op">&lt;-</span> <span class="va">scores</span><span class="op">[</span><span class="va">scores</span><span class="op">$</span><span class="va">Bait</span> <span class="op">==</span> <span class="st">"ZNHIT1"</span>, <span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">znhit1</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">znhit1</span><span class="op">$</span><span class="va">AvgP</span>, <span class="op">-</span><span class="va">znhit1</span><span class="op">$</span><span class="va">FoldChange</span><span class="op">)</span>,</span>
 <span>            <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Prey"</span>, <span class="st">"Spec"</span>, <span class="st">"ctrlCounts"</span>, <span class="st">"AvgP"</span>, <span class="st">"FoldChange"</span>, <span class="st">"BFDR"</span><span class="op">)</span><span class="op">]</span>, <span class="fl">10</span><span class="op">)</span></span>
-<span><span class="co">#&gt;         Prey Spec        ctrlCounts AvgP FoldChange BFDR</span></span>
-<span><span class="co">#&gt; 4516   TRRAP   54 0|0|0|0|0|0|0|0|0    1     540.00    0</span></span>
-<span><span class="co">#&gt; 4455  RUVBL2  415 6|0|1|0|0|0|0|0|0    1     533.57    0</span></span>
-<span><span class="co">#&gt; 4496   SRCAP   53 0|0|0|0|0|0|0|0|0    1     530.00    0</span></span>
-<span><span class="co">#&gt; 4515   EP400   48 0|0|0|0|0|0|0|0|0    1     480.00    0</span></span>
-<span><span class="co">#&gt; 4459  ACTL6A   28 0|0|0|0|0|0|0|0|0    1     280.00    0</span></span>
-<span><span class="co">#&gt; 4499   DMAP1   25 0|0|0|0|0|0|0|0|0    1     250.00    0</span></span>
-<span><span class="co">#&gt; 4461    ACTB   21 0|0|0|0|0|0|0|0|0    1     210.00    0</span></span>
-<span><span class="co">#&gt; 4523 C2orf44   20 0|0|0|0|0|0|0|0|0    1     200.00    0</span></span>
-<span><span class="co">#&gt; 4488   ACTR6   19 0|0|0|0|0|0|0|0|0    1     190.00    0</span></span>
-<span><span class="co">#&gt; 4500   WDR92   18 0|0|0|0|0|0|0|0|0    1     180.00    0</span></span></code></pre></div>
+<span><span class="co">#&gt;          Prey    Spec        ctrlCounts AvgP FoldChange BFDR</span></span>
+<span><span class="co">#&gt; 223     SRCAP  190|75 0|0|0|0|0|0|0|0|0    1    1325.00    0</span></span>
+<span><span class="co">#&gt; 216     ACTR6   69|63 0|0|0|0|0|0|0|0|0    1     660.00    0</span></span>
+<span><span class="co">#&gt; 171    ACTL6A   54|37 0|0|0|0|0|0|0|0|0    1     455.00    0</span></span>
+<span><span class="co">#&gt; 226     DMAP1   54|25 0|0|0|0|0|0|0|0|0    1     395.00    0</span></span>
+<span><span class="co">#&gt; 173      ACTB   38|19 0|0|0|0|0|0|0|0|0    1     285.00    0</span></span>
+<span><span class="co">#&gt; 170    RUVBL1 138|162 3|2|0|0|0|0|0|2|0    1     192.86    0</span></span>
+<span><span class="co">#&gt; 169    RUVBL2 125|147 6|0|1|0|0|0|0|0|0    1     174.86    0</span></span>
+<span><span class="co">#&gt; 222    YEATS4    26|7 0|0|0|0|0|0|0|0|0    1     165.00    0</span></span>
+<span><span class="co">#&gt; 225     VPS72   14|17 0|0|0|0|0|0|0|0|0    1     155.00    0</span></span>
+<span><span class="co">#&gt; 185 HIST1H2BJ    7|17 0|0|0|0|0|0|0|0|0    1     120.00    0</span></span></code></pre></div>
 <p>At a Bayesian FDR of 5%:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hits</span> <span class="op">&lt;-</span> <span class="va">scores</span><span class="op">[</span><span class="va">scores</span><span class="op">$</span><span class="va">BFDR</span> <span class="op">&lt;=</span> <span class="fl">0.05</span>, <span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">hits</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 1666</span></span>
+<span><span class="co">#&gt; [1] 56</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">hits</span><span class="op">$</span><span class="va">Bait</span><span class="op">)</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   TP53   LIN9 ZNHIT6   TFPT  H2AFZ    UXT </span></span>
-<span><span class="co">#&gt;    323    266    162    117     89     82</span></span></code></pre></div>
+<span><span class="co">#&gt;  VPS72 INO80B ZNHIT1  ACTR8 </span></span>
+<span><span class="co">#&gt;     20     13     13     10</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">is_hit</span> <span class="op">&lt;-</span> <span class="va">scores</span><span class="op">$</span><span class="va">BFDR</span> <span class="op">&lt;=</span> <span class="fl">0.05</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
@@ -330,7 +332,7 @@ the controls:</p>
 <span>  pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">is_hit</span>, <span class="st">"#B23A48"</span>, <span class="st">"#3D6F9966"</span><span class="op">)</span>,</span>
 <span>  xlab <span class="op">=</span> <span class="st">"log2 fold change over background"</span>, ylab <span class="op">=</span> <span class="st">"AvgP"</span>,</span>
-<span>  main <span class="op">=</span> <span class="st">"TIP49, spectral counts"</span></span>
+<span>  main <span class="op">=</span> <span class="st">"TIP49 subset, spectral counts"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span><span class="st">"bottomright"</span>, legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BFDR &lt;= 0.05"</span>, <span class="st">"other"</span><span class="op">)</span>,</span>
 <span>       col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#B23A48"</span>, <span class="st">"#3D6F99"</span><span class="op">)</span>, pch <span class="op">=</span> <span class="fl">19</span>, bty <span class="op">=</span> <span class="st">"n"</span><span class="op">)</span></span></code></pre></div>
@@ -347,13 +349,13 @@ for intensities, as in the SAINTexpress example.</p>
 <code class="sourceCode R"><span><span class="va">scores_int</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_saint.html">run_saint</a></span><span class="op">(</span><span class="va">si</span>, mode <span class="op">=</span> <span class="st">"int"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">scores_int</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">scores_int</span><span class="op">$</span><span class="va">AvgP</span><span class="op">)</span>,</span>
 <span>                <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Bait"</span>, <span class="st">"Prey"</span>, <span class="st">"AvgIntensity"</span>, <span class="st">"AvgP"</span>, <span class="st">"BFDR"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#&gt;               Bait   Prey AvgIntensity  AvgP BFDR</span></span>
-<span><span class="co">#&gt; 1004 RP11-529I10.4 RUVBL1       55.020 1.000    0</span></span>
-<span><span class="co">#&gt; 2019         H2AFZ RUVBL1       57.143 1.000    0</span></span>
-<span><span class="co">#&gt; 4455        RUVBL1 RUVBL2       54.684 1.000    0</span></span>
-<span><span class="co">#&gt; 5456        ZNHIT2 RUVBL2      125.805 1.000    0</span></span>
-<span><span class="co">#&gt; 5457        ZNHIT2 RUVBL1      123.764 1.000    0</span></span>
-<span><span class="co">#&gt; 4527        RUVBL2 RUVBL1       36.361 0.999    0</span></span></code></pre></div>
+<span><span class="co">#&gt;       Bait   Prey AvgIntensity  AvgP  BFDR</span></span>
+<span><span class="co">#&gt; 170 ZNHIT1 RUVBL1        9.562 0.993 0.000</span></span>
+<span><span class="co">#&gt; 105  VPS72 RUVBL1        9.415 0.991 0.007</span></span>
+<span><span class="co">#&gt; 169 ZNHIT1 RUVBL2        8.870 0.987 0.008</span></span>
+<span><span class="co">#&gt; 104  VPS72 RUVBL2        7.080 0.959 0.010</span></span>
+<span><span class="co">#&gt; 3    ACTR8 RUVBL1        3.733 0.638 0.017</span></span>
+<span><span class="co">#&gt; 223 ZNHIT1  SRCAP        8.546 0.516 0.086</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="agreement-with-native-saintexpress">Agreement with native SAINTexpress<a class="anchor" aria-label="anchor" href="#agreement-with-native-saintexpress"></a>
@@ -375,9 +377,9 @@ optimizers.</p>
 <span>  spc <span class="op">=</span> <span class="fu">native_diff</span><span class="op">(</span><span class="va">scores</span>, <span class="st">"list_spc.txt"</span><span class="op">)</span>,</span>
 <span>  int <span class="op">=</span> <span class="fu">native_diff</span><span class="op">(</span><span class="va">scores_int</span>, <span class="st">"list_int.txt"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;      AvgP  MaxP SaintScore BFDR</span></span>
-<span><span class="co">#&gt; spc 0.000 0.000      0.000 0.00</span></span>
-<span><span class="co">#&gt; int 0.004 0.004      0.004 0.02</span></span></code></pre></div>
+<span><span class="co">#&gt;      AvgP  MaxP SaintScore  BFDR</span></span>
+<span><span class="co">#&gt; spc 0.000 0.000      0.000 0.000</span></span>
+<span><span class="co">#&gt; int 0.001 0.001      0.001 0.016</span></span></code></pre></div>
 <p>The spectral-count scores match the native output exactly (both are
 rounded to two decimals). The intensity scores differ by a few
 thousandths in the probabilities and by up to 0.02 in BFDR, from small
@@ -410,7 +412,7 @@ replicate.</p>
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>default <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">scores</span><span class="op">$</span><span class="va">BFDR</span> <span class="op">&lt;=</span> <span class="fl">0.05</span><span class="op">)</span>, R1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">scores_r1</span><span class="op">$</span><span class="va">BFDR</span> <span class="op">&lt;=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; default      R1 </span></span>
-<span><span class="co">#&gt;    1666    2821</span></span></code></pre></div>
+<span><span class="co">#&gt;      56      93</span></span></code></pre></div>
 <p><strong><code>L</code></strong> (default 100, spectral counts only)
 is the number of control IPs used for the background of each prey: for
 every prey the <code>L</code> controls with the highest counts are
@@ -421,7 +423,7 @@ default uses all of them.</p>
 <code class="sourceCode R"><span><span class="va">scores_l4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_saint.html">run_saint</a></span><span class="op">(</span><span class="va">si</span>, mode <span class="op">=</span> <span class="st">"spc"</span>, L <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>default <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">scores</span><span class="op">$</span><span class="va">BFDR</span> <span class="op">&lt;=</span> <span class="fl">0.05</span><span class="op">)</span>, L4 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">scores_l4</span><span class="op">$</span><span class="va">BFDR</span> <span class="op">&lt;=</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; default      L4 </span></span>
-<span><span class="co">#&gt;    1666    1345</span></span></code></pre></div>
+<span><span class="co">#&gt;      56      54</span></span></code></pre></div>
 <p><strong><code>p2p_mapping</code></strong> gives known prey-prey
 interactions, for example from protein complex databases. A prey whose
 known partners are also detected with the bait gets a higher topology
@@ -445,20 +447,20 @@ members of the INO80 and SRCAP complexes are linked:</p>
 <span><span class="va">scores_topo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_saint.html">run_saint</a></span><span class="op">(</span><span class="va">si</span>, mode <span class="op">=</span> <span class="st">"spc"</span>, p2p_mapping <span class="op">=</span> <span class="va">p2p_mapping</span><span class="op">)</span></span>
 <span><span class="va">boosted</span> <span class="op">&lt;-</span> <span class="va">scores_topo</span><span class="op">[</span><span class="va">scores_topo</span><span class="op">$</span><span class="va">TopoAvgP</span> <span class="op">&gt;</span> <span class="va">scores_topo</span><span class="op">$</span><span class="va">AvgP</span>, <span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">boosted</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Bait"</span>, <span class="st">"Prey"</span>, <span class="st">"AvgP"</span>, <span class="st">"TopoAvgP"</span>, <span class="st">"SaintScore"</span>, <span class="st">"boosted_by"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#&gt;               Bait   Prey AvgP TopoAvgP SaintScore</span></span>
-<span><span class="co">#&gt; 29           ACTR5    YY1 0.99     1.00       1.00</span></span>
-<span><span class="co">#&gt; 33           ACTR5  H2AFZ 0.48     1.00       1.00</span></span>
-<span><span class="co">#&gt; 133          ACTR6  H2AFZ 0.49     0.67       0.67</span></span>
-<span><span class="co">#&gt; 885          ACTR8  H2AFZ 0.46     0.50       0.50</span></span>
-<span><span class="co">#&gt; 1006 RP11-529I10.4 ACTL6A 0.99     1.00       1.00</span></span>
-<span><span class="co">#&gt; 1019 RP11-529I10.4    YY1 0.90     1.00       1.00</span></span>
-<span><span class="co">#&gt;                                                                                                            boosted_by</span></span>
-<span><span class="co">#&gt; 29                               RUVBL1|RUVBL2|ACTR5|ACTR8|INO80B|INO80C|INO80D|INO80E|NFRKB|TFPT|MCRS1|UCHL5|ACTL6A|</span></span>
-<span><span class="co">#&gt; 33                                                                     SRCAP|ZNHIT1|VPS72|DMAP1|ACTL6A|RUVBL1|RUVBL2|</span></span>
-<span><span class="co">#&gt; 133                                                                    SRCAP|ZNHIT1|VPS72|DMAP1|ACTL6A|RUVBL1|RUVBL2|</span></span>
-<span><span class="co">#&gt; 885                                                                    SRCAP|ZNHIT1|VPS72|DMAP1|ACTL6A|RUVBL1|RUVBL2|</span></span>
-<span><span class="co">#&gt; 1006 RUVBL1|RUVBL2|ACTR5|ACTR8|INO80B|INO80C|INO80D|INO80E|NFRKB|TFPT|MCRS1|UCHL5|YY1|SRCAP|ZNHIT1|VPS72|H2AFZ|DMAP1|</span></span>
-<span><span class="co">#&gt; 1019                             RUVBL1|RUVBL2|ACTR5|ACTR8|INO80B|INO80C|INO80D|INO80E|NFRKB|TFPT|MCRS1|UCHL5|ACTL6A|</span></span></code></pre></div>
+<span><span class="co">#&gt;       Bait   Prey AvgP TopoAvgP SaintScore</span></span>
+<span><span class="co">#&gt; 45   ACTR8  H2AFZ 0.42      0.5        0.5</span></span>
+<span><span class="co">#&gt; 76  INO80B    YY1 0.95      1.0        1.0</span></span>
+<span><span class="co">#&gt; 103  VPS72  ACTR5 0.99      1.0        1.0</span></span>
+<span><span class="co">#&gt; 106  VPS72 INO80C 0.49      0.5        0.5</span></span>
+<span><span class="co">#&gt; 107  VPS72  ACTR8 0.99      1.0        1.0</span></span>
+<span><span class="co">#&gt; 121  VPS72    YY1 0.47      0.5        0.5</span></span>
+<span><span class="co">#&gt;                                                                               boosted_by</span></span>
+<span><span class="co">#&gt; 45                                        SRCAP|ZNHIT1|VPS72|DMAP1|ACTL6A|RUVBL1|RUVBL2|</span></span>
+<span><span class="co">#&gt; 76  RUVBL1|RUVBL2|ACTR5|ACTR8|INO80B|INO80C|INO80D|INO80E|NFRKB|TFPT|MCRS1|UCHL5|ACTL6A|</span></span>
+<span><span class="co">#&gt; 103   RUVBL1|RUVBL2|ACTR8|INO80B|INO80C|INO80D|INO80E|NFRKB|TFPT|MCRS1|UCHL5|YY1|ACTL6A|</span></span>
+<span><span class="co">#&gt; 106    RUVBL1|RUVBL2|ACTR5|ACTR8|INO80B|INO80D|INO80E|NFRKB|TFPT|MCRS1|UCHL5|YY1|ACTL6A|</span></span>
+<span><span class="co">#&gt; 107   RUVBL1|RUVBL2|ACTR5|INO80B|INO80C|INO80D|INO80E|NFRKB|TFPT|MCRS1|UCHL5|YY1|ACTL6A|</span></span>
+<span><span class="co">#&gt; 121 RUVBL1|RUVBL2|ACTR5|ACTR8|INO80B|INO80C|INO80D|INO80E|NFRKB|TFPT|MCRS1|UCHL5|ACTL6A|</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="data-in-expressionset-summarizedexperiment-qfeatures-or-anndatar">Data in ExpressionSet, SummarizedExperiment, QFeatures or
@@ -568,11 +570,11 @@ it:</p>
 <span><span class="op">)</span></span>
 <span><span class="va">eset</span></span>
 <span><span class="co">#&gt; ExpressionSet (storageMode: lockedEnvironment)</span></span>
-<span><span class="co">#&gt; assayData: 1207 features, 44 samples </span></span>
+<span><span class="co">#&gt; assayData: 78 features, 16 samples </span></span>
 <span><span class="co">#&gt;   element names: exprs </span></span>
 <span><span class="co">#&gt; protocolData: none</span></span>
 <span><span class="co">#&gt; phenoData</span></span>
-<span><span class="co">#&gt;   sampleNames: ARP5 ARP6_1 ... 9 (44 total)</span></span>
+<span><span class="co">#&gt;   sampleNames: ARP8_1 ARP8_2 ... 9 (16 total)</span></span>
 <span><span class="co">#&gt;   varLabels: bait CorT</span></span>
 <span><span class="co">#&gt;   varMetadata: labelDescription</span></span>
 <span><span class="co">#&gt; featureData: none</span></span>
@@ -582,22 +584,21 @@ it:</p>
 <span><span class="va">scores_eset</span> <span class="op">&lt;-</span> <span class="fu">run_saint_eset</span><span class="op">(</span><span class="va">eset</span><span class="op">)</span></span>
 <span><span class="va">scores_eset</span></span>
 <span><span class="co">#&gt; ExpressionSet (storageMode: lockedEnvironment)</span></span>
-<span><span class="co">#&gt; assayData: 1207 features, 27 samples </span></span>
+<span><span class="co">#&gt; assayData: 78 features, 4 samples </span></span>
 <span><span class="co">#&gt;   element names: BFDR, exprs, FoldChange, MaxP, SaintScore </span></span>
 <span><span class="co">#&gt; protocolData: none</span></span>
 <span><span class="co">#&gt; phenoData</span></span>
-<span><span class="co">#&gt;   sampleNames: ACTR5 ACTR6 ... ZNHIT6 (27 total)</span></span>
+<span><span class="co">#&gt;   sampleNames: ACTR8 INO80B VPS72 ZNHIT1</span></span>
 <span><span class="co">#&gt;   varLabels: bait</span></span>
 <span><span class="co">#&gt;   varMetadata: labelDescription</span></span>
 <span><span class="co">#&gt; featureData: none</span></span>
 <span><span class="co">#&gt; experimentData: use 'experimentData(object)'</span></span>
 <span><span class="co">#&gt; Annotation:</span></span>
-<span><span class="fu">Biobase</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/class.eSet.html" class="external-link">assayDataElement</a></span><span class="op">(</span><span class="va">scores_eset</span>, <span class="st">"BFDR"</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ACTR5"</span>, <span class="st">"ACTR8"</span>, <span class="st">"INO80B"</span><span class="op">)</span>,</span>
-<span>                                               <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RUVBL1"</span>, <span class="st">"RUVBL2"</span>, <span class="st">"INO80B"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt;        RUVBL1 RUVBL2 INO80B</span></span>
-<span><span class="co">#&gt; ACTR5    0.00      0   0.00</span></span>
-<span><span class="co">#&gt; ACTR8    0.00      0   0.00</span></span>
-<span><span class="co">#&gt; INO80B   0.37      0   0.37</span></span></code></pre></div>
+<span><span class="fu">Biobase</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Biobase/man/class.eSet.html" class="external-link">assayDataElement</a></span><span class="op">(</span><span class="va">scores_eset</span>, <span class="st">"BFDR"</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RUVBL1"</span>, <span class="st">"RUVBL2"</span>, <span class="st">"SRCAP"</span><span class="op">)</span>, <span class="op">]</span></span>
+<span><span class="co">#&gt;        ACTR8 INO80B VPS72 ZNHIT1</span></span>
+<span><span class="co">#&gt; RUVBL1     0      0     0      0</span></span>
+<span><span class="co">#&gt; RUVBL2     0      0     0      0</span></span>
+<span><span class="co">#&gt; SRCAP     NA     NA     0      0</span></span></code></pre></div>
 <p>A <code>SummarizedExperiment</code>, or an assay of a
 <code>QFeatures</code> object, converts to an <code>ExpressionSet</code>
 with the coercion that the SummarizedExperiment package provides:</p>

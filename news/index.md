@@ -31,8 +31,9 @@
   installed, instead of using
   [`stats::optim()`](https://rdrr.io/r/stats/optim.html) without notice.
 
-- The TIP49 example data and the native SAINTexpress 3.6.3 results for
-  it are in `inst/extdata/tip49`.
+- A subset of the TIP49 example data of SAINTexpress (4 baits, 9
+  controls, 78 preys) and the native SAINTexpress 3.6.3 results for it
+  are in `inst/extdata/tip49`; the tests and the vignette use it.
 
 - New package help page
   [`?saintexpress`](https://prolfqua.github.io/saintexpress/reference/saintexpress-package.md);

@@ -47,11 +47,13 @@ Related Bioconductor packages:
 
 ## The TIP49 data
 
-saintexpress ships the example data of SAINTexpress: an AP-MS experiment
-on human protein complexes containing TIP49a/TIP49b (RUVBL1/RUVBL2),
-with spectral counts for 27 baits in 35 purifications and 9 negative
-controls (Sardiu et al. 2008). The files are the headerless tables
-native SAINTexpress reads.
+saintexpress ships a subset of the example data of SAINTexpress, an
+AP-MS experiment on human protein complexes containing TIP49a/TIP49b
+(RUVBL1/RUVBL2) with spectral counts (Sardiu et al. 2008). The subset
+keeps 4 baits (ACTR8, ZNHIT1, INO80B, VPS72) in 7 purifications, all 9
+negative controls, and the 78 preys seen in at least 3 bait
+purifications (`inst/scripts/tip49.md`). The files are the headerless
+tables native SAINTexpress reads.
 
 ``` r
 library(saintexpress)
@@ -66,10 +68,10 @@ si <- list(
 )
 lapply(si, head, 3)
 #> $inter
-#>     V1    V2     V3  V4
-#> 1 ARP5 ACTR5  ACTR5 417
-#> 2 ARP5 ACTR5 RUVBL2  73
-#> 3 ARP5 ACTR5 RUVBL1  50
+#>       V1    V2     V3 V4
+#> 1 ARP8_1 ACTR8  ACTR5 10
+#> 2 ARP8_1 ACTR8 RUVBL2 16
+#> 3 ARP8_1 ACTR8 RUVBL1 38
 #> 
 #> $prey
 #>       V1  V2
@@ -78,10 +80,10 @@ lapply(si, head, 3)
 #> 3 RUVBL1 456
 #> 
 #> $bait
-#>       V1    V2 V3
-#> 1   ARP5 ACTR5  T
-#> 2 ARP6_1 ACTR6  T
-#> 3 ARP6_2 ACTR6  T
+#>       V1     V2 V3
+#> 1 ARP8_1  ACTR8  T
+#> 2 ARP8_2  ACTR8  T
+#> 3   Ies2 INO80B  T
 ```
 
 [`run_saint()`](https://prolfqua.github.io/saintexpress/reference/run_saint.md)
@@ -115,7 +117,7 @@ validate_saint_input(si, mode = "spc")
 ``` r
 scores <- run_saint(si, mode = "spc")
 dim(scores)
-#> [1] 5521   17
+#> [1] 237  17
 names(scores)
 #>  [1] "Bait"          "Prey"          "PreyGene"      "Spec"         
 #>  [5] "SpecSum"       "AvgSpec"       "NumReplicates" "ctrlCounts"   
@@ -136,26 +138,26 @@ Each row is a bait-prey pair. The columns follow the native `list.txt`:
 | `FoldChange`                                       | Mean count divided by the background mean                                              |
 | `BFDR`                                             | Bayesian false discovery rate                                                          |
 
-The highest-scoring preys of the bait RUVBL1 include its partner RUVBL2
-and subunits of chromatin-remodelling complexes that contain RUVBL1,
-such as SRCAP, EP400 and TRRAP, all absent or nearly absent from the
-controls:
+The highest-scoring preys of the bait ZNHIT1 include the other subunits
+of the SRCAP chromatin-remodelling complex it belongs to, such as SRCAP,
+ACTR6, DMAP1, RUVBL1, RUVBL2, YEATS4 and VPS72, all absent or nearly
+absent from the controls:
 
 ``` r
-ruvbl1 <- scores[scores$Bait == "RUVBL1", ]
-head(ruvbl1[order(-ruvbl1$AvgP, -ruvbl1$FoldChange),
+znhit1 <- scores[scores$Bait == "ZNHIT1", ]
+head(znhit1[order(-znhit1$AvgP, -znhit1$FoldChange),
             c("Prey", "Spec", "ctrlCounts", "AvgP", "FoldChange", "BFDR")], 10)
-#>         Prey Spec        ctrlCounts AvgP FoldChange BFDR
-#> 4516   TRRAP   54 0|0|0|0|0|0|0|0|0    1     540.00    0
-#> 4455  RUVBL2  415 6|0|1|0|0|0|0|0|0    1     533.57    0
-#> 4496   SRCAP   53 0|0|0|0|0|0|0|0|0    1     530.00    0
-#> 4515   EP400   48 0|0|0|0|0|0|0|0|0    1     480.00    0
-#> 4459  ACTL6A   28 0|0|0|0|0|0|0|0|0    1     280.00    0
-#> 4499   DMAP1   25 0|0|0|0|0|0|0|0|0    1     250.00    0
-#> 4461    ACTB   21 0|0|0|0|0|0|0|0|0    1     210.00    0
-#> 4523 C2orf44   20 0|0|0|0|0|0|0|0|0    1     200.00    0
-#> 4488   ACTR6   19 0|0|0|0|0|0|0|0|0    1     190.00    0
-#> 4500   WDR92   18 0|0|0|0|0|0|0|0|0    1     180.00    0
+#>          Prey    Spec        ctrlCounts AvgP FoldChange BFDR
+#> 223     SRCAP  190|75 0|0|0|0|0|0|0|0|0    1    1325.00    0
+#> 216     ACTR6   69|63 0|0|0|0|0|0|0|0|0    1     660.00    0
+#> 171    ACTL6A   54|37 0|0|0|0|0|0|0|0|0    1     455.00    0
+#> 226     DMAP1   54|25 0|0|0|0|0|0|0|0|0    1     395.00    0
+#> 173      ACTB   38|19 0|0|0|0|0|0|0|0|0    1     285.00    0
+#> 170    RUVBL1 138|162 3|2|0|0|0|0|0|2|0    1     192.86    0
+#> 169    RUVBL2 125|147 6|0|1|0|0|0|0|0|0    1     174.86    0
+#> 222    YEATS4    26|7 0|0|0|0|0|0|0|0|0    1     165.00    0
+#> 225     VPS72   14|17 0|0|0|0|0|0|0|0|0    1     155.00    0
+#> 185 HIST1H2BJ    7|17 0|0|0|0|0|0|0|0|0    1     120.00    0
 ```
 
 At a Bayesian FDR of 5%:
@@ -163,11 +165,11 @@ At a Bayesian FDR of 5%:
 ``` r
 hits <- scores[scores$BFDR <= 0.05, ]
 nrow(hits)
-#> [1] 1666
+#> [1] 56
 head(sort(table(hits$Bait), decreasing = TRUE))
 #> 
-#>   TP53   LIN9 ZNHIT6   TFPT  H2AFZ    UXT 
-#>    323    266    162    117     89     82
+#>  VPS72 INO80B ZNHIT1  ACTR8 
+#>     20     13     13     10
 ```
 
 ``` r
@@ -177,7 +179,7 @@ plot(
   pch = 19, cex = 0.5,
   col = ifelse(is_hit, "#B23A48", "#3D6F9966"),
   xlab = "log2 fold change over background", ylab = "AvgP",
-  main = "TIP49, spectral counts"
+  main = "TIP49 subset, spectral counts"
 )
 legend("bottomright", legend = c("BFDR <= 0.05", "other"),
        col = c("#B23A48", "#3D6F99"), pch = 19, bty = "n")
@@ -196,13 +198,13 @@ as in the SAINTexpress example.
 scores_int <- run_saint(si, mode = "int")
 head(scores_int[order(-scores_int$AvgP),
                 c("Bait", "Prey", "AvgIntensity", "AvgP", "BFDR")])
-#>               Bait   Prey AvgIntensity  AvgP BFDR
-#> 1004 RP11-529I10.4 RUVBL1       55.020 1.000    0
-#> 2019         H2AFZ RUVBL1       57.143 1.000    0
-#> 4455        RUVBL1 RUVBL2       54.684 1.000    0
-#> 5456        ZNHIT2 RUVBL2      125.805 1.000    0
-#> 5457        ZNHIT2 RUVBL1      123.764 1.000    0
-#> 4527        RUVBL2 RUVBL1       36.361 0.999    0
+#>       Bait   Prey AvgIntensity  AvgP  BFDR
+#> 170 ZNHIT1 RUVBL1        9.562 0.993 0.000
+#> 105  VPS72 RUVBL1        9.415 0.991 0.007
+#> 169 ZNHIT1 RUVBL2        8.870 0.987 0.008
+#> 104  VPS72 RUVBL2        7.080 0.959 0.010
+#> 3    ACTR8 RUVBL1        3.733 0.638 0.017
+#> 223 ZNHIT1  SRCAP        8.546 0.516 0.086
 ```
 
 ## Agreement with native SAINTexpress
@@ -224,9 +226,9 @@ rbind(
   spc = native_diff(scores, "list_spc.txt"),
   int = native_diff(scores_int, "list_int.txt")
 )
-#>      AvgP  MaxP SaintScore BFDR
-#> spc 0.000 0.000      0.000 0.00
-#> int 0.004 0.004      0.004 0.02
+#>      AvgP  MaxP SaintScore  BFDR
+#> spc 0.000 0.000      0.000 0.000
+#> int 0.001 0.001      0.001 0.016
 ```
 
 The spectral-count scores match the native output exactly (both are
@@ -262,7 +264,7 @@ all(scores_r1$AvgP == scores_r1$MaxP)
 #> [1] TRUE
 c(default = sum(scores$BFDR <= 0.05), R1 = sum(scores_r1$BFDR <= 0.05))
 #> default      R1 
-#>    1666    2821
+#>      56      93
 ```
 
 **`L`** (default 100, spectral counts only) is the number of control IPs
@@ -275,7 +277,7 @@ controls, so the default uses all of them.
 scores_l4 <- run_saint(si, mode = "spc", L = 4)
 c(default = sum(scores$BFDR <= 0.05), L4 = sum(scores_l4$BFDR <= 0.05))
 #> default      L4 
-#>    1666    1345
+#>      56      54
 ```
 
 **`p2p_mapping`** gives known prey-prey interactions, for example from
@@ -301,20 +303,20 @@ p2p_mapping <- lapply(prey_ids, function(prey) {
 scores_topo <- run_saint(si, mode = "spc", p2p_mapping = p2p_mapping)
 boosted <- scores_topo[scores_topo$TopoAvgP > scores_topo$AvgP, ]
 head(boosted[, c("Bait", "Prey", "AvgP", "TopoAvgP", "SaintScore", "boosted_by")])
-#>               Bait   Prey AvgP TopoAvgP SaintScore
-#> 29           ACTR5    YY1 0.99     1.00       1.00
-#> 33           ACTR5  H2AFZ 0.48     1.00       1.00
-#> 133          ACTR6  H2AFZ 0.49     0.67       0.67
-#> 885          ACTR8  H2AFZ 0.46     0.50       0.50
-#> 1006 RP11-529I10.4 ACTL6A 0.99     1.00       1.00
-#> 1019 RP11-529I10.4    YY1 0.90     1.00       1.00
-#>                                                                                                            boosted_by
-#> 29                               RUVBL1|RUVBL2|ACTR5|ACTR8|INO80B|INO80C|INO80D|INO80E|NFRKB|TFPT|MCRS1|UCHL5|ACTL6A|
-#> 33                                                                     SRCAP|ZNHIT1|VPS72|DMAP1|ACTL6A|RUVBL1|RUVBL2|
-#> 133                                                                    SRCAP|ZNHIT1|VPS72|DMAP1|ACTL6A|RUVBL1|RUVBL2|
-#> 885                                                                    SRCAP|ZNHIT1|VPS72|DMAP1|ACTL6A|RUVBL1|RUVBL2|
-#> 1006 RUVBL1|RUVBL2|ACTR5|ACTR8|INO80B|INO80C|INO80D|INO80E|NFRKB|TFPT|MCRS1|UCHL5|YY1|SRCAP|ZNHIT1|VPS72|H2AFZ|DMAP1|
-#> 1019                             RUVBL1|RUVBL2|ACTR5|ACTR8|INO80B|INO80C|INO80D|INO80E|NFRKB|TFPT|MCRS1|UCHL5|ACTL6A|
+#>       Bait   Prey AvgP TopoAvgP SaintScore
+#> 45   ACTR8  H2AFZ 0.42      0.5        0.5
+#> 76  INO80B    YY1 0.95      1.0        1.0
+#> 103  VPS72  ACTR5 0.99      1.0        1.0
+#> 106  VPS72 INO80C 0.49      0.5        0.5
+#> 107  VPS72  ACTR8 0.99      1.0        1.0
+#> 121  VPS72    YY1 0.47      0.5        0.5
+#>                                                                               boosted_by
+#> 45                                        SRCAP|ZNHIT1|VPS72|DMAP1|ACTL6A|RUVBL1|RUVBL2|
+#> 76  RUVBL1|RUVBL2|ACTR5|ACTR8|INO80B|INO80C|INO80D|INO80E|NFRKB|TFPT|MCRS1|UCHL5|ACTL6A|
+#> 103   RUVBL1|RUVBL2|ACTR8|INO80B|INO80C|INO80D|INO80E|NFRKB|TFPT|MCRS1|UCHL5|YY1|ACTL6A|
+#> 106    RUVBL1|RUVBL2|ACTR5|ACTR8|INO80B|INO80D|INO80E|NFRKB|TFPT|MCRS1|UCHL5|YY1|ACTL6A|
+#> 107   RUVBL1|RUVBL2|ACTR5|INO80B|INO80C|INO80D|INO80E|NFRKB|TFPT|MCRS1|UCHL5|YY1|ACTL6A|
+#> 121 RUVBL1|RUVBL2|ACTR5|ACTR8|INO80B|INO80C|INO80D|INO80E|NFRKB|TFPT|MCRS1|UCHL5|ACTL6A|
 ```
 
 ## Data in ExpressionSet, SummarizedExperiment, QFeatures or anndataR
@@ -398,11 +400,11 @@ eset <- Biobase::ExpressionSet(
 )
 eset
 #> ExpressionSet (storageMode: lockedEnvironment)
-#> assayData: 1207 features, 44 samples 
+#> assayData: 78 features, 16 samples 
 #>   element names: exprs 
 #> protocolData: none
 #> phenoData
-#>   sampleNames: ARP5 ARP6_1 ... 9 (44 total)
+#>   sampleNames: ARP8_1 ARP8_2 ... 9 (16 total)
 #>   varLabels: bait CorT
 #>   varMetadata: labelDescription
 #> featureData: none
@@ -412,22 +414,21 @@ eset
 scores_eset <- run_saint_eset(eset)
 scores_eset
 #> ExpressionSet (storageMode: lockedEnvironment)
-#> assayData: 1207 features, 27 samples 
+#> assayData: 78 features, 4 samples 
 #>   element names: BFDR, exprs, FoldChange, MaxP, SaintScore 
 #> protocolData: none
 #> phenoData
-#>   sampleNames: ACTR5 ACTR6 ... ZNHIT6 (27 total)
+#>   sampleNames: ACTR8 INO80B VPS72 ZNHIT1
 #>   varLabels: bait
 #>   varMetadata: labelDescription
 #> featureData: none
 #> experimentData: use 'experimentData(object)'
 #> Annotation:
-Biobase::assayDataElement(scores_eset, "BFDR")[c("ACTR5", "ACTR8", "INO80B"),
-                                               c("RUVBL1", "RUVBL2", "INO80B")]
-#>        RUVBL1 RUVBL2 INO80B
-#> ACTR5    0.00      0   0.00
-#> ACTR8    0.00      0   0.00
-#> INO80B   0.37      0   0.37
+Biobase::assayDataElement(scores_eset, "BFDR")[c("RUVBL1", "RUVBL2", "SRCAP"), ]
+#>        ACTR8 INO80B VPS72 ZNHIT1
+#> RUVBL1     0      0     0      0
+#> RUVBL2     0      0     0      0
+#> SRCAP     NA     NA     0      0
 ```
 
 A `SummarizedExperiment`, or an assay of a `QFeatures` object, converts

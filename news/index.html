@@ -39,7 +39,7 @@
 <li><p>Id columns given as factors are treated like character ids. Before, a factor <code>baitId</code> stopped the bait’s own prey from being masked, as native SAINTexpress does.</p></li>
 <li><p><code><a href="../reference/run_saint.html">run_saint()</a></code> has the documented arguments <code>R</code>, <code>L</code> and <code>p2p_mapping</code> instead of <code>...</code>, and checks them. <code>frequency</code> is removed: it had no effect, as in native SAINTexpress 3.6.3. <code>L</code> applies to spectral counts only.</p></li>
 <li><p><code>optimizer = "nloptr"</code> stops with an error when nloptr is not installed, instead of using <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">stats::optim()</a></code> without notice.</p></li>
-<li><p>The TIP49 example data and the native SAINTexpress 3.6.3 results for it are in <code>inst/extdata/tip49</code>.</p></li>
+<li><p>A subset of the TIP49 example data of SAINTexpress (4 baits, 9 controls, 78 preys) and the native SAINTexpress 3.6.3 results for it are in <code>inst/extdata/tip49</code>; the tests and the vignette use it.</p></li>
 <li><p>New package help page <code><a href="../reference/saintexpress-package.html">?saintexpress</a></code>; <code><a href="../reference/run_saint.html">?run_saint</a></code> documents the input and output columns.</p></li>
 <li><p>The vignette introduces AP-MS interaction scoring, runs on the TIP49 data, compares the scores with native SAINTexpress, explains the tuning arguments and shows a wrapper that scores an <code>ExpressionSet</code> and returns the scores as one (Biobase in Suggests).</p></li>
 </ul></div>
