@@ -34,11 +34,21 @@ validate_saint_input <- function(si, mode = c("spc", "int")) {
     .saint_check_list(si)
     tables <- .saint_resolve_tables(si)
     .saint_check_ids(tables$inter, c("ipId", "baitId", "preyId"), "inter")
-    .saint_check_ids(tables$prey, "preyId", "prey")
+    .saint_check_ids(tables$prey, c("preyId", "preyGeneId"), "prey")
     .saint_check_ids(tables$bait, c("ipId", "baitId", "CorT"), "bait")
     .saint_check_quant(tables$inter$quant, mode)
     .saint_check_unique(tables$prey$preyId, "prey", "preyId")
     .saint_check_unique(tables$bait$ipId, "bait", "ipId")
+    pair <- anyDuplicated(paste(tables$inter$ipId, tables$inter$preyId, sep = "\r"))
+    if (pair) {
+        stop(
+            "inter: prey ",
+            tables$inter$preyId[[pair]],
+            " appears more than once in IP ",
+            tables$inter$ipId[[pair]],
+            "."
+        )
+    }
     .saint_check_cort(tables$bait$CorT)
     .saint_check_links(tables)
     invisible(TRUE)
@@ -61,11 +71,11 @@ validate_saint_input <- function(si, mode = c("spc", "int")) {
 }
 
 .saint_check_quant <- function(quant, mode) {
-    if (!is.numeric(quant) || anyNA(quant)) {
-        stop("inter: 'quant' must be numeric without missing values.")
+    if (!is.numeric(quant) || !all(is.finite(quant))) {
+        stop("inter: 'quant' must be numeric and finite, without missing values.")
     }
-    if (mode == "spc" && any(quant < 0)) {
-        stop("inter: spectral counts in 'quant' must be >= 0.")
+    if (mode == "spc" && any(quant < 0 | quant != round(quant))) {
+        stop("inter: spectral counts in 'quant' must be whole numbers >= 0.")
     }
     if (mode == "int" && any(quant <= 0)) {
         stop("inter: intensities in 'quant' must be > 0.")
@@ -131,21 +141,19 @@ validate_saint_input <- function(si, mode = c("spc", "int")) {
     df
 }
 
+# Resolved tables, with all id columns as character.
 .saint_resolve_tables <- function(si) {
+    as_character <- function(df, columns) {
+        df[columns] <- lapply(df[columns], as.character)
+        df
+    }
+    inter <- .saint_resolve_columns(si$inter, c("ipId", "baitId", "preyId", "quant"), "inter")
+    prey <- .saint_normalize_prey_table(as.data.frame(si$prey, stringsAsFactors = FALSE))
+    bait <- .saint_resolve_columns(si$bait, c("ipId", "baitId", "CorT"), "bait")
     list(
-        inter = .saint_resolve_columns(
-            si$inter,
-            c("ipId", "baitId", "preyId", "quant"),
-            "inter"
-        ),
-        prey = .saint_normalize_prey_table(
-            as.data.frame(si$prey, stringsAsFactors = FALSE)
-        ),
-        bait = .saint_resolve_columns(
-            si$bait,
-            c("ipId", "baitId", "CorT"),
-            "bait"
-        )
+        inter = as_character(inter, c("ipId", "baitId", "preyId")),
+        prey = as_character(prey, c("preyId", "preyGeneId")),
+        bait = as_character(bait, c("ipId", "baitId", "CorT"))
     )
 }
 
@@ -155,10 +163,17 @@ validate_saint_input <- function(si, mode = c("spc", "int")) {
     if (all(c("preyId", "preyGeneId") %in% names(prey))) {
         return(prey)
     }
-    if ("preyId" %in% names(prey) && names(prey)[[1]] != "preyId") {
+    slot <- c(preyId = 1L, preyLength = 2L, preyGeneId = if (ncol(prey) == 2L) 2L else 3L)
+    position <- match(names(slot), names(prey))
+    misplaced <- !is.na(position) & position != slot
+    if (any(misplaced)) {
         stop(
-            "prey: column 'preyId' must come first unless the table also ",
-            "has a 'preyGeneId' column"
+            "prey: column '",
+            names(slot)[misplaced][[1]],
+            "' is not at position ",
+            slot[misplaced][[1]],
+            ". Name both preyId and preyGeneId, or give ",
+            "preyId, preyLength, preyGeneId in this order."
         )
     }
     out <- data.frame(
@@ -215,7 +230,7 @@ validate_saint_input <- function(si, mode = c("spc", "int")) {
 
 .saint_check_count <- function(x, name) {
     scalar <- is.numeric(x) && length(x) == 1L
-    if (!scalar || !isTRUE(x >= 1 && x == round(x))) {
+    if (!scalar || !isTRUE(is.finite(x) && x >= 1 && x == round(x))) {
         stop(name, " must be a single positive integer.")
     }
 }

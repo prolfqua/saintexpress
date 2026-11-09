@@ -35,7 +35,24 @@ test_that("a required column name at the wrong position is an error", {
 
     si <- .make_synthetic_si()
     si$prey <- si$prey[, c("preyLength", "preyId")]
-    expect_error(validate_saint_input(si), "prey: column 'preyId' must come first")
+    expect_error(validate_saint_input(si), "prey: column 'preyId' is not at position 1")
+
+    si <- .make_synthetic_si()
+    si$prey <- data.frame(Protein = si$prey$preyId, preyGeneId = "G", preyLength = 500)
+    expect_error(validate_saint_input(si), "prey: column 'preyLength' is not at position 2")
+})
+
+test_that("factor id columns are scored like character ids", {
+    si <- .make_synthetic_si()
+    si$prey$preyGeneId[[1]] <- "BaitA"
+    as_factors <- si
+    as_factors$inter[c("ipId", "baitId", "preyId")] <- lapply(si$inter[c("ipId", "baitId", "preyId")], factor)
+    as_factors$bait[] <- lapply(si$bait, factor)
+    as_factors$prey$preyGeneId <- factor(si$prey$preyGeneId)
+    out <- run_saint(as_factors)
+    expect_identical(out, run_saint(si))
+    self <- out[out$Bait == "BaitA" & out$Prey == "Prey1", ]
+    expect_equal(self$Spec, "0|0")
 })
 
 test_that("validate_saint_input rejects malformed lists", {
@@ -60,11 +77,24 @@ test_that("validate_saint_input checks the columns of inter", {
 
     si <- .make_synthetic_si()
     si$inter$quant[[1]] <- NA
-    expect_error(validate_saint_input(si), "'quant' must be numeric without missing values")
+    expect_error(validate_saint_input(si), "'quant' must be numeric and finite, without missing values")
+
+    si <- .make_synthetic_si_int()
+    si$inter$quant[[1]] <- Inf
+    expect_error(validate_saint_input(si, mode = "int"), "'quant' must be numeric and finite")
 
     si <- .make_synthetic_si()
     si$inter$quant[[1]] <- -1
-    expect_error(validate_saint_input(si, mode = "spc"), "spectral counts in 'quant' must be >= 0")
+    expect_error(validate_saint_input(si, mode = "spc"), "spectral counts in 'quant' must be whole numbers >= 0")
+
+    si <- .make_synthetic_si()
+    si$inter$quant[[1]] <- 1.9
+    expect_error(validate_saint_input(si, mode = "spc"), "spectral counts in 'quant' must be whole numbers >= 0")
+    expect_true(validate_saint_input(si, mode = "int"))
+
+    si <- .make_synthetic_si()
+    si$inter <- rbind(si$inter, si$inter[1, ])
+    expect_error(validate_saint_input(si), "inter: prey Prey1 appears more than once in IP IP1")
 
     si <- .make_synthetic_si_int()
     si$inter$quant[[1]] <- 0
@@ -91,6 +121,10 @@ test_that("validate_saint_input checks bait and prey tables", {
     si <- .make_synthetic_si()
     si$bait$ipId[[2]] <- si$bait$ipId[[1]]
     expect_error(validate_saint_input(si), "bait: duplicated ipId")
+
+    si <- .make_synthetic_si()
+    si$prey$preyGeneId[[1]] <- NA
+    expect_error(validate_saint_input(si), "prey: 'preyGeneId' must be an id column")
 })
 
 test_that("validate_saint_input checks that the tables fit together", {

@@ -81,7 +81,7 @@ name when all required names are present, otherwise by position, as here.
 | `inter` | `ipId` | character | Purification (IP) |
 | | `baitId` | character | Bait of the IP |
 | | `preyId` | character | Prey |
-| | `quant` | numeric | Spectral count (>= 0) or intensity (> 0) |
+| | `quant` | numeric | Spectral count (whole number >= 0) or intensity (> 0) |
 | `prey` | `preyId` | character | Prey, unique |
 | | `preyLength` | numeric | Protein length (optional, not used) |
 | | `preyGeneId` | character | Gene name (optional, defaults to `preyId`) |

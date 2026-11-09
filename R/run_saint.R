@@ -42,7 +42,7 @@
 #' | `ipId` | character | IP identifier, as in `bait$ipId` |
 #' | `baitId` | character | Bait of the IP, as in `bait$baitId` |
 #' | `preyId` | character | Prey identifier, as in `prey$preyId` |
-#' | `quant` | numeric | Spectral count, >= 0 (`"spc"`), or intensity, > 0 (`"int"`) |
+#' | `quant` | numeric | Spectral count, whole number >= 0 (`"spc"`), or intensity, > 0 (`"int"`) |
 #'
 #' `prey`, one row per prey:
 #' | Column | Type | Content |
@@ -63,9 +63,9 @@
 #' | `baitId` | character | Bait name; replicate IPs share it |
 #' | `CorT` | character | `"T"` for a test IP, `"C"` for a negative control |
 #'
-#' Every `inter$ipId` must be in `bait`, every `inter$preyId` in `prey`, and
-#' `inter$baitId` must agree with `bait`. At least one test and one control IP
-#' are needed.
+#' Every `inter$ipId` must be in `bait`, every `inter$preyId` in `prey`, each
+#' prey at most once per IP, and `inter$baitId` must agree with `bait`. At
+#' least one test and one control IP are needed.
 #'
 #' @return A data frame with one row per bait-prey pair, with the columns of
 #' the native SAINTexpress `list.txt`:

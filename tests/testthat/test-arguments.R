@@ -42,6 +42,7 @@ test_that("run_saint rejects invalid R, L and p2p_mapping", {
     expect_error(run_saint(si, R = c(1L, 2L)), "R must be a single positive integer")
     expect_error(run_saint(si, L = 0L), "L must be a single positive integer")
     expect_error(run_saint(si, L = NA), "L must be a single positive integer")
+    expect_error(run_saint(si, R = Inf), "R must be a single positive integer")
 
     nprey <- nrow(si$prey)
     expect_error(run_saint(si, p2p_mapping = list(2L)), "p2p_mapping must be NULL")

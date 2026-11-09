@@ -85,7 +85,7 @@ position. Further columns are ignored.
    \code{ipId} \tab character \tab IP identifier, as in \code{bait$ipId} \cr
    \code{baitId} \tab character \tab Bait of the IP, as in \code{bait$baitId} \cr
    \code{preyId} \tab character \tab Prey identifier, as in \code{prey$preyId} \cr
-   \code{quant} \tab numeric \tab Spectral count, >= 0 (\code{"spc"}), or intensity, > 0 (\code{"int"}) \cr
+   \code{quant} \tab numeric \tab Spectral count, whole number >= 0 (\code{"spc"}), or intensity, > 0 (\code{"int"}) \cr
 }
 
 
@@ -110,9 +110,9 @@ the second is \code{preyLength} and the third \code{preyGeneId}.
 }
 
 
-Every \code{inter$ipId} must be in \code{bait}, every \code{inter$preyId} in \code{prey}, and
-\code{inter$baitId} must agree with \code{bait}. At least one test and one control IP
-are needed.
+Every \code{inter$ipId} must be in \code{bait}, every \code{inter$preyId} in \code{prey}, each
+prey at most once per IP, and \code{inter$baitId} must agree with \code{bait}. At
+least one test and one control IP are needed.
 }
 
 \examples{
