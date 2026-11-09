@@ -35,8 +35,8 @@
 
 - The vignette introduces AP-MS interaction scoring, runs on the TIP49
   data, compares the scores with native SAINTexpress, explains the
-  tuning arguments and shows a wrapper that scores a
-  `SummarizedExperiment`.
+  tuning arguments and shows a wrapper that scores an `ExpressionSet`
+  and returns the scores as one (Biobase in Suggests).
 
 ## saintexpress 0.99.2
 

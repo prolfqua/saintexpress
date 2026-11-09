@@ -317,62 +317,70 @@ head(boosted[, c("Bait", "Prey", "AvgP", "TopoAvgP", "SaintScore", "boosted_by")
 #> 1019                             RUVBL1|RUVBL2|ACTR5|ACTR8|INO80B|INO80C|INO80D|INO80E|NFRKB|TFPT|MCRS1|UCHL5|ACTL6A|
 ```
 
-## Data in SummarizedExperiment, QFeatures, ExpressionSet or anndataR
+## Data in ExpressionSet, SummarizedExperiment, QFeatures or anndataR
 
-Quantitative proteomics data are often held in a container: a
-`SummarizedExperiment`, an assay of a `QFeatures` object, an
-`ExpressionSet`, or an `anndataR` object when data are exchanged with
-Python. saintexpress depends on none of them. Each holds the three
-pieces
+Quantitative proteomics data are often held in a container: an
+`ExpressionSet`, a `SummarizedExperiment`, an assay of a `QFeatures`
+object, or an `anndataR` object when data are exchanged with Python.
+saintexpress depends on none of them. Each holds the three pieces
 [`run_saint()`](https://prolfqua.github.io/saintexpress/reference/run_saint.md)
 needs:
 
-| Piece                           | SummarizedExperiment, QFeatures assay | ExpressionSet | anndataR     |
-|---------------------------------|---------------------------------------|---------------|--------------|
-| Quantity matrix, preys x IPs    | `assay(se)`                           | `exprs(eset)` | `t(adata$X)` |
-| Sample table, one row per IP    | `colData(se)`                         | `pData(eset)` | `adata$obs`  |
-| Feature table, one row per prey | `rowData(se)`                         | `fData(eset)` | `adata$var`  |
+| Piece                           | ExpressionSet | SummarizedExperiment, QFeatures assay | anndataR     |
+|---------------------------------|---------------|---------------------------------------|--------------|
+| Quantity matrix, preys x IPs    | `exprs(eset)` | `assay(se)`                           | `t(adata$X)` |
+| Sample table, one row per IP    | `pData(eset)` | `colData(se)`                         | `adata$obs`  |
+| Feature table, one row per prey | `fData(eset)` | `rowData(se)`                         | `adata$var`  |
 
-The function below scores a `SummarizedExperiment` and returns the
-scores as a `SummarizedExperiment` with preys in rows and baits in
-columns. It needs the SummarizedExperiment package; the same steps work
-with the accessors of the other containers.
+The function below scores an `ExpressionSet` and returns the scores as
+an `ExpressionSet` with preys in rows and baits in columns: `exprs()`
+holds `AvgP`, and `MaxP`, `SaintScore`, `FoldChange` and `BFDR` are
+further assay data elements. It needs the Biobase package.
 
 ``` r
-run_saint_se <- function(se, assay = 1, bait = "bait", cort = "CorT",
-                         mode = "spc", ...) {
-  quant <- SummarizedExperiment::assay(se, assay)
-  samples <- SummarizedExperiment::colData(se)
-  inter <- as.data.frame(as.table(quant), stringsAsFactors = FALSE)
-  names(inter) <- c("preyId", "ipId", "quant")
-  inter <- inter[!is.na(inter$quant) & inter$quant > 0, ]
-  inter$baitId <- samples[[bait]][match(inter$ipId, colnames(se))]
+run_saint_eset <- function(eset, bait = "bait", cort = "CorT",
+                           mode = "spc", ...) {
+  quant <- Biobase::exprs(eset)
+  samples <- Biobase::pData(eset)
+  detected <- which(!is.na(quant) & quant > 0, arr.ind = TRUE)
   si <- list(
-    inter = inter[, c("ipId", "baitId", "preyId", "quant")],
-    prey = data.frame(preyId = rownames(se)),
-    bait = data.frame(ipId = colnames(se), baitId = samples[[bait]],
+    inter = data.frame(
+      ipId = colnames(quant)[detected[, 2]],
+      baitId = samples[[bait]][detected[, 2]],
+      preyId = rownames(quant)[detected[, 1]],
+      quant = quant[detected]
+    ),
+    prey = data.frame(preyId = rownames(quant)),
+    bait = data.frame(ipId = colnames(quant), baitId = samples[[bait]],
                       CorT = samples[[cort]])
   )
   scores <- run_saint(si, mode = mode, ...)
 
   baits <- sort(unique(scores$Bait))
-  cell <- cbind(match(scores$Prey, rownames(se)), match(scores$Bait, baits))
+  cell <- cbind(match(scores$Prey, rownames(quant)), match(scores$Bait, baits))
   to_matrix <- function(column) {
-    m <- matrix(NA_real_, nrow(se), length(baits),
-                dimnames = list(rownames(se), baits))
+    m <- matrix(NA_real_, nrow(quant), length(baits),
+                dimnames = list(rownames(quant), baits))
     m[cell] <- scores[[column]]
     m
   }
-  columns <- c("AvgP", "MaxP", "SaintScore", "FoldChange", "BFDR")
-  SummarizedExperiment::SummarizedExperiment(
-    assays = setNames(lapply(columns, to_matrix), columns),
-    rowData = SummarizedExperiment::rowData(se),
-    colData = data.frame(bait = baits, row.names = baits)
+  Biobase::ExpressionSet(
+    assayData = Biobase::assayDataNew(
+      exprs = to_matrix("AvgP"),
+      MaxP = to_matrix("MaxP"),
+      SaintScore = to_matrix("SaintScore"),
+      FoldChange = to_matrix("FoldChange"),
+      BFDR = to_matrix("BFDR")
+    ),
+    phenoData = Biobase::AnnotatedDataFrame(
+      data.frame(bait = baits, row.names = baits)
+    ),
+    featureData = Biobase::featureData(eset)
   )
 }
 ```
 
-We put the TIP49 counts into a `SummarizedExperiment` and score it:
+We put the TIP49 counts into an `ExpressionSet` and score it:
 
 ``` r
 counts <- tapply(
@@ -381,38 +389,53 @@ counts <- tapply(
        factor(si$inter[[1]], levels = si$bait[[1]])),
   sum
 )
-se <- SummarizedExperiment::SummarizedExperiment(
-  assays = list(counts = counts),
-  rowData = data.frame(length = si$prey[[2]], row.names = si$prey[[1]]),
-  colData = data.frame(bait = si$bait[[2]], CorT = si$bait[[3]],
-                       row.names = si$bait[[1]])
+eset <- Biobase::ExpressionSet(
+  counts,
+  phenoData = Biobase::AnnotatedDataFrame(
+    data.frame(bait = si$bait[[2]], CorT = si$bait[[3]],
+               row.names = si$bait[[1]])
+  )
 )
-se
-#> class: SummarizedExperiment 
-#> dim: 1207 44 
-#> metadata(0):
-#> assays(1): counts
-#> rownames(1207): ACTR5 RUVBL2 ... TTC27 ECD
-#> rowData names(1): length
-#> colnames(44): ARP5 ARP6_1 ... 8 9
-#> colData names(2): bait CorT
+eset
+#> ExpressionSet (storageMode: lockedEnvironment)
+#> assayData: 1207 features, 44 samples 
+#>   element names: exprs 
+#> protocolData: none
+#> phenoData
+#>   sampleNames: ARP5 ARP6_1 ... 9 (44 total)
+#>   varLabels: bait CorT
+#>   varMetadata: labelDescription
+#> featureData: none
+#> experimentData: use 'experimentData(object)'
+#> Annotation:
 
-scores_se <- run_saint_se(se)
-scores_se
-#> class: SummarizedExperiment 
-#> dim: 1207 27 
-#> metadata(0):
-#> assays(5): AvgP MaxP SaintScore FoldChange BFDR
-#> rownames(1207): ACTR5 RUVBL2 ... TTC27 ECD
-#> rowData names(1): length
-#> colnames(27): ACTR5 ACTR6 ... ZNHIT2 ZNHIT6
-#> colData names(1): bait
-SummarizedExperiment::assay(scores_se, "BFDR")[c("ACTR5", "ACTR8", "INO80B"),
-                                              c("RUVBL1", "RUVBL2", "INO80B")]
+scores_eset <- run_saint_eset(eset)
+scores_eset
+#> ExpressionSet (storageMode: lockedEnvironment)
+#> assayData: 1207 features, 27 samples 
+#>   element names: BFDR, exprs, FoldChange, MaxP, SaintScore 
+#> protocolData: none
+#> phenoData
+#>   sampleNames: ACTR5 ACTR6 ... ZNHIT6 (27 total)
+#>   varLabels: bait
+#>   varMetadata: labelDescription
+#> featureData: none
+#> experimentData: use 'experimentData(object)'
+#> Annotation:
+Biobase::assayDataElement(scores_eset, "BFDR")[c("ACTR5", "ACTR8", "INO80B"),
+                                               c("RUVBL1", "RUVBL2", "INO80B")]
 #>        RUVBL1 RUVBL2 INO80B
 #> ACTR5    0.00      0   0.00
 #> ACTR8    0.00      0   0.00
 #> INO80B   0.37      0   0.37
+```
+
+A `SummarizedExperiment`, or an assay of a `QFeatures` object, converts
+to an `ExpressionSet` with the coercion that the SummarizedExperiment
+package provides:
+
+``` r
+scores_se <- run_saint_eset(as(se, "ExpressionSet"))
 ```
 
 ## See also
@@ -464,28 +487,15 @@ sessionInfo()
 #> [1] saintexpress_0.99.4
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] Matrix_1.7-6                jsonlite_2.0.0             
-#>  [3] compiler_4.6.2              SummarizedExperiment_1.42.0
-#>  [5] Biobase_2.72.0              GenomicRanges_1.64.0       
-#>  [7] jquerylib_0.1.4             textshaping_1.0.5          
-#>  [9] systemfonts_1.3.2           IRanges_2.46.0             
-#> [11] Seqinfo_1.2.0               yaml_2.3.12                
-#> [13] fastmap_1.2.0               lattice_0.23-1             
-#> [15] R6_2.6.1                    XVector_0.52.0             
-#> [17] S4Arrays_1.12.1             generics_0.1.4             
-#> [19] knitr_1.52                  BiocGenerics_0.58.1        
-#> [21] htmlwidgets_1.6.4           DelayedArray_0.38.2        
-#> [23] nloptr_2.2.1                desc_1.4.3                 
-#> [25] MatrixGenerics_1.24.0       bslib_0.12.0               
-#> [27] rlang_1.3.0                 cachem_1.1.0               
-#> [29] xfun_0.62                   fs_2.1.0                   
-#> [31] sass_0.4.10                 otel_0.3.0                 
-#> [33] SparseArray_1.12.3          cli_3.6.6                  
-#> [35] pkgdown_2.2.1               digest_0.6.39              
-#> [37] grid_4.6.2                  lifecycle_1.0.5            
-#> [39] S4Vectors_0.50.3            evaluate_1.0.5             
-#> [41] ragg_1.5.2                  abind_1.4-8                
-#> [43] stats4_4.6.2                rmarkdown_2.32             
-#> [45] matrixStats_1.5.0           tools_4.6.2                
-#> [47] htmltools_0.5.9
+#>  [1] cli_3.6.6           knitr_1.52          rlang_1.3.0        
+#>  [4] xfun_0.62           otel_0.3.0          generics_0.1.4     
+#>  [7] textshaping_1.0.5   jsonlite_2.0.0      htmltools_0.5.9    
+#> [10] ragg_1.5.2          sass_0.4.10         rmarkdown_2.32     
+#> [13] Biobase_2.72.0      evaluate_1.0.5      jquerylib_0.1.4    
+#> [16] fastmap_1.2.0       yaml_2.3.12         lifecycle_1.0.5    
+#> [19] compiler_4.6.2      fs_2.1.0            htmlwidgets_1.6.4  
+#> [22] systemfonts_1.3.2   digest_0.6.39       nloptr_2.2.1       
+#> [25] R6_2.6.1            bslib_0.12.0        tools_4.6.2        
+#> [28] pkgdown_2.2.1       BiocGenerics_0.58.1 cachem_1.1.0       
+#> [31] desc_1.4.3
 ```
