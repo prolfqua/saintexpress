@@ -2,7 +2,7 @@
 # between test files.
 
 tip49_dir <- function() {
-    system.file("extdata", "tip49", package = "saintexpress")
+    system.file("extdata", "tip49", package = "SAINTexpress")
 }
 
 read_tip49 <- function() {

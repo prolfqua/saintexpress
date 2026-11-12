@@ -1,4 +1,4 @@
-citHeader("To cite saintexpress in publications, please use:")
+citHeader("To cite SAINTexpress in publications, please use:")
 
 c(bibentry(
     bibtype = "Article",

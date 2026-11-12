@@ -1,8 +1,8 @@
 ---
-title: "Scoring AP-MS interactions with saintexpress"
+title: "Scoring AP-MS interactions with SAINTexpress"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Scoring AP-MS interactions with saintexpress}
+  %\VignetteIndexEntry{Scoring AP-MS interactions with SAINTexpress}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -37,7 +37,7 @@ building a network. SAINT does not compare abundances between conditions;
 that is a differential-expression question.
 
 SAINTexpress has so far been available as a C++ program, run outside R on
-text files. saintexpress implements both of its models in R, so interaction
+text files. This package implements both of its models in R, so interaction
 scoring can be part of an R analysis, run on every platform, and start from
 data already loaded in R, as a matrix or a long table (see the last sections).
 The scores agree with the native SAINTexpress 3.6.3 program (see below).
@@ -46,7 +46,7 @@ Related packages:
 
 - **artMS** converts MaxQuant results into the input files of SAINTexpress
   (`artmsEvidenceToSaintExpress()`); the scoring itself then needs the native
-  program. saintexpress can score these tables directly in R.
+  program. This package scores these tables directly in R.
 - **apComplex** estimates protein complex membership, as a bipartite graph of
   proteins and complexes, from bait-prey observations. It answers a different
   question: which proteins form complexes, rather than how likely each single
@@ -54,7 +54,7 @@ Related packages:
 
 ## The TIP49 data
 
-saintexpress ships a subset of the example data of SAINTexpress, an AP-MS
+The package ships a subset of the example data of SAINTexpress, an AP-MS
 experiment on human protein complexes containing TIP49a/TIP49b (RUVBL1/RUVBL2)
 with spectral counts (Sardiu et al. 2008). The subset keeps 4 baits (ACTR8,
 ZNHIT1, INO80B, VPS72) in 7 purifications, all 9 negative controls, and the 78
@@ -62,8 +62,8 @@ preys seen in at least 3 bait purifications (`inst/scripts/tip49.md`). The
 files are the headerless tables native SAINTexpress reads.
 
 ```{r tip49}
-library(saintexpress)
-tip49 <- system.file("extdata", "tip49", package = "saintexpress")
+library(SAINTexpress)
+tip49 <- system.file("extdata", "tip49", package = "SAINTexpress")
 read_dat <- function(file) {
   read.delim(file.path(tip49, file), header = FALSE, stringsAsFactors = FALSE)
 }

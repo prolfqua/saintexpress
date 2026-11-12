@@ -1,12 +1,14 @@
-# saintexpress 1.0.0
+# SAINTexpress 1.0.0
 
 * First CRAN release.
 
-* saintexpress suggests no Bioconductor package any more: Biobase and BiocStyle are gone from Suggests.
+* The package is renamed from saintexpress to SAINTexpress, the name of the program it implements: load it with `library(SAINTexpress)`.
+
+* SAINTexpress suggests no Bioconductor package any more: Biobase and BiocStyle are gone from Suggests.
 
 * The vignette no longer scores an `ExpressionSet`. It builds the three SAINT tables from a quantity matrix with a sample table (`col_data`) and a feature table (`row_data`), and from one long table with one row per protein and sample, and shows that both give the same scores.
 
-# saintexpress 0.99.4
+# SAINTexpress 0.99.4
 
 * Input columns are matched by name. Before, the first four columns of `inter` and the first three of `bait` were renamed by position, so correctly named columns in another order gave wrong scores without an error. Tables without the required names, such as the headerless native input files, are still matched by position; a required name at the wrong position is now an error.
 
@@ -24,11 +26,11 @@
 
 * The vignette introduces AP-MS interaction scoring, runs on the TIP49 data, compares the scores with native SAINTexpress, explains the tuning arguments and shows a wrapper that scores an `ExpressionSet` and returns the scores as one (Biobase in Suggests).
 
-# saintexpress 0.99.2
+# SAINTexpress 0.99.2
 
 * The vignette shows how to score data held in `SummarizedExperiment`, `QFeatures`, `ExpressionSet` or `anndataR`: the quantity matrix, sample table and feature table become the SAINT input in a few lines of base R, and the scores go back into a prey x bait matrix. saintexpress depends on none of these packages.
 
-# saintexpress 0.99.0
+# SAINTexpress 0.99.0
 
 * Licence changed from MIT to GPL (>= 3). The package is a derivative work of the GPL-3-or-later SAINTexpress C++ sources, so a permissive licence was not applicable. Hyungwon Choi and Damian Fermin are now credited as authors and copyright holders.
 

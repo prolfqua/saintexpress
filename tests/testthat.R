@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(saintexpress)
+library(SAINTexpress)
 
-test_check("saintexpress")
+test_check("SAINTexpress")
