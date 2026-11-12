@@ -18,7 +18,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/prolfqua/saintexpress/blob/main/inst/CITATION)
+[`inst/CITATION`](https://github.com/prolfqua/SAINTexpress/blob/main/inst/CITATION)
 
 Teo G, Liu G, Zhang J, Nesvizhskii AI, Gingras AC, Choi H (2014).
 "SAINTexpress: Improvements and additional features in Significance

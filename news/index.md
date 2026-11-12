@@ -6,7 +6,11 @@
 
 - The package is renamed from saintexpress to SAINTexpress, the name of
   the program it implements: load it with
-  [`library(SAINTexpress)`](https://prolfqua.github.io/saintexpress/).
+  [`library(SAINTexpress)`](https://prolfqua.github.io/SAINTexpress/).
+
+- The GitHub repository and documentation site moved to the new name:
+  <https://github.com/prolfqua/SAINTexpress> and
+  <https://prolfqua.github.io/SAINTexpress/>.
 
 - SAINTexpress suggests no Bioconductor package any more: Biobase and
   BiocStyle are gone from Suggests.
@@ -29,16 +33,16 @@
   (whole numbers for spectral counts), `CorT` values, duplicated ids,
   each prey at most once per IP, and that the tables fit together. If it
   passes,
-  [`run_saint()`](https://prolfqua.github.io/saintexpress/reference/run_saint.md)
+  [`run_saint()`](https://prolfqua.github.io/SAINTexpress/reference/run_saint.md)
   accepts the input.
-  [`run_saint()`](https://prolfqua.github.io/saintexpress/reference/run_saint.md)
+  [`run_saint()`](https://prolfqua.github.io/SAINTexpress/reference/run_saint.md)
   accepts the elements of `si` in any order.
 
 - Id columns given as factors are treated like character ids. Before, a
   factor `baitId` stopped the bait’s own prey from being masked, as
   native SAINTexpress does.
 
-- [`run_saint()`](https://prolfqua.github.io/saintexpress/reference/run_saint.md)
+- [`run_saint()`](https://prolfqua.github.io/SAINTexpress/reference/run_saint.md)
   has the documented arguments `R`, `L` and `p2p_mapping` instead of
   `...`, and checks them. `frequency` is removed: it had no effect, as
   in native SAINTexpress 3.6.3. `L` applies to spectral counts only.
@@ -52,7 +56,7 @@
   are in `inst/extdata/tip49`; the tests and the vignette use it.
 
 - New package help page `?saintexpress`;
-  [`?run_saint`](https://prolfqua.github.io/saintexpress/reference/run_saint.md)
+  [`?run_saint`](https://prolfqua.github.io/SAINTexpress/reference/run_saint.md)
   documents the input and output columns.
 
 - The vignette introduces AP-MS interaction scoring, runs on the TIP49

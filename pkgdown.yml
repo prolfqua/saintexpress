@@ -3,7 +3,7 @@ pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   SAINTexpress: SAINTexpress.html
-last_built: 2026-11-12T16:11Z
+last_built: 2026-11-12T17:08Z
 urls:
-  reference: https://prolfqua.github.io/saintexpress/reference
-  article: https://prolfqua.github.io/saintexpress/articles
+  reference: https://prolfqua.github.io/SAINTexpress/reference
+  article: https://prolfqua.github.io/SAINTexpress/articles

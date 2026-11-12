@@ -15,10 +15,10 @@ intensity (`SAINTexpress-int`) engines of the native C++ SAINTexpress
 
 Main functions:
 
-- [`run_saint()`](https://prolfqua.github.io/saintexpress/reference/run_saint.md)
+- [`run_saint()`](https://prolfqua.github.io/SAINTexpress/reference/run_saint.md)
   scores a SAINT input list.
 
-- [`validate_saint_input()`](https://prolfqua.github.io/saintexpress/reference/validate_saint_input.md)
+- [`validate_saint_input()`](https://prolfqua.github.io/SAINTexpress/reference/validate_saint_input.md)
   checks a SAINT input list before scoring.
 
 A subset of the real AP-MS dataset TIP49 (the example shipped with
@@ -36,11 +36,11 @@ Analysis of INTeractome software. Journal of Proteomics, 100, 37-43.
 
 Useful links:
 
-- <https://prolfqua.github.io/saintexpress/>
+- <https://prolfqua.github.io/SAINTexpress/>
 
-- <https://github.com/prolfqua/saintexpress>
+- <https://github.com/prolfqua/SAINTexpress>
 
-- Report bugs at <https://github.com/prolfqua/saintexpress/issues>
+- Report bugs at <https://github.com/prolfqua/SAINTexpress/issues>
 
 ## Author
 

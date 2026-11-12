@@ -87,7 +87,7 @@ lapply(si, head, 3)
 #> 3   Ies2 INO80B  T
 ```
 
-[`run_saint()`](https://prolfqua.github.io/saintexpress/reference/run_saint.md)
+[`run_saint()`](https://prolfqua.github.io/SAINTexpress/reference/run_saint.md)
 takes a list of three data frames. Their columns are matched by name
 when all required names are present, otherwise by position, as here.
 
@@ -104,9 +104,9 @@ when all required names are present, otherwise by position, as here.
 |  | `baitId` | character | Bait; replicate IPs share it |
 |  | `CorT` | character | `T` for a bait IP, `C` for a negative control |
 
-[`validate_saint_input()`](https://prolfqua.github.io/saintexpress/reference/validate_saint_input.md)
+[`validate_saint_input()`](https://prolfqua.github.io/SAINTexpress/reference/validate_saint_input.md)
 checks the tables. If it passes,
-[`run_saint()`](https://prolfqua.github.io/saintexpress/reference/run_saint.md)
+[`run_saint()`](https://prolfqua.github.io/SAINTexpress/reference/run_saint.md)
 accepts them; otherwise it names the table and column at fault.
 
 ``` r

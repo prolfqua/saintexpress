@@ -141,7 +141,7 @@ Analysis of INTeractome software. Journal of Proteomics, 100, 37-43.
 
 ## See also
 
-[`validate_saint_input()`](https://prolfqua.github.io/saintexpress/reference/validate_saint_input.md)
+[`validate_saint_input()`](https://prolfqua.github.io/SAINTexpress/reference/validate_saint_input.md)
 
 ## Examples
 

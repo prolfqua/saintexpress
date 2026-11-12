@@ -35,7 +35,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/prolfqua/saintexpress" aria-label="GitHub repository"><span class="fa fa-github"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/prolfqua/SAINTexpress" aria-label="GitHub repository"><span class="fa fa-github"></span></a></li>
       </ul>
 </div>
 
@@ -52,7 +52,7 @@
       <h1>Scoring AP-MS interactions with SAINTexpress</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/prolfqua/saintexpress/blob/main/vignettes/SAINTexpress.Rmd" class="external-link"><code>vignettes/SAINTexpress.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/prolfqua/SAINTexpress/blob/main/vignettes/SAINTexpress.Rmd" class="external-link"><code>vignettes/SAINTexpress.Rmd</code></a></small>
       <div class="d-none name"><code>SAINTexpress.Rmd</code></div>
     </div>
 
@@ -117,7 +117,7 @@ negative controls, and the 78 preys seen in at least 3 bait
 purifications (<code>inst/scripts/tip49.md</code>). The files are the
 headerless tables native SAINTexpress reads.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://prolfqua.github.io/saintexpress/">SAINTexpress</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://prolfqua.github.io/SAINTexpress/">SAINTexpress</a></span><span class="op">)</span></span>
 <span><span class="va">tip49</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"tip49"</span>, package <span class="op">=</span> <span class="st">"SAINTexpress"</span><span class="op">)</span></span>
 <span><span class="va">read_dat</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">file</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.delim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">tip49</span>, <span class="va">file</span><span class="op">)</span>, header <span class="op">=</span> <span class="cn">FALSE</span>, stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>

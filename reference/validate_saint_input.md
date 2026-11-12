@@ -1,9 +1,9 @@
 # Validate a SAINT input list
 
 Checks that `si` is valid input for
-[`run_saint()`](https://prolfqua.github.io/saintexpress/reference/run_saint.md):
+[`run_saint()`](https://prolfqua.github.io/SAINTexpress/reference/run_saint.md):
 if `validate_saint_input()` passes,
-[`run_saint()`](https://prolfqua.github.io/saintexpress/reference/run_saint.md)
+[`run_saint()`](https://prolfqua.github.io/SAINTexpress/reference/run_saint.md)
 accepts the same `si` and `mode`. The checks are the ones listed in the
 section "Input tables" below, applied after the columns have been
 matched by name or position.
