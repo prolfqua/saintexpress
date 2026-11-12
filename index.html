@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Pure R Implementation of SAINTexpress • saintexpress</title>
+<title>Pure R Implementation of SAINTexpress • SAINTexpress</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -19,7 +19,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
 
-    <a class="navbar-brand me-2" href="index.html">saintexpress</a>
+    <a class="navbar-brand me-2" href="index.html">SAINTexpress</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
 
@@ -30,7 +30,7 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="articles/saintexpress.html">Get started</a></li>
+<li class="nav-item"><a class="nav-link" href="articles/SAINTexpress.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -46,9 +46,9 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="saintexpress">saintexpress<a class="anchor" aria-label="anchor" href="#saintexpress"></a>
+<div class="page-header"><h1 id="saintexpress">SAINTexpress<a class="anchor" aria-label="anchor" href="#saintexpress"></a>
 </h1></div>
-<p><code>saintexpress</code> provides a pure-R implementation of the SAINTexpress scoring engines for spectral counts and intensities.</p>
+<p>The SAINTexpress R package is a pure-R implementation of the SAINTexpress scoring engines for spectral counts and intensities.</p>
 <p>Documentation: <a href="https://prolfqua.github.io/saintexpress/" class="uri">https://prolfqua.github.io/saintexpress/</a></p>
 <p>This package is intentionally focused on the R implementation. It does not ship or run native SAINTexpress binaries. Native execution is handled by the separate <a href="https://github.com/prolfqua/saintexpressbin" class="external-link"><code>saintexpressbin</code></a> package, and prolfqua integration is handled by <a href="https://github.com/prolfqua/prolfquasaint" class="external-link"><code>prolfquasaint</code></a>.</p>
 <div class="section level2">
@@ -56,7 +56,7 @@
 </h2>
 <p>From CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"saintexpress"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"SAINTexpress"</span><span class="op">)</span></span></code></pre></div>
 <p>Development version from GitHub:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
@@ -74,13 +74,13 @@
 <span><span class="op">)</span></span></code></pre></div>
 <p>Validate the input shape:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">saintexpress</span><span class="fu">::</span><span class="fu"><a href="reference/validate_saint_input.html">validate_saint_input</a></span><span class="op">(</span><span class="va">si</span>, mode <span class="op">=</span> <span class="st">"spc"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">SAINTexpress</span><span class="fu">::</span><span class="fu"><a href="reference/validate_saint_input.html">validate_saint_input</a></span><span class="op">(</span><span class="va">si</span>, mode <span class="op">=</span> <span class="st">"spc"</span><span class="op">)</span></span></code></pre></div>
 <p>Run the spectral-count engine:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">saintexpress</span><span class="fu">::</span><span class="fu"><a href="reference/run_saint.html">run_saint</a></span><span class="op">(</span><span class="va">si</span>, mode <span class="op">=</span> <span class="st">"spc"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">SAINTexpress</span><span class="fu">::</span><span class="fu"><a href="reference/run_saint.html">run_saint</a></span><span class="op">(</span><span class="va">si</span>, mode <span class="op">=</span> <span class="st">"spc"</span><span class="op">)</span></span></code></pre></div>
 <p>Run the intensity engine:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">saintexpress</span><span class="fu">::</span><span class="fu"><a href="reference/run_saint.html">run_saint</a></span><span class="op">(</span><span class="va">si</span>, mode <span class="op">=</span> <span class="st">"int"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">SAINTexpress</span><span class="fu">::</span><span class="fu"><a href="reference/run_saint.html">run_saint</a></span><span class="op">(</span><span class="va">si</span>, mode <span class="op">=</span> <span class="st">"int"</span><span class="op">)</span></span></code></pre></div>
 <p><code>result</code> is a data frame in the SAINTexpress <code>list.txt</code> output shape.</p>
 </div>
 <div class="section level2">
@@ -88,16 +88,16 @@
 </h2>
 <p>The default optimizer is base R:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">saintexpress</span><span class="fu">::</span><span class="fu"><a href="reference/run_saint.html">run_saint</a></span><span class="op">(</span><span class="va">si</span>, mode <span class="op">=</span> <span class="st">"spc"</span>, optimizer <span class="op">=</span> <span class="st">"base"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">SAINTexpress</span><span class="fu">::</span><span class="fu"><a href="reference/run_saint.html">run_saint</a></span><span class="op">(</span><span class="va">si</span>, mode <span class="op">=</span> <span class="st">"spc"</span>, optimizer <span class="op">=</span> <span class="st">"base"</span><span class="op">)</span></span></code></pre></div>
 <p>The optional <code>nloptr</code> optimizer can be used when the <code>nloptr</code> package is installed:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">saintexpress</span><span class="fu">::</span><span class="fu"><a href="reference/run_saint.html">run_saint</a></span><span class="op">(</span><span class="va">si</span>, mode <span class="op">=</span> <span class="st">"spc"</span>, optimizer <span class="op">=</span> <span class="st">"nloptr"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">SAINTexpress</span><span class="fu">::</span><span class="fu"><a href="reference/run_saint.html">run_saint</a></span><span class="op">(</span><span class="va">si</span>, mode <span class="op">=</span> <span class="st">"spc"</span>, optimizer <span class="op">=</span> <span class="st">"nloptr"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="vignette">Vignette<a class="anchor" aria-label="anchor" href="#vignette"></a>
 </h2>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"saintexpress"</span>, package <span class="op">=</span> <span class="st">"saintexpress"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"SAINTexpress"</span>, package <span class="op">=</span> <span class="st">"SAINTexpress"</span><span class="op">)</span></span></code></pre></div>
 <p>The vignette scores a subset of the TIP49 example data of SAINTexpress with both models, compares the scores with native SAINTexpress, explains the optimizer and the tuning arguments <code>R</code>, <code>L</code> and <code>p2p_mapping</code>, and shows how to build the three SAINT tables from a quantity matrix with sample and feature tables, or from one long table.</p>
 </div>
 <div class="section level2">
@@ -108,13 +108,13 @@
 <div class="section level2">
 <h2 id="origin-attribution-and-ai-assistance">Origin, Attribution and AI Assistance<a class="anchor" aria-label="anchor" href="#origin-attribution-and-ai-assistance"></a>
 </h2>
-<p><code>saintexpress</code> is not an independent invention of the SAINT model. It is a port of the SAINTexpress reference implementation to pure R.</p>
+<p>This package is not an independent invention of the SAINT model. It is a port of the SAINTexpress reference implementation to pure R.</p>
 <ul>
 <li>The original SAINTexpress C++ sources (<code>SAINT-MRF-spc</code> and <code>SAINT-MRF-int</code>) are Copyright (C) 2011 Hyungwon Choi and Damian Fermin, and are distributed under the GNU General Public License, version 3 or later. The upstream distribution used as the reference is <code>SAINTexpress_v3.6.3__2018-03-09.tar.gz</code> from <a href="https://sourceforge.net/projects/saint-apms/files/" class="external-link uri">https://sourceforge.net/projects/saint-apms/files/</a>.</li>
 <li>The scoring logic in this package was derived from those C++ sources so that the numerical output matches the native <code>list.txt</code> results. It is a derivative work of the upstream implementation, not a clean-room reimplementation from the publications alone.</li>
 <li>The translation from C++ to R was carried out with the help of an AI coding assistant. Every ported routine was subsequently reviewed by the maintainer and checked against the output of the native SAINTexpress binaries; the comparison tests live in <code>tests/</code>.</li>
 </ul>
-<p>Because this package is a derivative work of GPL-3 licensed sources, <code>saintexpress</code> is released under the same terms: GNU General Public License, version 3 or later. It cannot be redistributed under a more permissive licence.</p>
+<p>Because this package is a derivative work of GPL-3 licensed sources, The package is released under the same terms: GNU General Public License, version 3 or later. It cannot be redistributed under a more permissive licence.</p>
 <p>Credit for the SAINT model and its reference implementation belongs to the original authors listed in the References section below.</p>
 </div>
 <div class="section level2">
@@ -150,7 +150,7 @@
 <div class="citation">
 <h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="authors.html#citation">Citing saintexpress</a></li>
+<li><a href="authors.html#citation">Citing SAINTexpress</a></li>
 </ul>
 </div>
 

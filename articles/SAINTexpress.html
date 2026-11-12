@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Scoring AP-MS interactions with saintexpress • saintexpress</title>
+<title>Scoring AP-MS interactions with SAINTexpress • SAINTexpress</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Scoring AP-MS interactions with saintexpress">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Scoring AP-MS interactions with SAINTexpress">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -17,7 +17,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
 
-    <a class="navbar-brand me-2" href="../index.html">saintexpress</a>
+    <a class="navbar-brand me-2" href="../index.html">SAINTexpress</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.0.0</small>
 
@@ -28,7 +28,7 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="active nav-item"><a class="nav-link" href="../articles/saintexpress.html">Get started</a></li>
+<li class="active nav-item"><a class="nav-link" href="../articles/SAINTexpress.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -49,11 +49,11 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Scoring AP-MS interactions with saintexpress</h1>
+      <h1>Scoring AP-MS interactions with SAINTexpress</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/prolfqua/saintexpress/blob/main/vignettes/saintexpress.Rmd" class="external-link"><code>vignettes/saintexpress.Rmd</code></a></small>
-      <div class="d-none name"><code>saintexpress.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/prolfqua/saintexpress/blob/main/vignettes/SAINTexpress.Rmd" class="external-link"><code>vignettes/SAINTexpress.Rmd</code></a></small>
+      <div class="d-none name"><code>SAINTexpress.Rmd</code></div>
     </div>
 
     
@@ -86,7 +86,7 @@ from background, for example to filter interactions at
 compare abundances between conditions; that is a differential-expression
 question.</p>
 <p>SAINTexpress has so far been available as a C++ program, run outside
-R on text files. saintexpress implements both of its models in R, so
+R on text files. This package implements both of its models in R, so
 interaction scoring can be part of an R analysis, run on every platform,
 and start from data already loaded in R, as a matrix or a long table
 (see the last sections). The scores agree with the native SAINTexpress
@@ -96,8 +96,8 @@ and start from data already loaded in R, as a matrix or a long table
 <li>
 <strong>artMS</strong> converts MaxQuant results into the input
 files of SAINTexpress (<code>artmsEvidenceToSaintExpress()</code>); the
-scoring itself then needs the native program. saintexpress can score
-these tables directly in R.</li>
+scoring itself then needs the native program. This package scores these
+tables directly in R.</li>
 <li>
 <strong>apComplex</strong> estimates protein complex membership, as
 a bipartite graph of proteins and complexes, from bait-prey
@@ -109,7 +109,7 @@ Interactions filtered by SAINT can be its input.</li>
 <div class="section level2">
 <h2 id="the-tip49-data">The TIP49 data<a class="anchor" aria-label="anchor" href="#the-tip49-data"></a>
 </h2>
-<p>saintexpress ships a subset of the example data of SAINTexpress, an
+<p>The package ships a subset of the example data of SAINTexpress, an
 AP-MS experiment on human protein complexes containing TIP49a/TIP49b
 (RUVBL1/RUVBL2) with spectral counts (Sardiu et al. 2008). The subset
 keeps 4 baits (ACTR8, ZNHIT1, INO80B, VPS72) in 7 purifications, all 9
@@ -117,8 +117,8 @@ negative controls, and the 78 preys seen in at least 3 bait
 purifications (<code>inst/scripts/tip49.md</code>). The files are the
 headerless tables native SAINTexpress reads.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://prolfqua.github.io/saintexpress/">saintexpress</a></span><span class="op">)</span></span>
-<span><span class="va">tip49</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"tip49"</span>, package <span class="op">=</span> <span class="st">"saintexpress"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://prolfqua.github.io/saintexpress/">SAINTexpress</a></span><span class="op">)</span></span>
+<span><span class="va">tip49</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"tip49"</span>, package <span class="op">=</span> <span class="st">"SAINTexpress"</span><span class="op">)</span></span>
 <span><span class="va">read_dat</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">file</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.delim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">tip49</span>, <span class="va">file</span><span class="op">)</span>, header <span class="op">=</span> <span class="cn">FALSE</span>, stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -336,7 +336,7 @@ nearly absent from the controls:</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span><span class="st">"bottomright"</span>, legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BFDR &lt;= 0.05"</span>, <span class="st">"other"</span><span class="op">)</span>,</span>
 <span>       col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#B23A48"</span>, <span class="st">"#3D6F99"</span><span class="op">)</span>, pch <span class="op">=</span> <span class="fl">19</span>, bty <span class="op">=</span> <span class="st">"n"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="saintexpress_files/figure-html/volcano-1.png" class="r-plt" alt="" width="576"></p>
+<p><img src="SAINTexpress_files/figure-html/volcano-1.png" class="r-plt" alt="" width="576"></p>
 </div>
 <div class="section level2">
 <h2 id="intensity-scoring">Intensity scoring<a class="anchor" aria-label="anchor" href="#intensity-scoring"></a>
@@ -662,7 +662,7 @@ interaction networks from label-free quantitative proteomics. PNAS 105,
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] saintexpress_1.0.0</span></span>
+<span><span class="co">#&gt; [1] SAINTexpress_1.0.0</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] digest_0.6.39     desc_1.4.3        R6_2.6.1          fastmap_1.2.0    </span></span>

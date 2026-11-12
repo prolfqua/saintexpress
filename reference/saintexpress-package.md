@@ -1,4 +1,4 @@
-# saintexpress: Pure R Implementation of SAINTexpress
+# SAINTexpress: Pure R Implementation of SAINTexpress
 
 Scores bait-prey interactions in affinity purification-mass spectrometry
 (AP-MS) experiments with the SAINTexpress model (Teo et al. 2014). For

@@ -1,4 +1,4 @@
-# Scoring AP-MS interactions with saintexpress
+# Scoring AP-MS interactions with SAINTexpress
 
 ## Introduction
 
@@ -28,7 +28,7 @@ before building a network. SAINT does not compare abundances between
 conditions; that is a differential-expression question.
 
 SAINTexpress has so far been available as a C++ program, run outside R
-on text files. saintexpress implements both of its models in R, so
+on text files. This package implements both of its models in R, so
 interaction scoring can be part of an R analysis, run on every platform,
 and start from data already loaded in R, as a matrix or a long table
 (see the last sections). The scores agree with the native SAINTexpress
@@ -38,7 +38,7 @@ Related packages:
 
 - **artMS** converts MaxQuant results into the input files of
   SAINTexpress (`artmsEvidenceToSaintExpress()`); the scoring itself
-  then needs the native program. saintexpress can score these tables
+  then needs the native program. This package scores these tables
   directly in R.
 - **apComplex** estimates protein complex membership, as a bipartite
   graph of proteins and complexes, from bait-prey observations. It
@@ -48,8 +48,8 @@ Related packages:
 
 ## The TIP49 data
 
-saintexpress ships a subset of the example data of SAINTexpress, an
-AP-MS experiment on human protein complexes containing TIP49a/TIP49b
+The package ships a subset of the example data of SAINTexpress, an AP-MS
+experiment on human protein complexes containing TIP49a/TIP49b
 (RUVBL1/RUVBL2) with spectral counts (Sardiu et al. 2008). The subset
 keeps 4 baits (ACTR8, ZNHIT1, INO80B, VPS72) in 7 purifications, all 9
 negative controls, and the 78 preys seen in at least 3 bait
@@ -57,8 +57,8 @@ purifications (`inst/scripts/tip49.md`). The files are the headerless
 tables native SAINTexpress reads.
 
 ``` r
-library(saintexpress)
-tip49 <- system.file("extdata", "tip49", package = "saintexpress")
+library(SAINTexpress)
+tip49 <- system.file("extdata", "tip49", package = "SAINTexpress")
 read_dat <- function(file) {
   read.delim(file.path(tip49, file), header = FALSE, stringsAsFactors = FALSE)
 }
@@ -186,7 +186,7 @@ legend("bottomright", legend = c("BFDR <= 0.05", "other"),
        col = c("#B23A48", "#3D6F99"), pch = 19, bty = "n")
 ```
 
-![](saintexpress_files/figure-html/volcano-1.png)
+![](SAINTexpress_files/figure-html/volcano-1.png)
 
 ## Intensity scoring
 
@@ -525,7 +525,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] saintexpress_1.0.0
+#> [1] SAINTexpress_1.0.0
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] digest_0.6.39     desc_1.4.3        R6_2.6.1          fastmap_1.2.0    

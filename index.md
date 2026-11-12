@@ -1,7 +1,7 @@
-# saintexpress
+# SAINTexpress
 
-`saintexpress` provides a pure-R implementation of the SAINTexpress
-scoring engines for spectral counts and intensities.
+The SAINTexpress R package is a pure-R implementation of the
+SAINTexpress scoring engines for spectral counts and intensities.
 
 Documentation: <https://prolfqua.github.io/saintexpress/>
 
@@ -17,7 +17,7 @@ package, and prolfqua integration is handled by
 From CRAN:
 
 ``` r
-install.packages("saintexpress")
+install.packages("SAINTexpress")
 ```
 
 Development version from GitHub:
@@ -43,19 +43,19 @@ si <- list(
 Validate the input shape:
 
 ``` r
-saintexpress::validate_saint_input(si, mode = "spc")
+SAINTexpress::validate_saint_input(si, mode = "spc")
 ```
 
 Run the spectral-count engine:
 
 ``` r
-result <- saintexpress::run_saint(si, mode = "spc")
+result <- SAINTexpress::run_saint(si, mode = "spc")
 ```
 
 Run the intensity engine:
 
 ``` r
-result <- saintexpress::run_saint(si, mode = "int")
+result <- SAINTexpress::run_saint(si, mode = "int")
 ```
 
 `result` is a data frame in the SAINTexpress `list.txt` output shape.
@@ -65,20 +65,20 @@ result <- saintexpress::run_saint(si, mode = "int")
 The default optimizer is base R:
 
 ``` r
-saintexpress::run_saint(si, mode = "spc", optimizer = "base")
+SAINTexpress::run_saint(si, mode = "spc", optimizer = "base")
 ```
 
 The optional `nloptr` optimizer can be used when the `nloptr` package is
 installed:
 
 ``` r
-saintexpress::run_saint(si, mode = "spc", optimizer = "nloptr")
+SAINTexpress::run_saint(si, mode = "spc", optimizer = "nloptr")
 ```
 
 ## Vignette
 
 ``` r
-vignette("saintexpress", package = "saintexpress")
+vignette("SAINTexpress", package = "SAINTexpress")
 ```
 
 The vignette scores a subset of the TIP49 example data of SAINTexpress
@@ -96,8 +96,8 @@ with the native output for both models and both optimizers.
 
 ## Origin, Attribution and AI Assistance
 
-`saintexpress` is not an independent invention of the SAINT model. It is
-a port of the SAINTexpress reference implementation to pure R.
+This package is not an independent invention of the SAINT model. It is a
+port of the SAINTexpress reference implementation to pure R.
 
 - The original SAINTexpress C++ sources (`SAINT-MRF-spc` and
   `SAINT-MRF-int`) are Copyright (C) 2011 Hyungwon Choi and Damian
@@ -114,10 +114,10 @@ a port of the SAINTexpress reference implementation to pure R.
   the maintainer and checked against the output of the native
   SAINTexpress binaries; the comparison tests live in `tests/`.
 
-Because this package is a derivative work of GPL-3 licensed sources,
-`saintexpress` is released under the same terms: GNU General Public
-License, version 3 or later. It cannot be redistributed under a more
-permissive licence.
+Because this package is a derivative work of GPL-3 licensed sources, The
+package is released under the same terms: GNU General Public License,
+version 3 or later. It cannot be redistributed under a more permissive
+licence.
 
 Credit for the SAINT model and its reference implementation belongs to
 the original authors listed in the References section below.

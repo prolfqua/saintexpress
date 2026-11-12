@@ -3,4 +3,4 @@
 ### All vignettes
 
 - [Scoring AP-MS interactions with
-  saintexpress](https://prolfqua.github.io/saintexpress/articles/saintexpress.md):
+  SAINTexpress](https://prolfqua.github.io/saintexpress/articles/SAINTexpress.md):
