@@ -1,5 +1,17 @@
 # Changelog
 
+## saintexpress 1.0.0
+
+- First CRAN release.
+
+- saintexpress suggests no Bioconductor package any more: Biobase and
+  BiocStyle are gone from Suggests.
+
+- The vignette no longer scores an `ExpressionSet`. It builds the three
+  SAINT tables from a quantity matrix with a sample table (`col_data`)
+  and a feature table (`row_data`), and from one long table with one row
+  per protein and sample, and shows that both give the same scores.
+
 ## saintexpress 0.99.4
 
 - Input columns are matched by name. Before, the first four columns of

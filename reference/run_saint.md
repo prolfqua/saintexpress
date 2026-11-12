@@ -68,23 +68,23 @@ run_saint(
 A data frame with one row per bait-prey pair, with the columns of the
 native SAINTexpress `list.txt`:
 
-|                                |                                                                                      |
-|--------------------------------|--------------------------------------------------------------------------------------|
-| Column                         | Content                                                                              |
-| `Bait`, `Prey`, `PreyGene`     | Bait, prey and prey gene name                                                        |
-| `Spec` / `Intensity`           | Prey value per replicate IP, joined by vertical bars (int: normalised, `.` = absent) |
-| `SpecSum` / `IntensitySum`     | Sum over the replicates                                                              |
-| `AvgSpec` / `AvgIntensity`     | Mean over the replicates                                                             |
-| `NumReplicates`                | Number of replicate IPs of the bait                                                  |
-| `ctrlCounts` / `ctrlIntensity` | Prey value per control IP, joined by vertical bars                                   |
-| `AvgP`                         | Probability of a true interaction, averaged over the top `R` replicates              |
-| `MaxP`                         | Highest replicate probability                                                        |
-| `TopoAvgP`, `TopoMaxP`         | `AvgP` and `MaxP` with the `p2p_mapping` prior                                       |
-| `SaintScore`                   | `max(AvgP, TopoAvgP)`                                                                |
-| `logOddsScore` / `OddsScore`   | Lowest replicate log odds of true vs false interaction                               |
-| `FoldChange`                   | Mean over the replicates divided by the control (background) mean                    |
-| `BFDR`                         | Bayesian false discovery rate of the pair, from `AvgP`                               |
-| `boosted_by`                   | Linked preys from `p2p_mapping` that support the pair, joined by vertical bars       |
+|  |  |
+|----|----|
+| Column | Content |
+| `Bait`, `Prey`, `PreyGene` | Bait, prey and prey gene name |
+| `Spec` / `Intensity` | Prey value per replicate IP, joined by vertical bars (int: normalised, `.` = absent) |
+| `SpecSum` / `IntensitySum` | Sum over the replicates |
+| `AvgSpec` / `AvgIntensity` | Mean over the replicates |
+| `NumReplicates` | Number of replicate IPs of the bait |
+| `ctrlCounts` / `ctrlIntensity` | Prey value per control IP, joined by vertical bars |
+| `AvgP` | Probability of a true interaction, averaged over the top `R` replicates |
+| `MaxP` | Highest replicate probability |
+| `TopoAvgP`, `TopoMaxP` | `AvgP` and `MaxP` with the `p2p_mapping` prior |
+| `SaintScore` | `max(AvgP, TopoAvgP)` |
+| `logOddsScore` / `OddsScore` | Lowest replicate log odds of true vs false interaction |
+| `FoldChange` | Mean over the replicates divided by the control (background) mean |
+| `BFDR` | Bayesian false discovery rate of the pair, from `AvgP` |
+| `boosted_by` | Linked preys from `p2p_mapping` that support the pair, joined by vertical bars |
 
 Names before the slash are for `mode = "spc"`, after it for `"int"`.
 
@@ -97,21 +97,21 @@ at that name's position. Further columns are ignored.
 
 `inter`, one row per prey detected in an IP (purification):
 
-|          |           |                                                                            |
-|----------|-----------|----------------------------------------------------------------------------|
-| Column   | Type      | Content                                                                    |
-| `ipId`   | character | IP identifier, as in `bait$ipId`                                           |
-| `baitId` | character | Bait of the IP, as in `bait$baitId`                                        |
-| `preyId` | character | Prey identifier, as in `prey$preyId`                                       |
-| `quant`  | numeric   | Spectral count, whole number \>= 0 (`"spc"`), or intensity, \> 0 (`"int"`) |
+|  |  |  |
+|----|----|----|
+| Column | Type | Content |
+| `ipId` | character | IP identifier, as in `bait$ipId` |
+| `baitId` | character | Bait of the IP, as in `bait$baitId` |
+| `preyId` | character | Prey identifier, as in `prey$preyId` |
+| `quant` | numeric | Spectral count, whole number \>= 0 (`"spc"`), or intensity, \> 0 (`"int"`) |
 
 `prey`, one row per prey:
 
-|              |           |                                                                    |
-|--------------|-----------|--------------------------------------------------------------------|
-| Column       | Type      | Content                                                            |
-| `preyId`     | character | Unique prey identifier                                             |
-| `preyLength` | numeric   | Protein length (optional, not used in scoring)                     |
+|  |  |  |
+|----|----|----|
+| Column | Type | Content |
+| `preyId` | character | Unique prey identifier |
+| `preyLength` | numeric | Protein length (optional, not used in scoring) |
 | `preyGeneId` | character | Gene name, reported as `PreyGene` (optional, defaults to `preyId`) |
 
 The `prey` table is matched by name when it has both `preyId` and

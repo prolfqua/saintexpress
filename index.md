@@ -14,6 +14,14 @@ package, and prolfqua integration is handled by
 
 ## Installation
 
+From CRAN:
+
+``` r
+install.packages("saintexpress")
+```
+
+Development version from GitHub:
+
 ``` r
 # install.packages("remotes")
 remotes::install_github("prolfqua/saintexpress")
@@ -35,7 +43,7 @@ si <- list(
 Validate the input shape:
 
 ``` r
-saintexpress::validate_saint_input(si)
+saintexpress::validate_saint_input(si, mode = "spc")
 ```
 
 Run the spectral-count engine:
@@ -69,28 +77,22 @@ saintexpress::run_saint(si, mode = "spc", optimizer = "nloptr")
 
 ## Vignette
 
-A worked example with simulated AP-MS data is included as a package
-vignette:
-
 ``` r
 vignette("saintexpress", package = "saintexpress")
 ```
 
-It walks through
-[`validate_saint_input()`](https://prolfqua.github.io/saintexpress/reference/validate_saint_input.md)
-and
-[`run_saint()`](https://prolfqua.github.io/saintexpress/reference/run_saint.md)
-for both `spc` and `int` modes on a 6-prey/4-bait synthetic experiment
-with known true interactors, and mirrors the structure of the companion
-[`saintexpressbin`](https://github.com/prolfqua/saintexpressbin)
-vignette so the two engines can be compared side by side.
+The vignette scores a subset of the TIP49 example data of SAINTexpress
+with both models, compares the scores with native SAINTexpress, explains
+the optimizer and the tuning arguments `R`, `L` and `p2p_mapping`, and
+shows how to build the three SAINT tables from a quantity matrix with
+sample and feature tables, or from one long table.
 
 ## Testing Scope
 
-This package uses small synthetic inputs for unit tests. TIP49 reference
-fixtures and native-vs-R comparison tests live in
-[`prolfquasaint`](https://github.com/prolfqua/prolfquasaint), where both
-`saintexpress` and `saintexpressbin` are integrated.
+The tests run on the TIP49 subset in `inst/extdata/tip49`, together with
+the `list.txt` files the native SAINTexpress 3.6.3 programs write for
+it, and on small synthetic inputs. They check that the R scores agree
+with the native output for both models and both optimizers.
 
 ## Origin, Attribution and AI Assistance
 

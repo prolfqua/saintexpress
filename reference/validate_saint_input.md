@@ -40,21 +40,21 @@ at that name's position. Further columns are ignored.
 
 `inter`, one row per prey detected in an IP (purification):
 
-|          |           |                                                                            |
-|----------|-----------|----------------------------------------------------------------------------|
-| Column   | Type      | Content                                                                    |
-| `ipId`   | character | IP identifier, as in `bait$ipId`                                           |
-| `baitId` | character | Bait of the IP, as in `bait$baitId`                                        |
-| `preyId` | character | Prey identifier, as in `prey$preyId`                                       |
-| `quant`  | numeric   | Spectral count, whole number \>= 0 (`"spc"`), or intensity, \> 0 (`"int"`) |
+|  |  |  |
+|----|----|----|
+| Column | Type | Content |
+| `ipId` | character | IP identifier, as in `bait$ipId` |
+| `baitId` | character | Bait of the IP, as in `bait$baitId` |
+| `preyId` | character | Prey identifier, as in `prey$preyId` |
+| `quant` | numeric | Spectral count, whole number \>= 0 (`"spc"`), or intensity, \> 0 (`"int"`) |
 
 `prey`, one row per prey:
 
-|              |           |                                                                    |
-|--------------|-----------|--------------------------------------------------------------------|
-| Column       | Type      | Content                                                            |
-| `preyId`     | character | Unique prey identifier                                             |
-| `preyLength` | numeric   | Protein length (optional, not used in scoring)                     |
+|  |  |  |
+|----|----|----|
+| Column | Type | Content |
+| `preyId` | character | Unique prey identifier |
+| `preyLength` | numeric | Protein length (optional, not used in scoring) |
 | `preyGeneId` | character | Gene name, reported as `PreyGene` (optional, defaults to `preyId`) |
 
 The `prey` table is matched by name when it has both `preyId` and

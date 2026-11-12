@@ -49,6 +49,9 @@ Useful links:
 
 Authors:
 
+- Witold Wolski <witold.wolski@fgcz.uzh.ch>
+  ([ORCID](https://orcid.org/0000-0002-6468-120X))
+
 - Alexey Nesvizhskii <nesvi@med.umich.edu>
 
 - Hyungwon Choi <hyung_won_choi@nuhs.edu.sg> (Author and copyright
