@@ -35,4 +35,6 @@ Config/testthat/edition: 3
 Imports:
     stats
 VignetteBuilder: knitr
+X-schema.org-keywords: proteomics, mass spectrometry, affinity purification,
+    AP-MS, protein-protein interactions, interactomics, SAINT, SAINTexpress
 Config/roxygen2/version: 8.1.1
