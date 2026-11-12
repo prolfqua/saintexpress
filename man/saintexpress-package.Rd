@@ -37,9 +37,9 @@ Significance Analysis of INTeractome software. Journal of Proteomics,
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://prolfqua.github.io/saintexpress/}
-  \item \url{https://github.com/prolfqua/saintexpress}
-  \item Report bugs at \url{https://github.com/prolfqua/saintexpress/issues}
+  \item \url{https://prolfqua.github.io/SAINTexpress/}
+  \item \url{https://github.com/prolfqua/SAINTexpress}
+  \item Report bugs at \url{https://github.com/prolfqua/SAINTexpress/issues}
 }
 
 }

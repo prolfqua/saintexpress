@@ -21,8 +21,8 @@ Description: A pure R implementation of the 'SAINTexpress' scoring engines
     binaries. The underlying method is described in Teo et al. (2014)
     <doi:10.1016/j.jprot.2013.10.023>.
 License: GPL (>= 3)
-URL: https://prolfqua.github.io/saintexpress/, https://github.com/prolfqua/saintexpress
-BugReports: https://github.com/prolfqua/saintexpress/issues
+URL: https://prolfqua.github.io/SAINTexpress/, https://github.com/prolfqua/SAINTexpress
+BugReports: https://github.com/prolfqua/SAINTexpress/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Suggests:

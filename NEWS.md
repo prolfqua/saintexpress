@@ -4,6 +4,8 @@
 
 * The package is renamed from saintexpress to SAINTexpress, the name of the program it implements: load it with `library(SAINTexpress)`.
 
+* The GitHub repository and documentation site moved to the new name: <https://github.com/prolfqua/SAINTexpress> and <https://prolfqua.github.io/SAINTexpress/>.
+
 * SAINTexpress suggests no Bioconductor package any more: Biobase and BiocStyle are gone from Suggests.
 
 * The vignette no longer scores an `ExpressionSet`. It builds the three SAINT tables from a quantity matrix with a sample table (`col_data`) and a feature table (`row_data`), and from one long table with one row per protein and sample, and shows that both give the same scores.

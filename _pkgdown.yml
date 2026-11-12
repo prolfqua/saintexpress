@@ -1,4 +1,4 @@
-url: https://prolfqua.github.io/saintexpress/
+url: https://prolfqua.github.io/SAINTexpress/
 
 template:
   bootstrap: 5
@@ -13,5 +13,5 @@ navbar:
   components:
     github:
       icon: fa-github
-      href: https://github.com/prolfqua/saintexpress
+      href: https://github.com/prolfqua/SAINTexpress
       aria-label: GitHub repository
