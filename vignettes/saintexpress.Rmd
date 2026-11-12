@@ -39,10 +39,10 @@ that is a differential-expression question.
 SAINTexpress has so far been available as a C++ program, run outside R on
 text files. saintexpress implements both of its models in R, so interaction
 scoring can be part of an R analysis, run on every platform, and start from
-data already held in Bioconductor containers. The scores agree with the
-native SAINTexpress 3.6.3 program (see below).
+data already loaded in R, as a matrix or a long table (see the last sections).
+The scores agree with the native SAINTexpress 3.6.3 program (see below).
 
-Related Bioconductor packages:
+Related packages:
 
 - **artMS** converts MaxQuant results into the input files of SAINTexpress
   (`artmsEvidenceToSaintExpress()`); the scoring itself then needs the native
@@ -248,96 +248,98 @@ boosted <- scores_topo[scores_topo$TopoAvgP > scores_topo$AvgP, ]
 head(boosted[, c("Bait", "Prey", "AvgP", "TopoAvgP", "SaintScore", "boosted_by")])
 ```
 
-## Data in ExpressionSet, SummarizedExperiment, QFeatures or anndataR
+## From a quantity matrix, sample table and feature table
 
-Quantitative proteomics data are often held in a container: an
-`ExpressionSet`, a `SummarizedExperiment`, an assay of a `QFeatures` object,
-or an `anndataR` object when data are exchanged with Python. saintexpress
-depends on none of them. Each holds the three pieces `run_saint()` needs:
+Quantitative data are often at hand as a matrix of spectral counts or intensities, with preys in rows and IPs in columns, together with a sample table describing the IPs and a feature table describing the preys. These are also the pieces a `SummarizedExperiment` returns with `assay()`, `colData()` and `rowData()`.
 
-| Piece | ExpressionSet | SummarizedExperiment, QFeatures assay | anndataR |
-|---|---|---|---|
-| Quantity matrix, preys x IPs | `exprs(eset)` | `assay(se)` | `t(adata$X)` |
-| Sample table, one row per IP | `pData(eset)` | `colData(se)` | `adata$obs` |
-| Feature table, one row per prey | `fData(eset)` | `rowData(se)` | `adata$var` |
+We start from these three pieces for a small experiment: two baits with two IPs each and two control IPs. `P1` and `P2` bind `BaitA`, `P3` and `P4` bind `BaitB`, `P5` and `P6` are background.
 
-The function below scores an `ExpressionSet` and returns the scores as an
-`ExpressionSet` with preys in rows and baits in columns: `exprs()` holds
-`AvgP`, and `MaxP`, `SaintScore`, `FoldChange` and `BFDR` are further assay
-data elements. It needs the Biobase package.
-
-```{r eset-wrapper, eval = requireNamespace("Biobase", quietly = TRUE)}
-run_saint_eset <- function(eset, bait = "bait", cort = "CorT",
-                           mode = "spc", ...) {
-  quant <- Biobase::exprs(eset)
-  samples <- Biobase::pData(eset)
-  detected <- which(!is.na(quant) & quant > 0, arr.ind = TRUE)
-  si <- list(
-    inter = data.frame(
-      ipId = colnames(quant)[detected[, 2]],
-      baitId = samples[[bait]][detected[, 2]],
-      preyId = rownames(quant)[detected[, 1]],
-      quant = quant[detected]
-    ),
-    prey = data.frame(preyId = rownames(quant)),
-    bait = data.frame(ipId = colnames(quant), baitId = samples[[bait]],
-                      CorT = samples[[cort]])
-  )
-  scores <- run_saint(si, mode = mode, ...)
-
-  baits <- sort(unique(scores$Bait))
-  cell <- cbind(match(scores$Prey, rownames(quant)), match(scores$Bait, baits))
-  to_matrix <- function(column) {
-    m <- matrix(NA_real_, nrow(quant), length(baits),
-                dimnames = list(rownames(quant), baits))
-    m[cell] <- scores[[column]]
-    m
-  }
-  Biobase::ExpressionSet(
-    assayData = Biobase::assayDataNew(
-      exprs = to_matrix("AvgP"),
-      MaxP = to_matrix("MaxP"),
-      SaintScore = to_matrix("SaintScore"),
-      FoldChange = to_matrix("FoldChange"),
-      BFDR = to_matrix("BFDR")
-    ),
-    phenoData = Biobase::AnnotatedDataFrame(
-      data.frame(bait = baits, row.names = baits)
-    ),
-    featureData = Biobase::featureData(eset)
-  )
-}
+```{r matrix-pieces}
+row_data <- data.frame(
+  protein = c("P1", "P2", "P3", "P4", "P5", "P6"),
+  gene = c("GENE1", "GENE2", "GENE3", "GENE4", "GENE5", "GENE6")
+)
+col_data <- data.frame(
+  sample = c("IP1", "IP2", "IP3", "IP4", "IP5", "IP6"),
+  bait = c("BaitA", "BaitA", "BaitB", "BaitB", "Ctrl", "Ctrl"),
+  CorT = c("T", "T", "T", "T", "C", "C")
+)
+quant <- matrix(
+  c(
+    25, 22, 0, 1, 1, 0,
+    18, 20, 1, 0, 0, 1,
+    0, 1, 30, 27, 1, 0,
+    1, 0, 15, 19, 0, 1,
+    5, 6, 4, 5, 6, 5,
+    2, NA, 3, 2, 2, 3
+  ),
+  nrow = 6,
+  byrow = TRUE,
+  dimnames = list(row_data$protein, col_data$sample)
+)
+quant
 ```
 
-We put the TIP49 counts into an `ExpressionSet` and score it:
+The matrix goes to long format, one row per observed prey in an IP; `NA` and `0` mean not observed. Together with the two tables this gives the SAINT input.
 
-```{r eset-run, eval = requireNamespace("Biobase", quietly = TRUE)}
-counts <- tapply(
-  si$inter[[4]],
-  list(factor(si$inter[[3]], levels = si$prey[[1]]),
-       factor(si$inter[[1]], levels = si$bait[[1]])),
-  sum
-)
-eset <- Biobase::ExpressionSet(
-  counts,
-  phenoData = Biobase::AnnotatedDataFrame(
-    data.frame(bait = si$bait[[2]], CorT = si$bait[[3]],
-               row.names = si$bait[[1]])
-  )
-)
-eset
+```{r matrix-to-saint}
+inter <- as.data.frame(as.table(quant), stringsAsFactors = FALSE)
+names(inter) <- c("preyId", "ipId", "quant")
+inter <- inter[!is.na(inter$quant) & inter$quant > 0, ]
+inter$baitId <- col_data$bait[match(inter$ipId, col_data$sample)]
 
-scores_eset <- run_saint_eset(eset)
-scores_eset
-Biobase::assayDataElement(scores_eset, "BFDR")[c("RUVBL1", "RUVBL2", "SRCAP"), ]
+si_matrix <- list(
+  inter = inter[, c("ipId", "baitId", "preyId", "quant")],
+  prey = data.frame(preyId = row_data$protein, preyGeneId = row_data$gene),
+  bait = data.frame(ipId = col_data$sample, baitId = col_data$bait, CorT = col_data$CorT)
+)
+scores_matrix <- run_saint(si_matrix, mode = "spc")
+scores_matrix[order(scores_matrix$Bait, -scores_matrix$AvgP), c("Bait", "Prey", "AvgP", "BFDR")]
 ```
 
-A `SummarizedExperiment`, or an assay of a `QFeatures` object, converts to an
-`ExpressionSet` with the coercion that the SummarizedExperiment package
-provides:
+The scores go back into a prey x bait matrix:
 
-```{r se-to-eset, eval = FALSE}
-scores_se <- run_saint_eset(as(se, "ExpressionSet"))
+```{r saint-to-matrix}
+tapply(scores_matrix$AvgP, scores_matrix[c("Prey", "Bait")], c)
+```
+
+## From a long table
+
+Quantification software and analysis pipelines often report one long table, with one row per protein and sample and the sample annotation repeated in every row. We write the experiment above as such a table:
+
+```{r long-table}
+long <- data.frame(
+  protein = rep(row_data$protein, times = nrow(col_data)),
+  sample = rep(col_data$sample, each = nrow(row_data)),
+  count = as.vector(quant)
+)
+long <- merge(long, row_data)
+long <- merge(long, col_data)
+head(long)
+```
+
+The three SAINT tables are its parts: `inter` keeps the rows where the prey was observed, `prey` the distinct protein rows and `bait` the distinct sample rows.
+
+```{r long-to-saint}
+observed <- long[!is.na(long$count) & long$count > 0, ]
+si_long <- list(
+  inter = data.frame(
+    ipId = observed$sample, baitId = observed$bait,
+    preyId = observed$protein, quant = observed$count
+  ),
+  prey = unique(data.frame(preyId = long$protein, preyGeneId = long$gene)),
+  bait = unique(data.frame(ipId = long$sample, baitId = long$bait, CorT = long$CorT))
+)
+lapply(si_long, head, 3)
+validate_saint_input(si_long, mode = "spc")
+```
+
+Both routes give the same scores:
+
+```{r long-scores}
+scores_long <- run_saint(si_long, mode = "spc")
+both <- merge(scores_long, scores_matrix, by = c("Bait", "Prey"))
+all.equal(both$AvgP.x, both$AvgP.y)
 ```
 
 ## See also

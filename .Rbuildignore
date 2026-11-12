@@ -13,3 +13,6 @@
 ^.*\.BiocCheck$
 ^AGENTS\.md$
 ^CLAUDE\.md$
+^.*\.tar\.gz$
+^cran-comments\.md$
+^CRAN-SUBMISSION$

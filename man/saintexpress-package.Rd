@@ -48,6 +48,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Witold Wolski \email{witold.wolski@fgcz.uzh.ch} (\href{https://orcid.org/0000-0002-6468-120X}{ORCID})
   \item Alexey Nesvizhskii \email{nesvi@med.umich.edu}
   \item Hyungwon Choi \email{hyung_won_choi@nuhs.edu.sg} (Author and copyright holder of the original SAINTexpress C++ implementation) [copyright holder]
   \item Damian Fermin (Author and copyright holder of the original SAINTexpress C++ implementation) [copyright holder]
